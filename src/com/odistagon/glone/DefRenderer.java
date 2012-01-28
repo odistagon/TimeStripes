@@ -16,6 +16,7 @@ public class DefRenderer implements Renderer
 	private float		m_fx, m_fy, m_fxmove, m_fymove;
 	private GlOneDoc	m_doc;
 	private GlSpriteTex	m_gltext;
+	private GlStripe	m_glstripe;
 
 	public DefRenderer(GlOneDoc doc) {
 		m_lLastRendered = System.currentTimeMillis();
@@ -29,6 +30,8 @@ public class DefRenderer implements Renderer
 
 		m_gltext = new GlSpriteTex();
 		m_gltext.onSurfaceCreated(gl0, arg1);
+
+		m_glstripe = new GlStripe();
 	}
 
 	@Override
@@ -46,9 +49,11 @@ public class DefRenderer implements Renderer
 	@Override
 	public void onDrawFrame(GL10 gl0) {
 		gl0.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+//		gl0.glOrthof(-1, 1, -1 / ratio, 1 / ratio, 0.01f, 100.0f);
+//		gl0.glViewport(0, 0, (int) _width, (int) _height);
 		gl0.glMatrixMode(GL10.GL_MODELVIEW);
 		gl0.glLoadIdentity();
-		gl0.glTranslatef(0, 0, -3f);
+		gl0.glTranslatef(0, 0, -1.0f);
 
 		// make constant fps
 		// http://stackoverflow.com/questions/4772693/
@@ -61,7 +66,29 @@ public class DefRenderer implements Renderer
 		}
 		m_lLastRendered = System.currentTimeMillis();
 
-		// draw cube
+		gl0.glEnable(GL10.GL_BLEND);
+		gl0.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
+//		gl0.glShadeModel(GL10.GL_SMOOTH);	// GL_FLAT
+
+		// Lighting
+//		final float[] afLightAmbient = { 1.0f, 1.0f, 1.0f, 0.6f };
+//		final float[] afLightDiffuse = { 1.0f, 1.0f, 0.3f, 0.6f };
+//		final float[] afLightPosition = { 0.0f, 0.0f, 3.0f, 0.6f };
+//		gl0.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, afLightAmbient, 0);
+//		gl0.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, afLightDiffuse, 0);
+//		gl0.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, afLightPosition, 0);
+		gl0.glEnable(GL10.GL_LIGHTING);
+		gl0.glEnable(GL10.GL_LIGHT0);
+//		final float[] matAmbient = { 0.3f, 0.3f, 0.3f, 0.6f };
+//		final float[] matDiffuse = { 0.6f, 0.6f, 0.6f, 0.6f };
+//		gl0.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, matAmbient, 0);
+//		gl0.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, matDiffuse, 0);
+//		gl0.glEnable(GL10.GL_COLOR_MATERIAL);
+//		gl0.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+
+		// draw objects
+
+		// calc rotation
 		m_fxmove /= 1.4f;
 		m_fymove /= 1.4f;
 		m_fx += m_fxmove;
@@ -69,12 +96,19 @@ public class DefRenderer implements Renderer
 		gl0.glPushMatrix();
 		gl0.glRotatef(m_fx, 0, 1, 0);
 		gl0.glRotatef(m_fy, 1, 0, 0);
-		//
-		gl0.glEnable(GL10.GL_LIGHTING);
-		gl0.glEnable(GL10.GL_LIGHT0);
+		// cube
 		m_testcube.draw(gl0);
+		gl0.glPopMatrix();
+
 		gl0.glDisable(GL10.GL_LIGHTING);
 		gl0.glDisable(GL10.GL_LIGHT0);
+
+		gl0.glPushMatrix();
+		// stripes
+		gl0.glTranslatef(0.0f, (float)(m_doc.getTime() % 100) / 100.0f, 0.0f);
+		m_glstripe.draw(gl0);
+		gl0.glTranslatef(-0.9f, (float)(m_doc.getTime() % 10) / 10.0f, 0.0f);
+		m_glstripe.draw(gl0);
 		gl0.glPopMatrix();
 
 		// draw text

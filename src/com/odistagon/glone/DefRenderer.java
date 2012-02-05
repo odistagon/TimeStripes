@@ -13,7 +13,8 @@ public class DefRenderer implements Renderer
 {
 	private TestCube	m_testcube = new TestCube();
 	private long		m_lLastRendered, m_lLastMoved;
-	private float		m_fx, m_fy, m_fxmove, m_fymove;
+	private float		m_foffsx, m_foffsy;	// offset
+	private float		m_fvelox, m_fveloy;	// velocity
 	private GlOneDoc	m_doc;
 	private GlSpriteTex	m_gltext;
 	private GlStripe	m_glstripe;
@@ -66,6 +67,11 @@ public class DefRenderer implements Renderer
 		}
 		m_lLastRendered = System.currentTimeMillis();
 
+		// calc velocity (TODO should be calculated by time scale)
+		m_fvelox /= 1.4f;
+		m_fveloy /= 1.4f;
+		m_doc.addTime((long)m_fveloy);
+
 		gl0.glEnable(GL10.GL_BLEND);
 		gl0.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
 //		gl0.glShadeModel(GL10.GL_SMOOTH);	// GL_FLAT
@@ -89,13 +95,11 @@ public class DefRenderer implements Renderer
 		// draw objects
 
 		// calc rotation
-		m_fxmove /= 1.4f;
-		m_fymove /= 1.4f;
-		m_fx += m_fxmove;
-		m_fy += m_fymove;
+		m_foffsx += m_fvelox;
+		m_foffsy += m_fveloy;
 		gl0.glPushMatrix();
-		gl0.glRotatef(m_fx, 0, 1, 0);
-		gl0.glRotatef(m_fy, 1, 0, 0);
+		gl0.glRotatef(m_foffsx, 0, 1, 0);
+		gl0.glRotatef(m_foffsy, 1, 0, 0);
 		// cube
 		m_testcube.draw(gl0);
 		gl0.glPopMatrix();
@@ -125,9 +129,9 @@ public class DefRenderer implements Renderer
 		m_lLastRendered = System.currentTimeMillis();
 	}
 
-	public void moveObject(float fxarg, float fyarg) {
-		m_fxmove = fxarg;
-		m_fymove = fyarg;
+	public void changeVelocity(float fxarg, float fyarg) {
+		m_fvelox = fxarg;
+		m_fveloy = fyarg;
 		m_lLastMoved = System.currentTimeMillis();
 	}
 }

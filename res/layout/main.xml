@@ -1,12 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
-<TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="@string/hello"
-    />
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+<RelativeLayout
+	android:id="@+id/lo_main_rl0"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:layout_marginLeft="5sp" android:layout_marginRight="5sp"
+	>
+
+	<LinearLayout
+		android:id="@+id/lo_main_bottom"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:gravity="bottom"
+		>
+
+	<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:id="@+id/iv_main_menu"
+		android:src="@drawable/icon" />
+
+	<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:src="@drawable/icon" />
+
+	<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:src="@drawable/icon" />
+
+<!-- 
+ -->
+	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:text="@string/hello" />
+
+	</LinearLayout>
+
+</RelativeLayout>
+
 </LinearLayout>

@@ -32,9 +32,7 @@ public class DefSurfaceView extends GLSurfaceView
 			@Override
 			public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 
-				m_renderer.moveObject(distanceX * -1.0f, distanceY * -1.0f);
-				GlOneDoc	doc0 = aytop0.getDoc();
-				doc0.addTime((long)distanceY);
+				m_renderer.changeVelocity(distanceX * -1.0f, distanceY * -1.0f);
 
 				return false;
 			}
@@ -47,7 +45,7 @@ public class DefSurfaceView extends GLSurfaceView
 			@Override
 			public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 
-				m_renderer.moveObject(velocityX, velocityY);
+				m_renderer.changeVelocity(velocityX, velocityY);
 
 				return false;
 			}
@@ -55,7 +53,7 @@ public class DefSurfaceView extends GLSurfaceView
 			@Override
 			public boolean onDown(MotionEvent e) {
 
-				m_renderer.moveObject(0, 0);
+				m_renderer.changeVelocity(0, 0);
 
 				return false;
 			}

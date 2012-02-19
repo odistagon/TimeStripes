@@ -16,7 +16,8 @@ public class DefRenderer implements Renderer
 	private float		m_foffsx, m_foffsy;	// offset
 	private float		m_fvelox, m_fveloy;	// velocity
 	private GlOneDoc	m_doc;
-	private GlSpriteTex	m_gltext;
+//	private GlSpriteTex	m_gltext;
+	private Gl2DString	m_glstr;
 	private GlStripe	m_glstripe;
 
 	public DefRenderer(GlOneDoc doc) {
@@ -29,8 +30,10 @@ public class DefRenderer implements Renderer
 		gl0.glEnable(GL10.GL_DEPTH_TEST);
 		gl0.glDepthFunc(GL10.GL_LEQUAL);
 
-		m_gltext = new GlSpriteTex();
-		m_gltext.onSurfaceCreated(gl0, arg1);
+//		m_gltext = new GlSpriteTex();
+//		m_gltext.onSurfaceCreated(gl0, arg1);
+		m_glstr = new Gl2DString();
+		m_glstr.onSurfaceCreated(gl0, arg1);
 
 		m_glstripe = new GlStripe();
 	}
@@ -70,7 +73,8 @@ public class DefRenderer implements Renderer
 		// calc velocity (TODO should be calculated by time scale)
 		m_fvelox /= 1.4f;
 		m_fveloy /= 1.4f;
-		m_doc.addTime((long)m_fveloy);
+		// move time forward/ backward
+		m_doc.addTime((long)m_fveloy * 1000L);
 
 		gl0.glEnable(GL10.GL_BLEND);
 		gl0.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
@@ -109,21 +113,25 @@ public class DefRenderer implements Renderer
 
 		gl0.glPushMatrix();
 		// stripes
-		gl0.glTranslatef(0.0f, (float)(m_doc.getTime() % 100) / 100.0f, 0.0f);
+		gl0.glTranslatef(0.0f, (float)(m_doc.getTime() % 10000.0f) / 10000.0f, 0.0f);
 		m_glstripe.draw(gl0);
-		gl0.glTranslatef(-0.9f, (float)(m_doc.getTime() % 10) / 10.0f, 0.0f);
+		gl0.glTranslatef(-0.9f, (float)(m_doc.getTime() % 20000.0f) / 20000.0f, 0.0f);
 		m_glstripe.draw(gl0);
 		gl0.glPopMatrix();
 
 		// draw text
 		gl0.glRotatef(0.0f, 1, 1, 0);
-		Calendar	cal0 = Calendar.getInstance();
+		Calendar			cal0 = Calendar.getInstance();
 		cal0.setTimeInMillis(m_doc.getTime());
 		SimpleDateFormat	sdf0 = new SimpleDateFormat("mm:ss:SSS");
-		String	stemp0 = (cal0.getTimeInMillis() % 1000
-				+ " " + sdf0.format(cal0.getTime()));
-		m_gltext.setTextString(stemp0);
-		m_gltext.draw(gl0);
+		String				stemp0 = (cal0.getTimeInMillis() % 1000 + " " + sdf0.format(cal0.getTime()));
+//		m_gltext.setTextString(stemp0);
+//		m_gltext.draw(gl0);
+		m_glstr.setTextString(gl0, stemp0);
+		m_glstr.setRotatef(0.0f, 0.0f,
+				((float)cal0.get(Calendar.SECOND) + (float)cal0.get(Calendar.MILLISECOND) / 1000.0f) * 6.0f);	// use sub-seconds as angle
+		m_glstr.setColor(0xFFFFFFFF);
+		m_glstr.draw(gl0);
 
 		//
 		m_lLastRendered = System.currentTimeMillis();

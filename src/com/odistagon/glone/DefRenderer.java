@@ -2,6 +2,7 @@ package com.odistagon.glone;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -123,8 +124,12 @@ public class DefRenderer implements Renderer
 		gl0.glRotatef(0.0f, 1, 1, 0);
 		Calendar			cal0 = Calendar.getInstance();
 		cal0.setTimeInMillis(m_doc.getTime());
-		SimpleDateFormat	sdf0 = new SimpleDateFormat("mm:ss:SSS");
-		String				stemp0 = (cal0.getTimeInMillis() % 1000 + " " + sdf0.format(cal0.getTime()));
+		SimpleDateFormat	sdf0 = new SimpleDateFormat("MMM/dd hh:mm:ss.SSS");
+		String				stemp0 = "XXXX";
+		sdf0.setTimeZone(TimeZone.getTimeZone("Japan"));
+		stemp0 += sdf0.format(cal0.getTime()) + "\r\n";
+		sdf0.setTimeZone(TimeZone.getTimeZone("Pacific"));
+		stemp0 += sdf0.format(cal0.getTime()) + "\r\n";
 //		m_gltext.setTextString(stemp0);
 //		m_gltext.draw(gl0);
 		m_glstr.setTextString(gl0, stemp0);

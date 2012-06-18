@@ -1,7 +1,8 @@
 package com.odistagon.glone;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.util.Calendar;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -11,16 +12,17 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.opengl.GLUtils;
 
-/** (test class - currently not used)
+/** generic 2D texture string
+ * 
  */
-public class GlSpriteTex
+public class Gl2DString
 {
 	// vertices
 	private float	m_afVtx[] = new float[] {
-			-1.5f, -1.5f,
-			 1.5f, -1.5f,
-			-1.5f,  1.5f,
-			 1.5f,  1.5f,
+			-0.8f, -0.8f,
+			 0.8f, -0.8f,
+			-0.8f,  0.8f,
+			 0.8f,  0.8f,
 	};
 	private FloatBuffer	m_fbfVtxBuff;
 	// texture coords (up side down)
@@ -37,19 +39,19 @@ public class GlSpriteTex
 
 	private float	m_fxpos, m_fypos;	// text pos
 	private float	m_fRotZ = 0.0f;		// rotation angle
+	private int		m_nColor;
 	private int		m_nBmpWidth, m_nBmpHeight;	// texture size
 
 	private static final float	TEXT_SIZE = 20.0f;			// text size
 	private float	m_fTextWidth = 0.0f;	// text width
 	private String	m_sText;
 	private Paint	m_paint = null;
-	private int		m_nLastDrawSecond = -1;	// time last drawn
 
-	public GlSpriteTex() {
-		;
+	public Gl2DString() {
 	}
 
-	/** call this in Renderer#onSurfaceCreated()
+	/**
+	 * call this in Renderer#onSurfaceCreated()
 	 */
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		m_paint = new Paint();
@@ -80,55 +82,17 @@ public class GlSpriteTex
 		m_fypos = ((float)m_nBmpHeight + TEXT_SIZE) / 2.0f;
 
 		// generate buffer
-		m_fbfVtxBuff = GloneUtils.makeFloatBuffer(m_afVtx);
-		m_fbTexCoordBuff = GloneUtils.makeFloatBuffer(m_afTexCoords);
+		m_fbfVtxBuff = makeFloatBuffer(m_afVtx);
+		m_fbTexCoordBuff = makeFloatBuffer(m_afTexCoords);
 	}
 
 	/**
 	 * call this in Renderer#onDrawFrame()
 	 */
 	public void draw(GL10 gl) {
-		Calendar	cal0 = Calendar.getInstance();
-		int			nSecond = cal0.get(Calendar.SECOND);
-
-		// use sub-seconds as angle
-		m_fRotZ = ((float)nSecond + (float)cal0.get(Calendar.MILLISECOND) / 1000.0f) * 6.0f;
-
-		// redraw for each one second
-		if (m_nLastDrawSecond != nSecond){
-			m_nLastDrawSecond = nSecond;
-			if (m_nTextureId != 0){
-				gl.glDeleteTextures(1, m_nTextures, 0);
-			}
-
-			gl.glGenTextures(1, m_nTextures, 0);
-			m_nTextureId = m_nTextures[0];
-			gl.glBindTexture(GL10.GL_TEXTURE_2D, m_nTextureId);
-
-			// generate a bitmap
-			Bitmap	bm0 = Bitmap.createBitmap(m_nBmpWidth, m_nBmpHeight, Bitmap.Config.ARGB_8888);
-			Canvas	canvas0 = new Canvas(bm0);
-//			canvas0.drawColor(Color.TRANSPARENT);
-			canvas0.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR );
-
-			// draw text
-			m_paint.setColor(0xBEFFFFFF);
-			canvas0.drawText(m_sText, m_fxpos, m_fypos - TEXT_SIZE * 1, m_paint);
-			m_paint.setColor(0xFFFFFFFF);
-			canvas0.drawText(m_sText, m_fxpos, m_fypos + TEXT_SIZE * 0, m_paint);
-			m_paint.setColor(0xBEFFFFFF);
-			canvas0.drawText(m_sText, m_fxpos, m_fypos + TEXT_SIZE * 1, m_paint);
-
-			GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bm0, 0);
-			gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
-			gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
-
-			bm0.recycle();
-		}
-
 		// prepare drawing
 		gl.glEnable(GL10.GL_BLEND);
-		gl.glBlendFunc(GL10.GL_SRC_ALPHA,GL10.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
 		// enable texture
 		gl.glEnable(GL10.GL_TEXTURE_2D);
@@ -153,7 +117,58 @@ public class GlSpriteTex
 		gl.glDisable(GL10.GL_BLEND);
 	}
 
-	public void setTextString(String sarg) {
+	private static FloatBuffer makeFloatBuffer(float[] values) {
+		ByteBuffer bb = ByteBuffer.allocateDirect(values.length * 4);
+		bb.order(ByteOrder.nativeOrder());
+		FloatBuffer fb = bb.asFloatBuffer();
+		fb.put(values);
+		fb.position(0);
+		return	fb;
+	}
+
+	public void setRotatef(float frotx, float froty, float frotz) {
+		m_fRotZ = frotz;
+	}
+
+	/**
+	 * @param nColor AARRGGBB (ex. 0xFFFFFFFF, 0xBEFFFFFF)
+	 */
+	public void setColor(int nColor) {
+		m_nColor = nColor;
+	}
+
+	public void setTextString(GL10 glarg, String sarg) {
+		// check args
+		if(sarg != null && !sarg.equals(m_sText))
+			;
+		else
+			return;	// do nothing if specified identical string
+
 		m_sText = sarg;
+
+		// update texture content
+		{
+			if(m_nTextureId != 0) {
+				glarg.glDeleteTextures(1, m_nTextures, 0);
+			}
+			glarg.glGenTextures(1, m_nTextures, 0);
+			m_nTextureId = m_nTextures[0];
+			glarg.glBindTexture(GL10.GL_TEXTURE_2D, m_nTextureId);
+
+			// generate a bitmap
+			Bitmap	bm0 = Bitmap.createBitmap(m_nBmpWidth, m_nBmpHeight, Bitmap.Config.ARGB_8888);
+			Canvas	canvas0 = new Canvas(bm0);
+//			canvas0.drawColor(Color.TRANSPARENT);
+			canvas0.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
+
+			m_paint.setColor(m_nColor);
+			canvas0.drawText(m_sText, m_fxpos, m_fypos + TEXT_SIZE * 0, m_paint);
+
+			GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bm0, 0);
+			glarg.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
+			glarg.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+
+			bm0.recycle();
+		}
 	}
 }

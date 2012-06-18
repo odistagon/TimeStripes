@@ -30,18 +30,6 @@ public class GlStripe
 		// vertex buffer
 		makeStripesVerts();
 
-		// color buffer
-//		float[]		afcolors = new float[24 * 4 * 4];	// 24 * 4(rectangle)
-//		int			nidx = 0;
-//		final float	FALP = 0.8f;
-//		for(int i = 0; i < 24; i++) {
-//			afcolors[nidx++] = (float)(i % 2) * 0.8f;	afcolors[nidx++] = 0.8f;	afcolors[nidx++] = 0.8f;	afcolors[nidx++] = FALP;
-//			afcolors[nidx++] = (float)(i % 2) * 0.8f;	afcolors[nidx++] = 0.0f;	afcolors[nidx++] = 0.0f;	afcolors[nidx++] = FALP;
-//			afcolors[nidx++] = (float)(i % 2) * 0.8f;	afcolors[nidx++] = 0.8f;	afcolors[nidx++] = 0.8f;	afcolors[nidx++] = FALP;
-//			afcolors[nidx++] = (float)(i % 2) * 0.8f;	afcolors[nidx++] = 0.0f;	afcolors[nidx++] = 0.0f;	afcolors[nidx++] = FALP;
-//		}
-//		m_buffColor = makeBuffer(afcolors);
-
 		// texture coods buffer
 		float[]	aftexcoods = new float[24 * 4 * 2];	// 24 * 4 (rectangle) + (x, y)
 		for(int i = 0; i < 24; i++) {
@@ -67,18 +55,20 @@ public class GlStripe
 		bm0.recycle();
 	}
 
+	public static final float	FC_CY_1HR = 1.0f;	// height of an hour
+
 	private void makeStripesVerts() {
 		float[]		aftemp = new float[24 * 4 * 3];	// 24 * 4(rectangle) * 3(xyz)
 		final float	FWIDTH = 0.5f, FHEIGHT = 0.2f, foffs = -2.4f;
 		int			nbase = 0;
 		for(int i = 0; i < 24; i++) {
-			// coords: TL TR BL BR
 			float	fbaseh = foffs + FHEIGHT * (float)i;
 //			int		nbase = (i * (4 * 3));
-			aftemp[nbase++] = FWIDTH * 0.0f;	aftemp[nbase++] = fbaseh + FHEIGHT * 0.0f;	aftemp[nbase++] = 0.7f;
-			aftemp[nbase++] = FWIDTH * 1.0f;	aftemp[nbase++] = fbaseh + FHEIGHT * 0.0f;	aftemp[nbase++] = 0.7f;
-			aftemp[nbase++] = FWIDTH * 0.0f;	aftemp[nbase++] = fbaseh + FHEIGHT * 1.0f;	aftemp[nbase++] = 0.7f;
-			aftemp[nbase++] = FWIDTH * 1.0f;	aftemp[nbase++] = fbaseh + FHEIGHT * 1.0f;	aftemp[nbase++] = 0.7f;
+			// coords: TL TR BL BR
+			aftemp[nbase++] = FWIDTH * 0.0f;		aftemp[nbase++] = fbaseh + FHEIGHT * 0.0f;		aftemp[nbase++] = 0.7f;
+			aftemp[nbase++] = FWIDTH * FC_CY_1HR;	aftemp[nbase++] = fbaseh + FHEIGHT * 0.0f;		aftemp[nbase++] = 0.7f;
+			aftemp[nbase++] = FWIDTH * 0.0f;		aftemp[nbase++] = fbaseh + FHEIGHT * FC_CY_1HR;	aftemp[nbase++] = 0.7f;
+			aftemp[nbase++] = FWIDTH * FC_CY_1HR;	aftemp[nbase++] = fbaseh + FHEIGHT * FC_CY_1HR;	aftemp[nbase++] = 0.7f;
 		}
 		m_buffVerts = makeBuffer(aftemp);
 //		for(int i = 0; i < 24; i++) {

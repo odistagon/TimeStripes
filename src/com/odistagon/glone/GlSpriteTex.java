@@ -1,7 +1,5 @@
 package com.odistagon.glone;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.Calendar;
 
@@ -49,8 +47,7 @@ public class GlSpriteTex
 		;
 	}
 
-	/**
-	 * call this in Renderer#onSurfaceCreated()
+	/** call this in Renderer#onSurfaceCreated()
 	 */
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		m_paint = new Paint();
@@ -81,8 +78,8 @@ public class GlSpriteTex
 		m_fypos = ((float)m_nBmpHeight + TEXT_SIZE) / 2.0f;
 
 		// generate buffer
-		m_fbfVtxBuff = makeFloatBuffer(m_afVtx);
-		m_fbTexCoordBuff = makeFloatBuffer(m_afTexCoords);
+		m_fbfVtxBuff = GloneUtils.makeFloatBuffer(m_afVtx);
+		m_fbTexCoordBuff = GloneUtils.makeFloatBuffer(m_afTexCoords);
 	}
 
 	/**
@@ -152,15 +149,6 @@ public class GlSpriteTex
 		// disable things back
 		gl.glDisable(GL10.GL_TEXTURE_2D);
 		gl.glDisable(GL10.GL_BLEND);
-	}
-
-	private static FloatBuffer makeFloatBuffer(float[] values) {
-		ByteBuffer bb = ByteBuffer.allocateDirect(values.length * 4);
-		bb.order(ByteOrder.nativeOrder());
-		FloatBuffer fb = bb.asFloatBuffer();
-		fb.put(values);
-		fb.position(0);
-		return	fb;
 	}
 
 	public void setTextString(String sarg) {

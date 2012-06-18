@@ -1,9 +1,13 @@
 package com.odistagon.glone;
 
+import java.util.ArrayList;
+import java.util.TimeZone;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -12,14 +16,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 
 public class AyTop extends Activity
 {
 	private GlOneDoc		m_doc;
 	private DefSurfaceView	m_gv;
 
-	private static final int	CMID_GLONE_TEST01 = 101;
+	private static final int	CMID_GLONE_TEST01 = 901;
+	private static final int	CMID_GLONE_TEST02 = 902;
+	private static final int	CMID_GLONE_TEST03 = 903;
 	private static final int	NC_DLGID_TEST01 = 9;
 
 	/** Called when the activity is first created. */
@@ -48,6 +56,32 @@ public class AyTop extends Activity
 				showDialog(NC_DLGID_TEST01);
 			}
 		});
+
+		// TZ select spinner
+		{
+			ArrayAdapter<CharSequence>	adapter =
+				new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			String[]			astzids = TimeZone.getAvailableIDs();
+			ArrayList<String>	altz = new ArrayList<String>();
+			String				sdeftz = TimeZone.getDefault().getDisplayName();
+			int					nidxdef = -1;
+			for(int i = 0; i < astzids.length; i++) {
+				String	s0 = TimeZone.getTimeZone(astzids[i]).getDisplayName();
+				if(!(altz.contains(s0))) {
+					altz.add(s0);
+				}
+				if(nidxdef < 0 && altz.equals(sdeftz)) {
+					nidxdef = i;
+				}
+			}
+			for(int i = 0; i < altz.size(); i++) {
+				adapter.add(altz.get(i));
+			}
+			final Spinner	spinn0 = (Spinner)findViewById(R.id.sp_main_test01);
+			spinn0.setAdapter(adapter);
+			spinn0.setSelection(nidxdef);
+		}
 	}
 
 	@Override
@@ -110,12 +144,24 @@ public class AyTop extends Activity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuItem	mi0 = null;
-		mi0 = menu.add(0, CMID_GLONE_TEST01, 0, "Load New");
+		mi0 = menu.add(0, CMID_GLONE_TEST01, 0, "System Date Setting");
 		mi0.setIcon(android.R.drawable.stat_notify_sync);
-		mi0 = menu.add(0, CMID_GLONE_TEST01, 0, "Reload All");
+		mi0 = menu.add(0, CMID_GLONE_TEST02, 0, "Reload All");
 		mi0.setIcon(android.R.drawable.stat_notify_sync);
 
 		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+		case CMID_GLONE_TEST01:
+			startActivity(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS));
+			break;
+		case CMID_GLONE_TEST02:
+			break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override

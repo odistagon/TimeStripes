@@ -33,6 +33,7 @@ public class DefRenderer implements Renderer
 		m_gltext.onSurfaceCreated(gl0, arg1);
 
 		m_glstripe = new GlStripe();
+		m_glstripe.onSurfaceCreated(gl0, arg1);
 	}
 
 	@Override

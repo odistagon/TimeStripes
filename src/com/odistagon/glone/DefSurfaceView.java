@@ -1,6 +1,7 @@
 package com.odistagon.glone;
 
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.GestureDetector.OnGestureListener;
@@ -32,7 +33,8 @@ public class DefSurfaceView extends GLSurfaceView
 			@Override
 			public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 
-				m_renderer.changeVelocity(distanceX * -1.0f, distanceY * -1.0f);
+				m_renderer.addTime(distanceX * -1.0f, distanceY * -1.0f);
+				Log.d("X", "scroll(" + distanceX + ", " + distanceY + ")");
 
 				return false;
 			}
@@ -46,6 +48,7 @@ public class DefSurfaceView extends GLSurfaceView
 			public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 
 				m_renderer.changeVelocity(velocityX, velocityY);
+				Log.d("X", "fling(" + velocityX + ", " + velocityY + ")");
 
 				return false;
 			}
@@ -65,6 +68,10 @@ public class DefSurfaceView extends GLSurfaceView
 		m_gdtctr.onTouchEvent(event);
 
 		return super.onTouchEvent(event);
+	}
+
+	public void zoomIn(float frelative) {
+		m_renderer.zoomIn(frelative);
 	}
 
 	// pinch gesture zooming

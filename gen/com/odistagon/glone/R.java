@@ -17,6 +17,8 @@ public final class R {
     }
     public static final class id {
         public static final int iv_main_menu=0x7f050003;
+        public static final int iv_tb_zoomin=0x7f050004;
+        public static final int iv_tb_zoomou=0x7f050005;
         public static final int lo_main_bottom=0x7f050002;
         public static final int lo_main_rl0=0x7f050000;
         public static final int sp_main_test01=0x7f050001;

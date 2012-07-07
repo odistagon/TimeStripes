@@ -56,6 +56,13 @@ public class AyTop extends Activity
 				showDialog(NC_DLGID_TEST01);
 			}
 		});
+		v0 = findViewById(R.id.iv_tb_zoomin);
+		v0.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				m_gv.zoomIn(1.1f);
+			}
+		});
 
 		// TZ select spinner
 		{
@@ -146,7 +153,7 @@ public class AyTop extends Activity
 		MenuItem	mi0 = null;
 		mi0 = menu.add(0, CMID_GLONE_TEST01, 0, "System Date Setting");
 		mi0.setIcon(android.R.drawable.stat_notify_sync);
-		mi0 = menu.add(0, CMID_GLONE_TEST02, 0, "Reload All");
+		mi0 = menu.add(0, CMID_GLONE_TEST02, 0, "test 2");
 		mi0.setIcon(android.R.drawable.stat_notify_sync);
 
 		return super.onCreateOptionsMenu(menu);
@@ -159,6 +166,7 @@ public class AyTop extends Activity
 			startActivity(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS));
 			break;
 		case CMID_GLONE_TEST02:
+			m_gv.zoomIn(1.0f);
 			break;
 		}
 		return super.onOptionsItemSelected(item);

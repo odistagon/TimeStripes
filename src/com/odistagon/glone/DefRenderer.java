@@ -1,9 +1,8 @@
 package com.odistagon.glone;
 
 import java.nio.FloatBuffer;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.TimeZone;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -67,7 +66,6 @@ public class DefRenderer implements Renderer
 //		gl0.glViewport(0, 0, (int) _width, (int) _height);
 		gl0.glMatrixMode(GL10.GL_MODELVIEW);
 		gl0.glLoadIdentity();
-		gl0.glTranslatef(0, 0, +10.0f);
 
 		// make constant fps
 		// http://stackoverflow.com/questions/4772693/
@@ -114,45 +112,53 @@ public class DefRenderer implements Renderer
 		gl0.glPushMatrix();
 		gl0.glRotatef(m_foffsx, 0, 1, 0);
 		gl0.glRotatef(m_foffsy, 1, 0, 0);
+		gl0.glScalef(0.3f, 0.3f, 0.3f);
+		gl0.glTranslatef(-1.5f, -1.5f, -0.5f);
 		// cube
 		m_testcube.draw(gl0);
 		gl0.glPopMatrix();
 
 		gl0.glDisable(GL10.GL_LIGHTING);
 		gl0.glDisable(GL10.GL_LIGHT0);
+		gl0.glEnable(GL10.GL_BLEND);
 
 		gl0.glPushMatrix();
 		gl0.glScalef(1.0f, m_fStripeScaleH, 1.0f);
 		// stripes
-		gl0.glTranslatef(0.0f, m_glstripe.getVtxHeightOfOneHour() * m_doc.getTimeOffset() * -1.0f, 0.0f);
-		m_glstripe.draw(gl0);
-		gl0.glTranslatef(-0.9f, m_glstripe.getVtxHeightOfOneHour() * -1.0f, 0.0f);
-		m_glstripe.draw(gl0);
+		ArrayList<GloneTz>	altz = m_doc.getTzList();
+		Iterator<GloneTz>	it0 = altz.iterator();
+		while(it0.hasNext()) {
+			GloneTz	tz0 = it0.next();
+			gl0.glPushMatrix();
+			gl0.glTranslatef(0.0f, m_glstripe.getVtxHeightOfOneHour() * tz0.getTimeOffsetInADay(m_doc.getTime()) * -1.0f, 0.0f);
+			m_glstripe.draw(gl0);
+			gl0.glPopMatrix();
+
+			gl0.glTranslatef(-0.5f, 0.0f, 0.0f);
+		}
 		gl0.glPopMatrix();
 
 		// org
 		drawOrg(gl0);
 
 		// draw text
-		gl0.glRotatef(0.0f, 1, 1, 0);
-		Calendar			cal0 = Calendar.getInstance();
-		cal0.setTimeInMillis(m_doc.getTime());
-		SimpleDateFormat	sdf0 = new SimpleDateFormat("MMM/dd hh:mm:ss.SSS");
-		String				stemp0 = "XXXX";
-		sdf0.setTimeZone(TimeZone.getTimeZone("Japan"));
-		stemp0 += sdf0.format(cal0.getTime()) + "\r\n";
-		sdf0.setTimeZone(TimeZone.getTimeZone("Pacific"));
-		stemp0 += sdf0.format(cal0.getTime()) + "\r\n";
-//		m_gltext.setTextString(stemp0);
-//		m_gltext.draw(gl0);
-		m_glstr.setTextString(gl0, stemp0);
-		m_glstr.setRotatef(0.0f, 0.0f,
-				((float)cal0.get(Calendar.SECOND) + (float)cal0.get(Calendar.MILLISECOND) / 1000.0f) * 6.0f);	// use sub-seconds as angle
 		m_glstr.setColor(0xFFFFFFFF);
-		m_glstr.draw(gl0);
+		gl0.glScalef(0.9f, 0.8f, 1.0f);
+		gl0.glTranslatef(0.0f, -0.4f, -0.99f);
+
+		altz = m_doc.getTzList();
+		it0 = altz.iterator();
+		while(it0.hasNext()) {
+			GloneTz	tz0 = it0.next();
+			m_glstr.setTextString(gl0, tz0.getDebugString(m_doc.getTime()));
+			m_glstr.draw(gl0);
+			gl0.glTranslatef(-0.1f, 0.2f, 0.0f);
+		}
 
 		//
 		m_lLastRendered = System.currentTimeMillis();
+
+		gl0.glDisable(GL10.GL_BLEND);
 	}
 
 	public void changeVelocity(float fxarg, float fyarg) {
@@ -176,10 +182,10 @@ public class DefRenderer implements Renderer
 	private void makeOrgBuffs() {
 		// vertices
 		float[]	aftemp = new float[] {
-				-0.9f,  0.0f, -0.8f,	// LT
-				+0.9f,  0.0f, -0.8f,	// RT
-				-0.9f, +1.0f, -0.8f,	// LB
-				+0.9f, +1.0f, -0.8f,	// RB
+				-0.9f,  0.0f, -0.2f,	// LT
+				+0.9f,  0.0f, -0.2f,	// RT
+				-0.9f, +1.0f, -0.2f,	// LB
+				+0.9f, +1.0f, -0.2f,	// RB
 		};
 		m_buffOrgVerts = GloneUtils.makeFloatBuffer(aftemp);
 		// colors RGBA
@@ -215,6 +221,7 @@ public class DefRenderer implements Renderer
 
 		// disable things back
 		gl.glDisable(GL10.GL_BLEND);
+		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
 	}
 }

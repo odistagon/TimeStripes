@@ -19,9 +19,9 @@ public class GlStripe
 //	private FloatBuffer	m_buffColor;
 	private int[]		m_nTextures = new int[1];
 	private int			m_nTextureId = 0;
-	static final private float	CF_TEXHEIGONEHR = (1.0f / 24.0f);	// texture height of one hour
-	public static final float	CF_VTXCX_STRIPE = 0.5f;	// width of an hour
-	public static final float	CF_VTXCY_1HRSTR = 0.2f;	// height of an hour
+	private static final float	CF_TEXHEIGONEHR = (1.0f / 24.0f);	// texture height of one hour
+	private static final float	CF_VTXCX_STRIPE = 0.5f;	// width of an hour
+	private static final float	CF_VTXCY_1HRSTR = 0.2f;	// height of an hour
 
 	public GlStripe() {
 	}
@@ -41,12 +41,13 @@ public class GlStripe
 		makeStripesVerts();
 
 		// texture coods buffer
+		final float	CF_STRWITDH = (51.0f / 512.0f);	// TODO texture coords should be managed better
 		float[]	aftexcoods = new float[24 * 4 * 2];	// 24 * 4 (rectangle) + (x, y)
 		for(int i = 0; i < 24; i++) {
-			aftexcoods[i * 8 + 0] = 0.0f;	aftexcoods[i * 8 + 1] = (((float)(i + 1)) * CF_TEXHEIGONEHR);
-			aftexcoods[i * 8 + 2] = 1.0f;	aftexcoods[i * 8 + 3] = (((float)(i + 1)) * CF_TEXHEIGONEHR);
-			aftexcoods[i * 8 + 4] = 0.0f;	aftexcoods[i * 8 + 5] = (((float)(i + 0)) * CF_TEXHEIGONEHR);
-			aftexcoods[i * 8 + 6] = 1.0f;	aftexcoods[i * 8 + 7] = (((float)(i + 0)) * CF_TEXHEIGONEHR);
+			aftexcoods[i * 8 + 0] = 0.0f;			aftexcoods[i * 8 + 1] = (((float)(i + 1)) * CF_TEXHEIGONEHR);
+			aftexcoods[i * 8 + 2] = CF_STRWITDH;	aftexcoods[i * 8 + 3] = (((float)(i + 1)) * CF_TEXHEIGONEHR);
+			aftexcoods[i * 8 + 4] = 0.0f;			aftexcoods[i * 8 + 5] = (((float)(i + 0)) * CF_TEXHEIGONEHR);
+			aftexcoods[i * 8 + 6] = CF_STRWITDH;	aftexcoods[i * 8 + 7] = (((float)(i + 0)) * CF_TEXHEIGONEHR);
 		}
 		m_afTexCoords = aftexcoods;
 
@@ -74,10 +75,10 @@ public class GlStripe
 			float	fbaseh = CF_VTXCY_1HRSTR * (float)i;
 //			int		nbase = (i * (4 * 3));
 			// coords: TL TR BL BR
-			aftemp[nbase++] = 0.0f;			aftemp[nbase++] = fbaseh + 0.0f;		aftemp[nbase++] = 0.7f;
-			aftemp[nbase++] = CF_VTXCX_STRIPE;	aftemp[nbase++] = fbaseh + 0.0f;		aftemp[nbase++] = 0.7f;
-			aftemp[nbase++] = 0.0f;			aftemp[nbase++] = fbaseh + CF_VTXCY_1HRSTR;	aftemp[nbase++] = 0.7f;
-			aftemp[nbase++] = CF_VTXCX_STRIPE;	aftemp[nbase++] = fbaseh + CF_VTXCY_1HRSTR;	aftemp[nbase++] = 0.7f;
+			aftemp[nbase++] = 0.0f;				aftemp[nbase++] = fbaseh + 0.0f;			aftemp[nbase++] = 0.9f;
+			aftemp[nbase++] = CF_VTXCX_STRIPE;	aftemp[nbase++] = fbaseh + 0.0f;			aftemp[nbase++] = 0.9f;
+			aftemp[nbase++] = 0.0f;				aftemp[nbase++] = fbaseh + CF_VTXCY_1HRSTR;	aftemp[nbase++] = 0.9f;
+			aftemp[nbase++] = CF_VTXCX_STRIPE;	aftemp[nbase++] = fbaseh + CF_VTXCY_1HRSTR;	aftemp[nbase++] = 0.9f;
 		}
 		m_buffVerts = GloneUtils.makeFloatBuffer(aftemp);
 //		for(int i = 0; i < 24; i++) {
@@ -87,7 +88,6 @@ public class GlStripe
 
 	public void draw(GL10 gl) {
 		// prepare drawing
-		gl.glEnable(GL10.GL_BLEND);
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA,GL10.GL_ONE_MINUS_SRC_ALPHA);
 
 		// enable texture
@@ -112,6 +112,5 @@ public class GlStripe
 
 		// disable things back
 		gl.glDisable(GL10.GL_TEXTURE_2D);
-		gl.glDisable(GL10.GL_BLEND);
 	}
 }

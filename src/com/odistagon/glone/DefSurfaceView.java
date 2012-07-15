@@ -2,9 +2,11 @@ package com.odistagon.glone;
 
 import android.opengl.GLSurfaceView;
 import android.util.Log;
+import android.view.Display;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.GestureDetector.OnGestureListener;
+import android.view.WindowManager;
 
 public class DefSurfaceView extends GLSurfaceView
 {
@@ -13,7 +15,9 @@ public class DefSurfaceView extends GLSurfaceView
 
 	public DefSurfaceView(AyTop aytop) {
 		super(aytop);
-		final AyTop aytop0 = aytop;
+		final AyTop		aytop0 = aytop;
+		WindowManager	wm0 = (WindowManager)aytop0.getSystemService(android.content.Context.WINDOW_SERVICE);
+		final Display	disp0 = wm0.getDefaultDisplay();
 
 		m_renderer = new DefRenderer(aytop.getDoc());
 		setRenderer(m_renderer);
@@ -31,10 +35,29 @@ public class DefSurfaceView extends GLSurfaceView
 			}
 
 			@Override
-			public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+			public boolean onScroll(MotionEvent e1, MotionEvent e2, float fcx, float fcy) {
+				// reverse calc pixels -> time
+				float	fmoved = (fcy / (float)disp0.getHeight());	// TODO consider screen height is not 1.0f 
+				long	ltimemoved = (long)(fmoved * (60f * 60f * 1000f) / GlStripe.getVtxHeightOfOneHour());
 
-				m_renderer.addTime(distanceX * -1.0f, distanceY * -1.0f);
-				Log.d("X", "scroll(" + distanceX + ", " + distanceY + ")");
+//				Log.d(getClass().getName(), "moved (" + fmoved + " -> " + ((Display)wm0.getDefaultDisplay()).getHeight() + ")");
+				Log.d(getClass().getName(), "scroll(" + fcy + " -> " + ltimemoved + ")");
+				aytop0.getDoc().addTime(ltimemoved * -1L, false);
+
+				return false;
+			}
+
+			@Override
+			public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+				// velocity = pixels / sec.
+				float	fcy = velocityY * ((float)GlOneDoc.CL_ANIMPERD / 1000.0f);
+				// reverse calc pixels -> time
+				float	fmoved = (fcy / (float)disp0.getHeight());	// TODO consider screen height is not 1.0f 
+				long	ltimemoved = (long)(fmoved * (60f * 60f * 1000f) / GlStripe.getVtxHeightOfOneHour());
+
+//				Log.d(getClass().getName(), "moved (" + fmoved + " -> " + ((Display)wm0.getDefaultDisplay()).getHeight() + ")");
+				Log.d(getClass().getName(), "fling (" + fcy + " -> " + ltimemoved + ")");
+				aytop0.getDoc().addTime(ltimemoved, true);
 
 				return false;
 			}
@@ -45,19 +68,7 @@ public class DefSurfaceView extends GLSurfaceView
 			}
 
 			@Override
-			public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-
-				m_renderer.changeVelocity(velocityX, velocityY);
-				Log.d("X", "fling(" + velocityX + ", " + velocityY + ")");
-
-				return false;
-			}
-
-			@Override
 			public boolean onDown(MotionEvent e) {
-
-				m_renderer.changeVelocity(0, 0);
-
 				return false;
 			}
 		};

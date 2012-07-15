@@ -26,28 +26,47 @@ public class GlStripe
 	public GlStripe() {
 	}
 
-	public float getVtxHeightOfOneHour() {
-		return	CF_VTXCY_1HRSTR;
+	public static float getVtxHeightOfOneHour() {
+		return	CF_VTXCY_1HRSTR;	// TODO take scaling into account
 	}
 
-	public float getTexHeightOfOneHour() {
+	public static float getTexHeightOfOneHour() {
 		return	CF_TEXHEIGONEHR;
 	}
+
+	// hour stripe
+	private static final float	CF_TEXHUR_L = 0.0f;
+	private static final float	CF_TEXHUR_W = 96f / 1024f;
+	private static final float	CF_TEXHUR_T = 0.0f;
+	private static final float	CF_TEXHUR_H = 40f / 1024f;
 
 	/** call this in Renderer#onSurfaceCreated()
 	 */
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		// vertex buffer
-		makeStripesVerts();
+		float[]		aftemp = new float[24 * 4 * 3];	// 24 * 4(rectangle) * 3(xyz)
+		int			nbase = 0;
+		for(int i = 0; i < 24; i++) {
+			float	fbaseh = CF_VTXCY_1HRSTR * (float)i;
+//			int		nbase = (i * (4 * 3));
+			// coords: TL TR BL BR
+			aftemp[nbase++] = 0.0f;				aftemp[nbase++] = fbaseh + 0.0f;			aftemp[nbase++] = 0.9f;
+			aftemp[nbase++] = CF_VTXCX_STRIPE;	aftemp[nbase++] = fbaseh + 0.0f;			aftemp[nbase++] = 0.9f;
+			aftemp[nbase++] = 0.0f;				aftemp[nbase++] = fbaseh + CF_VTXCY_1HRSTR;	aftemp[nbase++] = 0.9f;
+			aftemp[nbase++] = CF_VTXCX_STRIPE;	aftemp[nbase++] = fbaseh + CF_VTXCY_1HRSTR;	aftemp[nbase++] = 0.9f;
+		}
+		m_buffVerts = GloneUtils.makeFloatBuffer(aftemp);
+//		for(int i = 0; i < 24; i++) {
+//			Log.d("dump: ", ": [" + i + "](" + aftemp[i * 3 + 0] + ", " + aftemp[i * 3 + 1] + ", " + aftemp[i * 3 + 2]);
+//		}
 
 		// texture coods buffer
-		final float	CF_STRWITDH = (51.0f / 512.0f);	// TODO texture coords should be managed better
 		float[]	aftexcoods = new float[24 * 4 * 2];	// 24 * 4 (rectangle) + (x, y)
 		for(int i = 0; i < 24; i++) {
-			aftexcoods[i * 8 + 0] = 0.0f;			aftexcoods[i * 8 + 1] = (((float)(i + 1)) * CF_TEXHEIGONEHR);
-			aftexcoods[i * 8 + 2] = CF_STRWITDH;	aftexcoods[i * 8 + 3] = (((float)(i + 1)) * CF_TEXHEIGONEHR);
-			aftexcoods[i * 8 + 4] = 0.0f;			aftexcoods[i * 8 + 5] = (((float)(i + 0)) * CF_TEXHEIGONEHR);
-			aftexcoods[i * 8 + 6] = CF_STRWITDH;	aftexcoods[i * 8 + 7] = (((float)(i + 0)) * CF_TEXHEIGONEHR);
+			aftexcoods[i * 8 + 0] = CF_TEXHUR_L;	aftexcoods[i * 8 + 1] = (((float)(i + 1)) * CF_TEXHUR_H);
+			aftexcoods[i * 8 + 2] = CF_TEXHUR_W;	aftexcoods[i * 8 + 3] = (((float)(i + 1)) * CF_TEXHUR_H);
+			aftexcoods[i * 8 + 4] = CF_TEXHUR_L;	aftexcoods[i * 8 + 5] = (((float)(i + 0)) * CF_TEXHUR_H);
+			aftexcoods[i * 8 + 6] = CF_TEXHUR_W;	aftexcoods[i * 8 + 7] = (((float)(i + 0)) * CF_TEXHUR_H);
 		}
 		m_afTexCoords = aftexcoods;
 
@@ -66,24 +85,6 @@ public class GlStripe
 		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
 		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
 		bm0.recycle();
-	}
-
-	private void makeStripesVerts() {
-		float[]		aftemp = new float[24 * 4 * 3];	// 24 * 4(rectangle) * 3(xyz)
-		int			nbase = 0;
-		for(int i = 0; i < 24; i++) {
-			float	fbaseh = CF_VTXCY_1HRSTR * (float)i;
-//			int		nbase = (i * (4 * 3));
-			// coords: TL TR BL BR
-			aftemp[nbase++] = 0.0f;				aftemp[nbase++] = fbaseh + 0.0f;			aftemp[nbase++] = 0.9f;
-			aftemp[nbase++] = CF_VTXCX_STRIPE;	aftemp[nbase++] = fbaseh + 0.0f;			aftemp[nbase++] = 0.9f;
-			aftemp[nbase++] = 0.0f;				aftemp[nbase++] = fbaseh + CF_VTXCY_1HRSTR;	aftemp[nbase++] = 0.9f;
-			aftemp[nbase++] = CF_VTXCX_STRIPE;	aftemp[nbase++] = fbaseh + CF_VTXCY_1HRSTR;	aftemp[nbase++] = 0.9f;
-		}
-		m_buffVerts = GloneUtils.makeFloatBuffer(aftemp);
-//		for(int i = 0; i < 24; i++) {
-//			Log.d("dump: ", ": [" + i + "](" + aftemp[i * 3 + 0] + ", " + aftemp[i * 3 + 1] + ", " + aftemp[i * 3 + 2]);
-//		}
 	}
 
 	public void draw(GL10 gl) {

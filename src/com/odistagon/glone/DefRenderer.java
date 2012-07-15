@@ -15,13 +15,12 @@ public class DefRenderer implements Renderer
 {
 	private TestCube	m_testcube = new TestCube();
 	private long		m_lLastRendered, m_lLastMoved;
-	private float		m_foffsx, m_foffsy;	// offset
-	private float		m_fvelox, m_fveloy;	// velocity
 	private float		m_fStripeScaleH;
 	private GlOneDoc	m_doc;
-//	private GlSpriteTex	m_gltext;
 	private Gl2DString	m_glstr;
 	private GlStripe	m_glstripe;
+
+	private static final long	CL_FRAMPERD = 16L;	// constant frame period
 
 	public DefRenderer(GlOneDoc doc) {
 		m_lLastRendered = System.currentTimeMillis();
@@ -52,7 +51,8 @@ public class DefRenderer implements Renderer
 		gl0.glMatrixMode(GL10.GL_PROJECTION);
 		gl0.glLoadIdentity();
 		gl0.glPushMatrix();
-		GLU.gluPerspective(gl0, 45f, (float)width / (float)height, 1f, 50.0f);
+		GLU.gluPerspective(gl0, 45f, (float)width / (float)height, 10.0f, 10.0f);
+//		Log.d(getClass().getName(), "perspective: (" + width + ", " + height + ")");
 		GLU.gluLookAt(gl0, 0, 0, 1.0f, 0, 0, 0, 0, 1.0f, 0);
 		gl0.glPopMatrix();
 
@@ -71,18 +71,12 @@ public class DefRenderer implements Renderer
 		// http://stackoverflow.com/questions/4772693/
 		long	ldt = System.currentTimeMillis() - m_lLastRendered;
 		try {
-			if(ldt < 33L)
-				Thread.sleep(33L - ldt);
+			if(ldt < CL_FRAMPERD)
+				Thread.sleep(CL_FRAMPERD - ldt);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		m_lLastRendered = System.currentTimeMillis();
-
-		// calc velocity (TODO should be calculated by time scale)
-		m_fvelox /= 1.4f;
-		m_fveloy /= 1.4f;
-		// move time forward/ backward
-		m_doc.addTime((long)m_fveloy * 1000L * 1000L);
 
 		gl0.glEnable(GL10.GL_BLEND);
 		gl0.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
@@ -107,11 +101,7 @@ public class DefRenderer implements Renderer
 		// draw objects
 
 		// calc rotation
-		m_foffsx += m_fvelox;
-		m_foffsy += m_fveloy;
 		gl0.glPushMatrix();
-		gl0.glRotatef(m_foffsx, 0, 1, 0);
-		gl0.glRotatef(m_foffsy, 1, 0, 0);
 		gl0.glScalef(0.3f, 0.3f, 0.3f);
 		gl0.glTranslatef(-1.5f, -1.5f, -0.5f);
 		// cube
@@ -130,7 +120,8 @@ public class DefRenderer implements Renderer
 		while(it0.hasNext()) {
 			GloneTz	tz0 = it0.next();
 			gl0.glPushMatrix();
-			gl0.glTranslatef(0.0f, m_glstripe.getVtxHeightOfOneHour() * tz0.getTimeOffsetInADay(m_doc.getTime()) * -1.0f, 0.0f);
+			gl0.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour()
+					* tz0.getTimeOffsetInADay(m_doc.getTime()) * -1.0f, 0.0f);
 			m_glstripe.draw(gl0);
 			gl0.glPopMatrix();
 
@@ -144,7 +135,7 @@ public class DefRenderer implements Renderer
 		// draw text
 		m_glstr.setColor(0xFFFFFFFF);
 		gl0.glScalef(0.9f, 0.8f, 1.0f);
-		gl0.glTranslatef(0.0f, -0.4f, -0.99f);
+		gl0.glTranslatef(0.0f, -0.6f, -0.99f);
 
 		altz = m_doc.getTzList();
 		it0 = altz.iterator();
@@ -159,16 +150,6 @@ public class DefRenderer implements Renderer
 		m_lLastRendered = System.currentTimeMillis();
 
 		gl0.glDisable(GL10.GL_BLEND);
-	}
-
-	public void changeVelocity(float fxarg, float fyarg) {
-		m_fvelox = fxarg;
-		m_fveloy = fyarg;
-		m_lLastMoved = System.currentTimeMillis();
-	}
-
-	public void addTime(float fxarg, float fyarg) {
-		m_doc.addTime((long)fyarg * 1000L);
 	}
 
 	public void zoomIn(float frelative) {

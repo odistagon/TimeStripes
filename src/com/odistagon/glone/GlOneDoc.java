@@ -1,15 +1,17 @@
 package com.odistagon.glone;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class GlOneDoc
 {
-	private long				m_ltime;
+	private long				m_lTimeCurr;
+	private long				m_lTimeAnimStart;
 	private ArrayList<GloneTz>	m_artzs;
 
+	public static final long	CL_ANIMPERD = 2500L;	// ms. until fling anim stops
+
 	public GlOneDoc() {
-		m_ltime = System.currentTimeMillis();
+		m_lTimeCurr = System.currentTimeMillis();
 
 		// debug set
 		m_artzs = new ArrayList<GloneTz>();
@@ -19,11 +21,17 @@ public class GlOneDoc
 	}
 
 	public void setTime(long ltime) {
-		m_ltime = ltime;
+		m_lTimeCurr = ltime;
 	}
 
 	public long getTime() {
-		return	m_ltime;
+		long	ldiff = System.currentTimeMillis() - m_lTimeAnimStart;
+		if(ldiff < CL_ANIMPERD) {
+			float	f0 = 1.0f - ((float)ldiff / (float)CL_ANIMPERD);
+//			Log.d(getClass().getName(), "getTime r(" + f0 + ")");
+			return	m_lTimeCurr - (long)((m_lTimeCurr - m_lTimeAnimStart) * f0);
+		}
+		return	m_lTimeCurr;
 	}
 
 	public ArrayList<GloneTz> getTzList() {
@@ -40,8 +48,11 @@ public class GlOneDoc
 //		return	fret;
 //	}
 
-	public void addTime(long ltime) {
-		m_ltime += ltime;
+	public void addTime(long ltime, boolean bAnim) {
+		if(bAnim) {
+			m_lTimeAnimStart = System.currentTimeMillis();
+		}
+		m_lTimeCurr += ltime;
 	}
 
 }

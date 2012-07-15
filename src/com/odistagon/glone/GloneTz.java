@@ -32,8 +32,25 @@ public class GloneTz
 	public float getTimeOffsetInADay(long ltime) {
 		Calendar	c0 = Calendar.getInstance(m_tz);
 		c0.setTimeInMillis(ltime);
-		float		fret = (((float)c0.get(Calendar.HOUR_OF_DAY)));	// TODO consider DST
+		float		fret = (((float)c0.get(Calendar.HOUR_OF_DAY))
+				+ (float)c0.get(Calendar.MINUTE) / 60.0f);	// TODO consider DST
 		return	fret;
+	}
+
+	/**
+	 * @return year, month, day, day of month, hour, minute
+	 */
+	public int[] getTimeNumbers(long ltime) {
+		Calendar	c0 = Calendar.getInstance();
+		c0.setTimeInMillis(ltime);
+		int			anret[] = new int[6];
+		anret[0] = c0.get(Calendar.YEAR);
+		anret[1] = c0.get(Calendar.MONTH) + 1;
+		anret[2] = c0.get(Calendar.DAY_OF_MONTH);
+		anret[3] = c0.get(Calendar.DAY_OF_WEEK);
+		anret[4] = c0.get(Calendar.HOUR);
+		anret[5] = c0.get(Calendar.MINUTE);
+		return	anret;
 	}
 
 	public String getDebugString(long ltime) {

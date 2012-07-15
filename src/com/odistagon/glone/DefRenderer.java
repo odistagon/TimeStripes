@@ -7,14 +7,20 @@ import java.util.Iterator;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.GLU;
+import android.opengl.GLUtils;
 import android.util.Log;
 
 public class DefRenderer implements Renderer
 {
+	private int[]		m_nTextures = new int[1];
+	private int			m_nTextureId = 0;
+
 	private TestCube	m_testcube = new TestCube();
-	private long		m_lLastRendered, m_lLastMoved;
+	private long		m_lLastRendered;
 	private float		m_fStripeScaleH;
 	private GlOneDoc	m_doc;
 	private Gl2DString	m_glstr;
@@ -33,8 +39,6 @@ public class DefRenderer implements Renderer
 		gl0.glEnable(GL10.GL_DEPTH_TEST);
 		gl0.glDepthFunc(GL10.GL_LEQUAL);
 
-//		m_gltext = new GlSpriteTex();
-//		m_gltext.onSurfaceCreated(gl0, arg1);
 		m_glstr = new Gl2DString();
 		m_glstr.onSurfaceCreated(gl0, arg1);
 
@@ -42,6 +46,21 @@ public class DefRenderer implements Renderer
 		m_glstripe.onSurfaceCreated(gl0, arg1);
 
 		makeOrgBuffs();
+
+		// generate texture buffer
+		if (m_nTextureId != 0){
+			gl0.glDeleteTextures(1, m_nTextures, 0);
+		}
+		gl0.glGenTextures(1, m_nTextures, 0);
+		m_nTextureId = m_nTextures[0];
+		gl0.glBindTexture(GL10.GL_TEXTURE_2D, m_nTextureId);
+		// NOTE if image is read from another dpi resource, that will be resized automatically. 
+		Bitmap	bm0 = BitmapFactory.decodeResource(GloneApp.getContext().getResources(), R.drawable.timestr_m);
+		Log.d(getClass().getName(), "texture size: (u, v each must be x^2) (" + bm0.getWidth() + ", " + bm0.getHeight() + ")");
+		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bm0, 0);
+		gl0.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
+		gl0.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+		bm0.recycle();
 	}
 
 	@Override
@@ -112,6 +131,10 @@ public class DefRenderer implements Renderer
 		gl0.glDisable(GL10.GL_LIGHT0);
 		gl0.glEnable(GL10.GL_BLEND);
 
+		gl0.glBlendFunc(GL10.GL_SRC_ALPHA,GL10.GL_ONE_MINUS_SRC_ALPHA);
+		gl0.glEnable(GL10.GL_TEXTURE_2D);
+		gl0.glBindTexture(GL10.GL_TEXTURE_2D, m_nTextureId);
+
 		gl0.glPushMatrix();
 		gl0.glScalef(1.0f, m_fStripeScaleH, 1.0f);
 		// stripes
@@ -122,12 +145,23 @@ public class DefRenderer implements Renderer
 			gl0.glPushMatrix();
 			gl0.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour()
 					* tz0.getTimeOffsetInADay(m_doc.getTime()) * -1.0f, 0.0f);
-			m_glstripe.draw(gl0);
+			m_glstripe.drawStripe(gl0);
 			gl0.glPopMatrix();
 
 			gl0.glTranslatef(-0.5f, 0.0f, 0.0f);
 		}
 		gl0.glPopMatrix();
+
+		// date string
+		GloneTz	gtz1 = altz.get(0);
+		int[]	andt = gtz1.getTimeNumbers(m_doc.getTime());
+		gl0.glPushMatrix();
+		m_glstripe.drawNumberString(gl0, andt[0]);
+		gl0.glTranslatef(0.75f, 0.25f, 0.0f);
+		m_glstripe.drawNumberString(gl0, andt[4] * 100 + andt[5]);
+		gl0.glPopMatrix();
+
+		gl0.glDisable(GL10.GL_TEXTURE_2D);
 
 		// org
 		drawOrg(gl0);

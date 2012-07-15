@@ -48,7 +48,7 @@ public class GloneTz
 		anret[1] = c0.get(Calendar.MONTH) + 1;
 		anret[2] = c0.get(Calendar.DAY_OF_MONTH);
 		anret[3] = c0.get(Calendar.DAY_OF_WEEK);
-		anret[4] = c0.get(Calendar.HOUR);
+		anret[4] = c0.get(Calendar.HOUR_OF_DAY);
 		anret[5] = c0.get(Calendar.MINUTE);
 		return	anret;
 	}

@@ -9,6 +9,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.RectF;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
@@ -16,6 +17,8 @@ import android.util.Log;
 
 public class DefRenderer implements Renderer
 {
+	private int			m_nHeight;
+
 	private int[]		m_nTextures = new int[1];
 	private int			m_nTextureId = 0;
 
@@ -25,6 +28,11 @@ public class DefRenderer implements Renderer
 	private GlOneDoc	m_doc;
 	private Gl2DString	m_glstr;
 	private GlStripe	m_glstripe;
+
+	public static final float	CF_PERS_FOVY = 45f;
+	public static final float	CF_PERS_NEAR = 3.0f;
+	public static final float	CF_PERS_FAR_ = 10.0f;
+	public static final float	CF_LOOK_EYZ = 10.0f;
 
 	private static final long	CL_FRAMPERD = 16L;	// constant frame period
 
@@ -65,14 +73,14 @@ public class DefRenderer implements Renderer
 
 	@Override
 	public void onSurfaceChanged(GL10 gl0, int width, int height) {
+		m_nHeight = height;
 		gl0.glViewport(0, 0, width, height);
 
 		gl0.glMatrixMode(GL10.GL_PROJECTION);
 		gl0.glLoadIdentity();
 		gl0.glPushMatrix();
-		GLU.gluPerspective(gl0, 45f, (float)width / (float)height, 10.0f, 10.0f);
-//		Log.d(getClass().getName(), "perspective: (" + width + ", " + height + ")");
-		GLU.gluLookAt(gl0, 0, 0, 1.0f, 0, 0, 0, 0, 1.0f, 0);
+		GLU.gluPerspective(gl0, CF_PERS_FOVY, (float)width / (float)height, CF_PERS_NEAR, CF_PERS_FAR_);
+		GLU.gluLookAt(gl0, 0, 0, CF_LOOK_EYZ, 0, 0, 0, 0, 1.0f, 0);
 		gl0.glPopMatrix();
 
 		gl0.glClearColor(0.2f, 0.0f, 0.0f, 1.0f);	// set background color (RGBA)
@@ -141,11 +149,8 @@ public class DefRenderer implements Renderer
 		ArrayList<GloneTz>	altz = m_doc.getTzList();
 		Iterator<GloneTz>	it0 = altz.iterator();
 		while(it0.hasNext()) {
-			GloneTz	tz0 = it0.next();
 			gl0.glPushMatrix();
-			gl0.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour()
-					* tz0.getTimeOffsetInADay(m_doc.getTime()) * -1.0f, 0.0f);
-			m_glstripe.drawStripe(gl0);
+			m_glstripe.drawStripe(gl0, it0.next(), m_doc.getTime());
 			gl0.glPopMatrix();
 
 			gl0.glTranslatef(-0.5f, 0.0f, 0.0f);
@@ -155,14 +160,25 @@ public class DefRenderer implements Renderer
 		// date string
 		GloneTz	gtz1 = altz.get(0);
 		int[]	andt = gtz1.getTimeNumbers(m_doc.getTime());
-		gl0.glPushMatrix();
-		m_glstripe.drawNumberString(gl0, andt[0]);
-		gl0.glTranslatef(0.75f, 0.25f, 0.0f);
-		m_glstripe.drawNumberString(gl0, andt[4] * 100 + andt[5]);
-		gl0.glPopMatrix();
+		RectF	rfvnums = GlStripe.getVertexRectNumbers();
+		RectF	rfvmons = GlStripe.getVertexRectMonthNames();
+		gl0.glLoadIdentity();
+		gl0.glTranslatef(rfvnums.right * -4f, 0.20f, 0.0f);
+		m_glstripe.drawNumberString(gl0, andt[3]);	// day
+		gl0.glLoadIdentity();
+		gl0.glTranslatef(-0.65f, 0.20f, 0.0f);
+		m_glstripe.drawMonth(gl0, andt[1] - 1);		// month name
+		gl0.glLoadIdentity();
+		gl0.glTranslatef(rfvmons.right, 0.20f, 0.0f);
+		m_glstripe.drawNumberString(gl0, andt[0]);	// year
+		gl0.glLoadIdentity();
+		gl0.glScalef(1.5f, 1.5f, 1.5f);
+		gl0.glTranslatef(0.00f, 0.00f, 0.0f);
+		m_glstripe.drawNumberString(gl0, andt[4] * 100 + andt[5]);	// hour+min.
 
 		gl0.glDisable(GL10.GL_TEXTURE_2D);
 
+		gl0.glLoadIdentity();
 		// org
 		drawOrg(gl0);
 
@@ -189,6 +205,19 @@ public class DefRenderer implements Renderer
 	public void zoomIn(float frelative) {
 		m_fStripeScaleH *= frelative;
 		Log.d("X", "zoom (" + m_fStripeScaleH  + ")");
+	}
+
+	public int getHeight() {
+		return	m_nHeight;
+	}
+
+	/** Calculate and return the height in logical unit, how tall things are drew in view.
+	 */
+	public static float calcClipHeight(float fz) {
+		float	fradian = (float)Math.PI * ((CF_PERS_FOVY / 2f) / 180f);
+		float	fret = (float)Math.tan(fradian) * (CF_LOOK_EYZ - fz);
+//		Log.d("XXXX", "tan(" + fradian + ") * " + (CF_LOOK_EYZ - fz) + ")");
+		return	fret * 2;
 	}
 
 	private FloatBuffer	m_buffOrgVerts = null;

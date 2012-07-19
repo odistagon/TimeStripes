@@ -37,11 +37,21 @@ public class GloneTz
 		return	fret;
 	}
 
+//	/**
+//	 * @returns offset min (0.0f-1.0f)
+//	 */
+//	public float getTimeOffsetInMinute(long ltime) {
+//		Calendar	c0 = Calendar.getInstance(m_tz);
+//		c0.setTimeInMillis(ltime);
+//		float		fret = ((float)c0.get(Calendar.MINUTE) / 60.0f);
+//		return	fret;
+//	}
+
 	/**
 	 * @return year, month, day, day of month, hour, minute
 	 */
 	public int[] getTimeNumbers(long ltime) {
-		Calendar	c0 = Calendar.getInstance();
+		Calendar	c0 = Calendar.getInstance(m_tz);
 		c0.setTimeInMillis(ltime);
 		int			anret[] = new int[6];
 		anret[0] = c0.get(Calendar.YEAR);

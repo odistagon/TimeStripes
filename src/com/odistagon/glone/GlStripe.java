@@ -11,34 +11,39 @@ public class GlStripe
 {
 	private FloatBuffer	m_fbVtxStrp;
 	private FloatBuffer	m_fbTexStrp; 
-//	private FloatBuffer	m_buffColor;
 	private FloatBuffer	m_fbVtxNums;
 	private FloatBuffer	m_fbTexNums; 
+	private FloatBuffer	m_fbVtxMons;
+	private FloatBuffer	m_fbTexMons; 
+//	private FloatBuffer	m_buffColor;
 
+	private static final float	CFTEXSIZ = 1024f;
 	// hour stripe
-	private static final float	CF_VTXHUR_L = 0.0f;
-	private static final float	CF_VTXHUR_T = 0.0f;
-	private static final float	CF_VTXHUR_R = 0.5f;	// width of an hour
-	private static final float	CF_VTXHUR_B = 0.2f;	// height of an hour
-	private static final float	CF_TEXHUR_L = 0.0f;
-	private static final float	CF_TEXHUR_T = 0.0f;
-	private static final float	CF_TEXHUR_R = 96f / 1024f;
-	private static final float	CF_TEXHUR_H = 40f / 1024f;
+	private static final RectF	CRECTF_VTXHUR = new RectF(0.0f, 0.0f, 0.5f, 0.2f);
+	private static final float	CF_VTXHUR_Z = 0.9f;
+	private static final RectF	CRECTF_TEXHUR = new RectF(0.0f, 0.0f, 96f / CFTEXSIZ, 40f / CFTEXSIZ);
 	// numbers
-	private static final float	CF_VTXNUM_L = 0.0f;
-	private static final float	CF_VTXNUM_T = 0.0f;
-	private static final float	CF_VTXNUM_R = 0.2f;
-	private static final float	CF_VTXNUM_B = 0.2f;
-	private static final float	CF_TEXNUM_L = 96f / 1024f;
-	private static final float	CF_TEXNUM_T = 0.0f;
-	private static final float	CF_TEXNUM_R = 192f / 1024f;
-	private static final float	CF_TEXNUM_H = 96f / 1024f;
+	private static final RectF	CRECTF_VTXNUM = new RectF(0.0f, 0.0f, 0.2f, 0.15f);
+	private static final float	CF_VTXNUM_Z = 0.2f;
+	private static final RectF	CRECTF_TEXNUM = new RectF(96f / CFTEXSIZ, 0.0f, 192f / CFTEXSIZ, 96f / CFTEXSIZ);
+	// name of months
+	private static final RectF	CRECTF_VTXMON = new RectF(0.0f, 0.0f, 0.3f, 0.15f);
+	private static final float	CF_VTXMON_Z = 0.2f;
+	private static final RectF	CRECTF_TEXMON = new RectF(192f / CFTEXSIZ, 0.0f, 288f / CFTEXSIZ, 48f / CFTEXSIZ);
 
 	public GlStripe() {
 	}
 
 	public static float getVtxHeightOfOneHour() {
-		return	CF_VTXHUR_B;	// TODO take scaling into account
+		return	CRECTF_VTXHUR.bottom;	// TODO take scaling into account
+	}
+
+	public static RectF getVertexRectNumbers() {
+		return	CRECTF_VTXNUM;
+	}
+
+	public static RectF getVertexRectMonthNames() {
+		return	CRECTF_VTXMON;
 	}
 
 	/** call this in Renderer#onSurfaceCreated()
@@ -46,15 +51,14 @@ public class GlStripe
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		FloatBuffer	fb0[] = null;
 		// Stripe
-		fb0 = makeVertBuffs(24,
-				new RectF(CF_VTXHUR_L, CF_VTXHUR_T, CF_VTXHUR_R, CF_VTXHUR_B), 0.9f,
-				new RectF(CF_TEXHUR_L, CF_TEXHUR_T, CF_TEXHUR_R, CF_TEXHUR_H));
+		fb0 = makeVertBuffs(24, CRECTF_VTXHUR, CF_VTXHUR_Z, CRECTF_TEXHUR);
 		m_fbVtxStrp = fb0[0];	m_fbTexStrp = fb0[1];
 		// Numbers
-		fb0 = makeVertBuffs(10,
-				new RectF(CF_VTXNUM_L, CF_VTXNUM_T, CF_VTXNUM_R, CF_VTXNUM_B), 0.2f,
-				new RectF(CF_TEXNUM_L, CF_TEXNUM_T, CF_TEXNUM_R, CF_TEXNUM_H));
+		fb0 = makeVertBuffs(10, CRECTF_VTXNUM, CF_VTXNUM_Z, CRECTF_TEXNUM);
 		m_fbVtxNums = fb0[0];	m_fbTexNums = fb0[1];
+		// Name of months
+		fb0 = makeVertBuffs(10, CRECTF_VTXMON, CF_VTXMON_Z, CRECTF_TEXMON);
+		m_fbVtxMons = fb0[0];	m_fbTexMons = fb0[1];
 	}
 
 	/** Makes coords for vertically arranged tile textures
@@ -97,7 +101,7 @@ public class GlStripe
 		return	afbret;
 	}
 
-	public void drawStripe(GL10 gl) {
+	public void drawStripe(GL10 gl, GloneTz gtz, long ltime) {
 		// set vertex array
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, m_fbVtxStrp);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
@@ -109,10 +113,16 @@ public class GlStripe
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 
 		// draw
-		for(int i = 0; i < 24; i++) {
+		int	nhours = (int)(DefRenderer.calcClipHeight(CF_VTXHUR_Z) / CRECTF_VTXHUR.bottom);	// how many hours are in screen height
+		int	antime[] = gtz.getTimeNumbers(ltime);
+		gl.glTranslatef(0.0f, -1.0f + GlStripe.getVtxHeightOfOneHour()
+				* ((float)antime[5] / 60.0f) * +1.0f, 0.0f);
+		for(int i = 0; i < nhours; i++) {	// TODO should be done by 1 or 2 glDrawArrays
 			gl.glNormal3f(0, 0, 1.0f);
-			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, i * 4, 4);
-			gl.glTranslatef(0.0f, CF_VTXNUM_B, 0.0f);
+			int	n0 = (antime[4] + nhours / 2) - i - 1;
+			n0 = 23 - (n0 + 24) % 24;
+			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, n0 * 4, 4);
+			gl.glTranslatef(0.0f, CRECTF_VTXHUR.bottom, 0.0f);
 		}
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
@@ -127,11 +137,22 @@ public class GlStripe
 			int	n0 = narg % 10;
 			gl.glNormal3f(0, 0, 1.0f);
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, n0 * 4, 4);
-			gl.glTranslatef(CF_VTXNUM_R * -1f, 0.0f, 0.0f);
+			gl.glTranslatef(CRECTF_VTXNUM.right * -1f, 0.0f, 0.0f);
 			if(narg < 10)
 				break;
 			narg /= 10;
 		}
+		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+	}
+
+	public void drawMonth(GL10 gl, int narg) {
+		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, m_fbVtxMons);
+		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glTexCoordPointer(2 ,GL10.GL_FLOAT, 0, m_fbTexMons);
+		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		gl.glNormal3f(0, 0, 1.0f);
+		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, narg * 4, 4);
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 	}

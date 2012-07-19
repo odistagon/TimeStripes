@@ -37,12 +37,12 @@ public class DefSurfaceView extends GLSurfaceView
 			@Override
 			public boolean onScroll(MotionEvent e1, MotionEvent e2, float fcx, float fcy) {
 				// reverse calc pixels -> time
-				float	fmoved = (fcy / (float)disp0.getHeight());	// TODO consider screen height is not 1.0f 
+				float	fmoved = (fcy / (float)m_renderer.getHeight()); 
 				long	ltimemoved = (long)(fmoved * (60f * 60f * 1000f) / GlStripe.getVtxHeightOfOneHour());
 
-//				Log.d(getClass().getName(), "moved (" + fmoved + " -> " + ((Display)wm0.getDefaultDisplay()).getHeight() + ")");
-				Log.d(getClass().getName(), "scroll(" + fcy + " -> " + ltimemoved + ")");
-				aytop0.getDoc().addTime(ltimemoved * -1L, false);
+//				Log.d(getClass().getName(), "moved (" + fmoved + " / " + m_renderer.getHeight() + ")");
+//				Log.d(getClass().getName(), "scroll(" + fcy + " -> " + ltimemoved + ")");
+				aytop0.getDoc().addTime(ltimemoved * +1L, false);
 
 				return false;
 			}
@@ -52,12 +52,12 @@ public class DefSurfaceView extends GLSurfaceView
 				// velocity = pixels / sec.
 				float	fcy = velocityY * ((float)GlOneDoc.CL_ANIMPERD / 1000.0f);
 				// reverse calc pixels -> time
-				float	fmoved = (fcy / (float)disp0.getHeight());	// TODO consider screen height is not 1.0f 
+				float	fmoved = (fcy / (float)m_renderer.getHeight()); 
 				long	ltimemoved = (long)(fmoved * (60f * 60f * 1000f) / GlStripe.getVtxHeightOfOneHour());
 
-//				Log.d(getClass().getName(), "moved (" + fmoved + " -> " + ((Display)wm0.getDefaultDisplay()).getHeight() + ")");
-				Log.d(getClass().getName(), "fling (" + fcy + " -> " + ltimemoved + ")");
-				aytop0.getDoc().addTime(ltimemoved, true);
+//				Log.d(getClass().getName(), "moved (" + fmoved + " / " + m_renderer.getHeight() + ")");
+//				Log.d(getClass().getName(), "fling (" + fcy + " -> " + ltimemoved + ")");
+				aytop0.getDoc().addTime(ltimemoved * -1L, true);
 
 				return false;
 			}

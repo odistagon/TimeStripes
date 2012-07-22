@@ -2,4 +2,9 @@
 <resources>
     <string name="hello">Hello World, Main!</string>
     <string name="app_name">glone</string>
+    <string name="rs_seltzdlg_title">Select timezone</string>
+    <string name="rs_seltzdlg_desc">Pick a timezone. You can use filter by putting in a part of the name (3 &lt; chars) into the box below and press the button.</string><string name="rs_seltzdlg_filt">Filter</string><string name="rs_dlg_pos">OK</string>
+    <string name="rs_dlg_neg">No</string>
+    
+    
 </resources>

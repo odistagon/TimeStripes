@@ -29,6 +29,7 @@ public class AyTop extends Activity
 	private static final int	CMID_GLONE_TEST02 = 902;
 	private static final int	CMID_GLONE_TEST03 = 903;
 	private static final int	NC_DLGID_TEST01 = 9;
+	private static final int	NC_DLGID_SELETZ = 10;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -63,32 +64,6 @@ public class AyTop extends Activity
 				m_gv.zoomIn(1.1f);
 			}
 		});
-
-		// TZ select spinner
-		{
-			ArrayAdapter<CharSequence>	adapter =
-				new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
-			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-			String[]			astzids = TimeZone.getAvailableIDs();
-			ArrayList<String>	altz = new ArrayList<String>();
-			String				sdeftz = TimeZone.getDefault().getDisplayName();
-			int					nidxdef = -1;
-			for(int i = 0; i < astzids.length; i++) {
-				String	s0 = TimeZone.getTimeZone(astzids[i]).getDisplayName();
-				if(!(altz.contains(s0))) {
-					altz.add(s0);
-				}
-				if(nidxdef < 0 && altz.equals(sdeftz)) {
-					nidxdef = i;
-				}
-			}
-			for(int i = 0; i < altz.size(); i++) {
-				adapter.add(altz.get(i));
-			}
-			final Spinner	spinn0 = (Spinner)findViewById(R.id.sp_main_test01);
-			spinn0.setAdapter(adapter);
-			spinn0.setSelection(nidxdef);
-		}
 	}
 
 	@Override
@@ -116,9 +91,8 @@ public class AyTop extends Activity
 	protected void onPrepareDialog(int id, Dialog dialog) {
 		switch(id) {
 		case NC_DLGID_TEST01:
-			AlertDialog	adlg0 = (AlertDialog)dialog;
-			adlg0.setTitle("debug");
-			adlg0.setMessage("XXX1\nXXX1\nXXX1\nXXX1\n");
+			break;
+		case NC_DLGID_SELETZ:
 			break;
 		default:
 			super.onPrepareDialog(id, dialog);
@@ -142,6 +116,10 @@ public class AyTop extends Activity
 			});
 			dret = builder.create();
 			break;
+		case NC_DLGID_SELETZ:
+			Dialog	dlg0 = new GloneSelectTzDlg(this);
+			dret = dlg0;
+			break;
 		default:
 			dret = super.onCreateDialog(id);
 		}
@@ -155,6 +133,8 @@ public class AyTop extends Activity
 		mi0.setIcon(android.R.drawable.stat_notify_sync);
 		mi0 = menu.add(0, CMID_GLONE_TEST02, 0, "test 2");
 		mi0.setIcon(android.R.drawable.stat_notify_sync);
+		mi0 = menu.add(0, CMID_GLONE_TEST03, 0, "test 3");
+		mi0.setIcon(android.R.drawable.stat_notify_sync);
 
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -167,6 +147,9 @@ public class AyTop extends Activity
 			break;
 		case CMID_GLONE_TEST02:
 			m_gv.zoomIn(1.0f);
+			break;
+		case CMID_GLONE_TEST03:
+			showDialog(NC_DLGID_SELETZ);
 			break;
 		}
 		return super.onOptionsItemSelected(item);

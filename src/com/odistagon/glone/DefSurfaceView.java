@@ -1,12 +1,9 @@
 package com.odistagon.glone;
 
 import android.opengl.GLSurfaceView;
-import android.util.Log;
-import android.view.Display;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.GestureDetector.OnGestureListener;
-import android.view.WindowManager;
 
 public class DefSurfaceView extends GLSurfaceView
 {
@@ -15,11 +12,11 @@ public class DefSurfaceView extends GLSurfaceView
 
 	public DefSurfaceView(AyTop aytop) {
 		super(aytop);
-		final AyTop		aytop0 = aytop;
-		WindowManager	wm0 = (WindowManager)aytop0.getSystemService(android.content.Context.WINDOW_SERVICE);
-		final Display	disp0 = wm0.getDefaultDisplay();
+//		final AyTop		aytop0 = aytop;
+//		WindowManager	wm0 = (WindowManager)aytop0.getSystemService(android.content.Context.WINDOW_SERVICE);
+//		final Display	disp0 = wm0.getDefaultDisplay();
 
-		m_renderer = new DefRenderer(aytop.getDoc());
+		m_renderer = new DefRenderer(GloneApp.getDoc());
 		setRenderer(m_renderer);
 
 		OnGestureListener ogl0 = new OnGestureListener() {
@@ -42,7 +39,7 @@ public class DefSurfaceView extends GLSurfaceView
 
 //				Log.d(getClass().getName(), "moved (" + fmoved + " / " + m_renderer.getHeight() + ")");
 //				Log.d(getClass().getName(), "scroll(" + fcy + " -> " + ltimemoved + ")");
-				aytop0.getDoc().addTime(ltimemoved * +1L, false);
+				GloneApp.getDoc().addTime(ltimemoved * +1L, false);
 
 				return false;
 			}
@@ -57,7 +54,7 @@ public class DefSurfaceView extends GLSurfaceView
 
 //				Log.d(getClass().getName(), "moved (" + fmoved + " / " + m_renderer.getHeight() + ")");
 //				Log.d(getClass().getName(), "fling (" + fcy + " -> " + ltimemoved + ")");
-				aytop0.getDoc().addTime(ltimemoved * -1L, true);
+				GloneApp.getDoc().addTime(ltimemoved * -1L, true);
 
 				return false;
 			}

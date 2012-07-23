@@ -8,28 +8,26 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class GloneSelectTzDlg extends Dialog
+public class DlgSelTz extends Dialog
 {
 
-	public GloneSelectTzDlg(Context context) {
+	public DlgSelTz(Context context) {
 		super(context);
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		setContentView(R.layout.selecttzdlg);
+		setContentView(R.layout.dlgseltz);
 		Resources	r0 = getContext().getResources();
 		setTitle(r0.getString(R.string.rs_seltzdlg_title));
 
@@ -47,24 +45,6 @@ public class GloneSelectTzDlg extends Dialog
 			});
 		}
 
-		// TZ select list
-//		{
-//			ArrayAdapter<CharSequence>	adapter =
-//				new ArrayAdapter<CharSequence>(getContext(), android.R.layout.simple_list_item_1);
-//			adapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
-//			String[]	astzids = TimeZone.getAvailableIDs();
-//			String		sprev = null;
-//			for(int i = 0; i < astzids.length; i++) {
-//				String	s0 = TimeZone.getTimeZone(astzids[i]).getDisplayName();
-//				if(sprev != null && sprev.equals(s0))
-//					continue;
-//				adapter.add(s0);
-//				sprev = s0;
-//			}
-//			ListView	lv0 = (ListView)findViewById(R.id.lv_seltz_main);
-//			lv0.setAdapter(adapter);
-////			lv0.setSelection(nidxdef);	// have default tz been selected?
-//		}
 		ListView	lv0 = (ListView)findViewById(R.id.lv_seltz_main);
 		lv0.setAdapter(new GloneTzListAdapter());
 
@@ -106,10 +86,16 @@ public class GloneSelectTzDlg extends Dialog
 		}
 
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			TextView	v0 = new TextView(getContext());
-			v0.setText(m_atzsub.get(position).getTimeZoneId());
-			return	v0;
+		public View getView(int position, View vConv, ViewGroup parent) {
+			if (vConv == null) {
+				LayoutInflater	inf0 = (LayoutInflater)
+					GloneApp.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				vConv = inf0.inflate(R.layout.liglonetz, null);
+				registerForContextMenu(vConv);
+			}
+			TextView	tv0 = (TextView)vConv.findViewById(R.id.tv_ligtz_name);
+			tv0.setText(m_atzsub.get(position).getTimeZoneId());
+			return	vConv;
 		}
 
 		public void filter(String sarg) {

@@ -6,6 +6,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.RectF;
+import android.util.Log;
 
 public class GlStripe
 {
@@ -21,7 +22,8 @@ public class GlStripe
 	// hour stripe
 	private static final RectF	CRECTF_VTXHUR = new RectF(0.0f, 0.0f, 0.5f, 0.2f);
 	private static final float	CF_VTXHUR_Z = 0.9f;
-	private static final RectF	CRECTF_TEXHUR = new RectF(0.0f, 0.0f, 96f / CFTEXSIZ, 40f / CFTEXSIZ);
+	private static final RectF	CRECTF_TEXHUR = new RectF(0.0f / CFTEXSIZ, 0.0f, 96f / CFTEXSIZ, 40f / CFTEXSIZ);
+//	private static final RectF	CRECTF_TEXHUR = new RectF(282f / CFTEXSIZ, 0.0f, (282f+96f) / CFTEXSIZ, 40f / CFTEXSIZ);
 	// numbers
 	private static final RectF	CRECTF_VTXNUM = new RectF(0.0f, 0.0f, 0.2f, 0.15f);
 	private static final float	CF_VTXNUM_Z = 0.2f;
@@ -51,13 +53,13 @@ public class GlStripe
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		FloatBuffer	fb0[] = null;
 		// Stripe
-		fb0 = makeVertBuffs(24, CRECTF_VTXHUR, CF_VTXHUR_Z, CRECTF_TEXHUR);
+		fb0 = makeVertBuffs(24, CRECTF_VTXHUR, true, CF_VTXHUR_Z, CRECTF_TEXHUR);
 		m_fbVtxStrp = fb0[0];	m_fbTexStrp = fb0[1];
 		// Numbers
-		fb0 = makeVertBuffs(10, CRECTF_VTXNUM, CF_VTXNUM_Z, CRECTF_TEXNUM);
+		fb0 = makeVertBuffs(10, CRECTF_VTXNUM, false, CF_VTXNUM_Z, CRECTF_TEXNUM);
 		m_fbVtxNums = fb0[0];	m_fbTexNums = fb0[1];
 		// Name of months
-		fb0 = makeVertBuffs(10, CRECTF_VTXMON, CF_VTXMON_Z, CRECTF_TEXMON);
+		fb0 = makeVertBuffs(10, CRECTF_VTXMON, false, CF_VTXMON_Z, CRECTF_TEXMON);
 		m_fbVtxMons = fb0[0];	m_fbTexMons = fb0[1];
 	}
 
@@ -67,7 +69,7 @@ public class GlStripe
 	 * @param ftex stores texture left, top, width of a element, height of a element
 	 * @return
 	 */
-	private static FloatBuffer[] makeVertBuffs(int nelems, RectF fvert, float fzarg, RectF ftex) {
+	private static FloatBuffer[] makeVertBuffs(int nelems, RectF fvert, boolean bstacktiledvtx, float fzarg, RectF ftex) {
 		int			nidx = 0;
 		float[]		aftemp = null;
 		FloatBuffer	afbret[] = new FloatBuffer[2];
@@ -76,11 +78,19 @@ public class GlStripe
 		nidx = 0;
 		aftemp = new float[nelems * 4 * 3];	// nelems * 4(rectangle) * 3(xyz)
 		for(int i = 0; i < nelems; i++) {
+			float	ftop, fbottom;
+			if(bstacktiledvtx) {	// make vertically tiled vertices?
+				ftop = (fvert.top + fvert.bottom * (float)i);
+				fbottom = (ftop + fvert.bottom);
+			} else {
+				ftop = fvert.top;
+				fbottom = fvert.bottom;
+			}
 			// coords: TL TR BL BR
-			aftemp[nidx++] = fvert.left;	aftemp[nidx++] = fvert.top;		aftemp[nidx++] = fzarg;
-			aftemp[nidx++] = fvert.right;	aftemp[nidx++] = fvert.top;		aftemp[nidx++] = fzarg;
-			aftemp[nidx++] = fvert.left;	aftemp[nidx++] = fvert.bottom;	aftemp[nidx++] = fzarg;
-			aftemp[nidx++] = fvert.right;	aftemp[nidx++] = fvert.bottom;	aftemp[nidx++] = fzarg;
+			aftemp[nidx++] = fvert.left;	aftemp[nidx++] = ftop;		aftemp[nidx++] = fzarg;
+			aftemp[nidx++] = fvert.right;	aftemp[nidx++] = ftop;		aftemp[nidx++] = fzarg;
+			aftemp[nidx++] = fvert.left;	aftemp[nidx++] = fbottom;	aftemp[nidx++] = fzarg;
+			aftemp[nidx++] = fvert.right;	aftemp[nidx++] = fbottom;	aftemp[nidx++] = fzarg;
 		}
 		afbret[0] = GloneUtils.makeFloatBuffer(aftemp);
 //		for(int i = 0; i < 24; i++) {
@@ -91,10 +101,18 @@ public class GlStripe
 		nidx = 0;
 		aftemp = new float[nelems * 4 * 2];	// nelems * 4 (rectangle) + (x, y)
 		for(int i = 0; i < nelems; i++) {
-			aftemp[nidx++] = ftex.left;		aftemp[nidx++] = (((float)(i + 1)) * ftex.bottom);
-			aftemp[nidx++] = ftex.right;	aftemp[nidx++] = (((float)(i + 1)) * ftex.bottom);
-			aftemp[nidx++] = ftex.left;		aftemp[nidx++] = (((float)(i + 0)) * ftex.bottom);
-			aftemp[nidx++] = ftex.right;	aftemp[nidx++] = (((float)(i + 0)) * ftex.bottom);
+			float	ftop, fbottom;
+			if(bstacktiledvtx) {
+				ftop = (((float)(nelems - i - 1)) * ftex.bottom);
+				fbottom = (((float)(nelems - i)) * ftex.bottom);
+			} else {
+				ftop = (((float)(i + 0)) * ftex.bottom);
+				fbottom = (((float)(i + 1)) * ftex.bottom);
+			}
+			aftemp[nidx++] = ftex.left;		aftemp[nidx++] = fbottom;
+			aftemp[nidx++] = ftex.right;	aftemp[nidx++] = fbottom;
+			aftemp[nidx++] = ftex.left;		aftemp[nidx++] = ftop;
+			aftemp[nidx++] = ftex.right;	aftemp[nidx++] = ftop;
 		}
 		afbret[1] = GloneUtils.makeFloatBuffer(aftemp);
 
@@ -113,17 +131,17 @@ public class GlStripe
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 
 		// draw
-		int	nhours = (int)(DefRenderer.calcClipHeight(CF_VTXHUR_Z) / CRECTF_VTXHUR.bottom);	// how many hours are in screen height
+		int	nhrsheight = 11;	// TODO how many hours can be in screen height - must be calculated from screen height
 		int	antime[] = gtz.getTimeNumbers(ltime);
-		gl.glTranslatef(0.0f, -1.0f + GlStripe.getVtxHeightOfOneHour()
-				* ((float)antime[5] / 60.0f) * +1.0f, 0.0f);
-		for(int i = 0; i < nhours; i++) {	// TODO should be done by 1 or 2 glDrawArrays
-			gl.glNormal3f(0, 0, 1.0f);
-			int	n0 = (antime[4] + nhours / 2) - i - 1;
-			n0 = 23 - (n0 + 24) % 24;
-			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, n0 * 4, 4);
-			gl.glTranslatef(0.0f, CRECTF_VTXHUR.bottom, 0.0f);
+		int	n0 = (24 + (antime[4] - (nhrsheight / 2))) % 24;	// hour at the bottom of screen. clip to < 24
+		gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour()
+				* ((float)n0 * -1f + (float)(nhrsheight / -2) + (float)antime[5] / -60.0f), 0.0f);
+		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, n0 * 4, 4 * (24 - n0));
+		if(24 - n0 < nhrsheight) {	// next day
+			gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * (float)(24 - 0), 0.0f);
+			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4 * (nhrsheight - (24 - n0)));
 		}
+
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 	}

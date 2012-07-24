@@ -130,7 +130,7 @@ public class DefRenderer implements Renderer
 		// calc rotation
 		gl0.glPushMatrix();
 		gl0.glScalef(0.3f, 0.3f, 0.3f);
-		gl0.glTranslatef(-1.5f, -1.5f, -0.5f);
+		gl0.glTranslatef(-2.0f, -1.5f, -0.5f);
 		// cube
 		m_testcube.draw(gl0);
 		gl0.glPopMatrix();
@@ -163,17 +163,17 @@ public class DefRenderer implements Renderer
 		RectF	rfvnums = GlStripe.getVertexRectNumbers();
 		RectF	rfvmons = GlStripe.getVertexRectMonthNames();
 		gl0.glLoadIdentity();
-		gl0.glTranslatef(rfvnums.right * -4f, 0.20f, 0.0f);
-		m_glstripe.drawNumberString(gl0, andt[3]);	// day
+		gl0.glTranslatef(rfvnums.right * -4f, -0.20f, 0.0f);
+		m_glstripe.drawNumberString(gl0, andt[2]);	// day
 		gl0.glLoadIdentity();
-		gl0.glTranslatef(-0.65f, 0.20f, 0.0f);
+		gl0.glTranslatef(-0.65f, -0.20f, 0.0f);
 		m_glstripe.drawMonth(gl0, andt[1] - 1);		// month name
 		gl0.glLoadIdentity();
-		gl0.glTranslatef(rfvmons.right, 0.20f, 0.0f);
+		gl0.glTranslatef(rfvmons.right, -0.20f, 0.0f);
 		m_glstripe.drawNumberString(gl0, andt[0]);	// year
 		gl0.glLoadIdentity();
 		gl0.glScalef(1.5f, 1.5f, 1.5f);
-		gl0.glTranslatef(0.00f, 0.00f, 0.0f);
+		gl0.glTranslatef(0.30f, -0.30f, 0.0f);
 		m_glstripe.drawNumberString(gl0, andt[4] * 100 + andt[5]);	// hour+min.
 
 		gl0.glDisable(GL10.GL_TEXTURE_2D);
@@ -185,7 +185,7 @@ public class DefRenderer implements Renderer
 		// draw text
 		m_glstr.setColor(0xFFFFFFFF);
 		gl0.glScalef(0.9f, 0.8f, 1.0f);
-		gl0.glTranslatef(0.0f, -0.6f, -0.99f);
+		gl0.glTranslatef(0.0f, 0.6f, -0.99f);
 
 		altz = m_doc.getTzList();
 		it0 = altz.iterator();
@@ -228,8 +228,8 @@ public class DefRenderer implements Renderer
 		float[]	aftemp = new float[] {
 				-0.9f,  0.0f, -0.2f,	// LT
 				+0.9f,  0.0f, -0.2f,	// RT
-				-0.9f, +1.0f, -0.2f,	// LB
-				+0.9f, +1.0f, -0.2f,	// RB
+				-0.9f, -1.0f, -0.2f,	// LB
+				+0.9f, -1.0f, -0.2f,	// RB
 		};
 		m_buffOrgVerts = GloneUtils.makeFloatBuffer(aftemp);
 		// colors RGBA

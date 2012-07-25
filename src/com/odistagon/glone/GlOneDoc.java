@@ -1,6 +1,7 @@
 package com.odistagon.glone;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -100,6 +101,28 @@ public class GlOneDoc
 
 	public ArrayList<GloneTz> getTzList() {
 		return	m_artzs;
+	}
+
+	public void addTzToList(GloneTz gtzarg) {
+		m_artzs.add(gtzarg);
+	}
+
+	public void updateTzInList(String sTzId, GloneTz gtzarg) {
+		Iterator<GloneTz>	it0 = m_artzs.iterator();
+		while(it0.hasNext()) {
+			GloneTz	gtz0 = it0.next();
+			if(sTzId.equals(gtz0.getTimeZoneId()))
+				gtz0.update(gtzarg);
+		}
+	}
+
+	public void removeTzFromList(String sTzId) {
+		Iterator<GloneTz>	it0 = m_artzs.iterator();
+		while(it0.hasNext()) {
+			GloneTz	gtz0 = it0.next();
+			if(sTzId.equals(gtz0.getTimeZoneId()))
+				it0.remove();
+		}
 	}
 
 	public void addTime(long ltime, boolean bAnim) {

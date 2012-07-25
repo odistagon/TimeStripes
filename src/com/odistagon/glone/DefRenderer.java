@@ -126,10 +126,14 @@ public class DefRenderer implements Renderer
 //		gl0.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 
 		// draw objects
+		ArrayList<GloneTz>	altz = m_doc.getTzList();
+		GloneTz				gtz1 = altz.get(0);
+		int[]				andt = gtz1.getTimeNumbers(m_doc.getTime());
 
 		// calc rotation
 		gl0.glPushMatrix();
 		gl0.glScalef(0.3f, 0.3f, 0.3f);
+		gl0.glRotatef((((float)andt[4]) / 24f) * 360f, 1f, 0f, 0f);
 		gl0.glTranslatef(-2.0f, -1.5f, -0.5f);
 		// cube
 		m_testcube.draw(gl0);
@@ -146,7 +150,6 @@ public class DefRenderer implements Renderer
 		gl0.glPushMatrix();
 		gl0.glScalef(1.0f, m_fStripeScaleH, 1.0f);
 		// stripes
-		ArrayList<GloneTz>	altz = m_doc.getTzList();
 		Iterator<GloneTz>	it0 = altz.iterator();
 		while(it0.hasNext()) {
 			gl0.glPushMatrix();
@@ -158,8 +161,6 @@ public class DefRenderer implements Renderer
 		gl0.glPopMatrix();
 
 		// date string
-		GloneTz	gtz1 = altz.get(0);
-		int[]	andt = gtz1.getTimeNumbers(m_doc.getTime());
 		RectF	rfvnums = GlStripe.getVertexRectNumbers();
 		RectF	rfvmons = GlStripe.getVertexRectMonthNames();
 		gl0.glLoadIdentity();

@@ -16,13 +16,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public class DlgSelTz extends Dialog
 {
+	private AyTzSet		m_parent;
 
-	public DlgSelTz(Context context) {
-		super(context);
+	public DlgSelTz(AyTzSet ayparent) {
+		super(ayparent);
+		m_parent = ayparent;
 	}
 
 	@Override
@@ -91,10 +92,19 @@ public class DlgSelTz extends Dialog
 				LayoutInflater	inf0 = (LayoutInflater)
 					GloneApp.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				vConv = inf0.inflate(R.layout.liglonetz, null);
-				registerForContextMenu(vConv);
+//				registerForContextMenu(vConv);
+				vConv.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						if(!(v.getTag() instanceof GloneTz))
+							return;
+						m_parent.updateTzListItem((GloneTz)v.getTag());
+						m_parent.dismissDialog(GloneUtils.NC_DLGID_SELETZ);
+					}
+				});
 			}
-			TextView	tv0 = (TextView)vConv.findViewById(R.id.tv_ligtz_name);
-			tv0.setText(m_atzsub.get(position).getTimeZoneId());
+			GloneUtils.setGloneTzListItem(vConv, m_atzsub.get(position));
+
 			return	vConv;
 		}
 

@@ -15,13 +15,14 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 /** UI for editing tzset.
  * 
  */
 public class AyTzSet extends Activity
 {
+	private String			m_sTzIdOpr;		// the item that is being operated
+	GloneTzSetListAdapter	m_laTzSetList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,16 +33,24 @@ public class AyTzSet extends Activity
 		setTitle(r0.getString(R.string.rs_seltzdlg_title));
 
 		ListView	lv0 = (ListView)findViewById(R.id.lv_seltz_main);
-		lv0.setAdapter(new GloneTzSetListAdapter(this));
+		m_laTzSetList = new GloneTzSetListAdapter(this);
+		lv0.setAdapter(m_laTzSetList);
 	}
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		Object	o0 = v.getTag();
+		if(o0 instanceof GloneTz) {
+			m_sTzIdOpr = ((GloneTz)o0).getTimeZoneId();
+		}
+
 		menu.setHeaderTitle("Menu");
 		menu.setHeaderIcon(android.R.drawable.ic_media_ff);
-		menu.add(0, GloneUtils.CMID_GLONE_GTZEDI, 0, "Edit ...");
-		menu.setHeaderIcon(android.R.drawable.ic_media_ff);
-		menu.add(0, GloneUtils.CMID_GLONE_GTZDEL, 0, "Remove ...");
+		menu.add(0, GloneUtils.CMID_GLONE_GTZEDI, 0, "Pick a timezone ...");
+		if(o0 != null) {
+			menu.setHeaderIcon(android.R.drawable.ic_media_ff);
+			menu.add(0, GloneUtils.CMID_GLONE_GTZDEL, 0, "Remove ...");
+		}
 
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
@@ -51,12 +60,11 @@ public class AyTzSet extends Activity
 		switch(item.getItemId()) {
 		case GloneUtils.CMID_GLONE_GTZEDI:	{
 			showDialog(GloneUtils.NC_DLGID_SELETZ);
-//			View	v0 = LayoutInflater.from(GloneApp.getContext()).inflate(R.layout.dlgseltz, null);
-//			AlertDialog	dlg0 = new AlertDialog.Builder(GloneApp.getContext())
-//				.setIcon(R.drawable.icon)
-//				.setTitle("1234")
-//				.setView(v0).create();
-//			dlg0.show();
+			return	true;
+		}
+		case GloneUtils.CMID_GLONE_GTZDEL:	{
+			GloneApp.getDoc().removeTzFromList(m_sTzIdOpr);
+			m_laTzSetList.notifyDataSetChanged();
 			return	true;
 		}
 		default:
@@ -88,6 +96,16 @@ public class AyTzSet extends Activity
 		return	dret;
 	}
 
+	public void updateTzListItem(GloneTz gtzarg) {
+		if(m_sTzIdOpr == null) {	// + add new
+			GloneApp.getDoc().addTzToList(gtzarg);
+		} else {					// edit
+			GloneApp.getDoc().updateTzInList(m_sTzIdOpr, gtzarg);
+		}
+		m_laTzSetList.notifyDataSetChanged();
+		m_sTzIdOpr = null;
+	}
+
 	class GloneTzSetListAdapter extends BaseAdapter implements ListAdapter
 	{
 		private AyTzSet	m_dlgparent;
@@ -98,40 +116,43 @@ public class AyTzSet extends Activity
 
 		@Override
 		public int getCount() {
-			return	GloneApp.getDoc().getTzList().size();
+			return	GloneApp.getDoc().getTzList().size() + 1;	// + add new
 		}
 
 		@Override
 		public Object getItem(int arg0) {
+			if(arg0 == GloneApp.getDoc().getTzList().size())
+				return	null;
 			return	GloneApp.getDoc().getTzList().get(arg0);
 		}
 
 		@Override
 		public long getItemId(int arg0) {
+			if(arg0 == GloneApp.getDoc().getTzList().size())
+				return	0;
 			return	GloneApp.getDoc().getTzList().get(arg0).hashCode();
 		}
 
 		@Override
 		public View getView(int arg0, View vConv, ViewGroup arg2) {
-			GloneTz	gtz0 = GloneApp.getDoc().getTzList().get(arg0);
+			GloneTz	gtz0 = null;
+			if(arg0 < GloneApp.getDoc().getTzList().size())
+				gtz0 = GloneApp.getDoc().getTzList().get(arg0);
 
 			if (vConv == null) {
 				LayoutInflater	inf0 = (LayoutInflater)
 					GloneApp.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				vConv = inf0.inflate(R.layout.liglonetz, null);
 				registerForContextMenu(vConv);
+				vConv.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View varg) {
+						m_dlgparent.openContextMenu(varg);
+					}
+				});
 			}
-			TextView	tv0 = (TextView)vConv.findViewById(R.id.tv_ligtz_name);
-			tv0.setText(gtz0.getTimeZone().getDisplayName());
-			vConv.setTag(gtz0);
-			vConv.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View varg) {
-					m_dlgparent.openContextMenu(varg);
-//					GloneTz	gtz0 = (GloneTz)varg.getTag();
-//					Log.d("XXXX", "selected: " + gtz0.getTimeZoneId());
-				}
-			});
+			GloneUtils.setGloneTzListItem(vConv, gtz0);
+
 			return	vConv;
 		}
 	}

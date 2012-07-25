@@ -4,6 +4,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
+import android.view.View;
+import android.widget.TextView;
+
 public class GloneUtils
 {
 	// constants
@@ -13,7 +16,7 @@ public class GloneUtils
 	public static final int		CMID_GLONE_TEST03 = 903;
 	public static final int		CMID_GLONE_TEST04 = 904;
 	public static final int		CMID_GLONE_TEST05 = 905;
-	public static final int		CMID_GLONE_GTZADD = 101;	// GloneTz add 
+//	public static final int		CMID_GLONE_GTZADD = 101;	// GloneTz add
 	public static final int		CMID_GLONE_GTZEDI = 102;	// GloneTz edit
 	public static final int		CMID_GLONE_GTZDEL = 103;	// GloneTz delete
 	// dlg id
@@ -30,4 +33,20 @@ public class GloneUtils
 		return	fb;
 	}
 
+	/** Update GloneTz list item.
+	 * @param vliarg
+	 * @param gtzarg
+	 */
+	public static void setGloneTzListItem(View vliarg, GloneTz gtzarg) {
+		TextView	tv0 = null;
+		tv0 = (TextView)vliarg.findViewById(R.id.tv_ligtz_name);
+		if(gtzarg != null) {
+			tv0.setText(gtzarg.getTimeZone().getDisplayName());
+			tv0 = (TextView)vliarg.findViewById(R.id.tv_ligtz_id);
+			tv0.setText(gtzarg.getTimeZoneId());
+			vliarg.setTag(gtzarg);
+		} else {
+			tv0.setText(" + add new");
+		}
+	}
 }

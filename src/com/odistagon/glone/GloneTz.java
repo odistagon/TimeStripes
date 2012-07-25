@@ -68,4 +68,9 @@ public class GloneTz
 		c0.setTimeInMillis(ltime);
 		return	sdf0.format(c0.getTime());
 	}
+
+	public void update(GloneTz gtz) {
+		m_sTzId = gtz.m_sTzId;
+		m_tz = gtz.m_tz;
+	}
 }

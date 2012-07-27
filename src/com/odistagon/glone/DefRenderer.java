@@ -17,6 +17,7 @@ import android.util.Log;
 
 public class DefRenderer implements Renderer
 {
+	private int			m_nWidth;
 	private int			m_nHeight;
 
 	private int[]		m_nTextures = new int[1];
@@ -30,9 +31,9 @@ public class DefRenderer implements Renderer
 	private GlStripe	m_glstripe;
 
 	public static final float	CF_PERS_FOVY = 45f;
-	public static final float	CF_PERS_NEAR = 3.0f;
-	public static final float	CF_PERS_FAR_ = 10.0f;
-	public static final float	CF_LOOK_EYZ = 10.0f;
+	public static final float	CF_PERS_NEAR = 2.0f;	// distance from eye point to near plane
+	public static final float	CF_PERS_FAR_ = 6.0f;	// distance from eye point to far plane
+	public static final float	CF_LOOK_EYZ = 4.0f;		// eye point
 
 	private static final long	CL_FRAMPERD = 16L;	// constant frame period
 
@@ -73,15 +74,14 @@ public class DefRenderer implements Renderer
 
 	@Override
 	public void onSurfaceChanged(GL10 gl0, int width, int height) {
+		m_nWidth = width;
 		m_nHeight = height;
 		gl0.glViewport(0, 0, width, height);
 
 		gl0.glMatrixMode(GL10.GL_PROJECTION);
 		gl0.glLoadIdentity();
-		gl0.glPushMatrix();
 		GLU.gluPerspective(gl0, CF_PERS_FOVY, (float)width / (float)height, CF_PERS_NEAR, CF_PERS_FAR_);
 		GLU.gluLookAt(gl0, 0, 0, CF_LOOK_EYZ, 0, 0, 0, 0, 1.0f, 0);
-		gl0.glPopMatrix();
 
 		gl0.glClearColor(0.2f, 0.0f, 0.0f, 1.0f);	// set background color (RGBA)
 	}
@@ -151,12 +151,16 @@ public class DefRenderer implements Renderer
 		gl0.glScalef(1.0f, m_fStripeScaleH, 1.0f);
 		// stripes
 		Iterator<GloneTz>	it0 = altz.iterator();
+		final float			frmgn = 0.7f;	// right margin TODO not to be constant value
+		float				fscrhight = calcClipHeight(GlStripe.CF_VTXHUR_Z);
+		float				fscrwidth = calcClipWidth(GlStripe.CF_VTXHUR_Z);
+		float				fm0 = (fscrwidth - frmgn) / altz.size();
+		gl0.glTranslatef(fscrwidth * -0.5f, 0.0f, 0.0f);	// draw from left edge toward right
 		while(it0.hasNext()) {
 			gl0.glPushMatrix();
-			m_glstripe.drawStripe(gl0, it0.next(), m_doc.getTime());
+			m_glstripe.drawStripe(gl0, it0.next(), m_doc.getTime(), fscrhight);
 			gl0.glPopMatrix();
-
-			gl0.glTranslatef(-0.5f, 0.0f, 0.0f);
+			gl0.glTranslatef(fm0, 0.0f, 0.0f);	// -> right
 		}
 		gl0.glPopMatrix();
 
@@ -173,7 +177,7 @@ public class DefRenderer implements Renderer
 		gl0.glTranslatef(rfvmons.right, -0.20f, 0.0f);
 		m_glstripe.drawNumberString(gl0, andt[0]);	// year
 		gl0.glLoadIdentity();
-		gl0.glScalef(1.5f, 1.5f, 1.5f);
+		gl0.glScalef(1.5f, 1.5f, 1.0f);
 		gl0.glTranslatef(0.30f, -0.30f, 0.0f);
 		m_glstripe.drawNumberString(gl0, andt[4] * 100 + andt[5]);	// hour+min.
 
@@ -186,7 +190,7 @@ public class DefRenderer implements Renderer
 		// draw text
 		m_glstr.setColor(0xFFFFFFFF);
 		gl0.glScalef(0.9f, 0.8f, 1.0f);
-		gl0.glTranslatef(0.0f, 0.6f, -0.99f);
+		gl0.glTranslatef(0.0f, 0.6f, 1.2f);
 
 		altz = m_doc.getTzList();
 		it0 = altz.iterator();
@@ -208,8 +212,15 @@ public class DefRenderer implements Renderer
 		Log.d("X", "zoom (" + m_fStripeScaleH  + ")");
 	}
 
+	/**
+	 * @return view height in pixels
+	 */
 	public int getHeight() {
 		return	m_nHeight;
+	}
+
+	public float calcClipWidth(float fz) {
+		return	calcClipHeight(fz) * (float)m_nWidth / (float)m_nHeight;
 	}
 
 	/** Calculate and return the height in logical unit, how tall things are drew in view.
@@ -217,7 +228,6 @@ public class DefRenderer implements Renderer
 	public static float calcClipHeight(float fz) {
 		float	fradian = (float)Math.PI * ((CF_PERS_FOVY / 2f) / 180f);
 		float	fret = (float)Math.tan(fradian) * (CF_LOOK_EYZ - fz);
-//		Log.d("XXXX", "tan(" + fradian + ") * " + (CF_LOOK_EYZ - fz) + ")");
 		return	fret * 2;
 	}
 
@@ -227,18 +237,18 @@ public class DefRenderer implements Renderer
 	private void makeOrgBuffs() {
 		// vertices
 		float[]	aftemp = new float[] {
-				-0.9f,  0.0f, -0.2f,	// LT
-				+0.9f,  0.0f, -0.2f,	// RT
-				-0.9f, -1.0f, -0.2f,	// LB
-				+0.9f, -1.0f, -0.2f,	// RB
+				-0.9f,  0.0f, 1.2f,	// LT
+				+0.9f,  0.0f, 1.2f,	// RT
+				-0.9f, -1.0f, 1.2f,	// LB
+				+0.9f, -1.0f, 1.2f,	// RB
 		};
 		m_buffOrgVerts = GloneUtils.makeFloatBuffer(aftemp);
 		// colors RGBA
 		aftemp = new float[] {
-				+0.5f, 0.0f, 0.5f, 0.4f,
-				+0.5f, 0.0f, 0.5f, 0.4f,
-				+0.5f, 1.0f, 0.5f, 0.4f,
-				+0.5f, 1.0f, 0.5f, 0.4f,
+				+0.3f, 0.0f, 0.5f, 0.4f,
+				+0.3f, 0.0f, 0.5f, 0.4f,
+				+0.9f, 0.2f, 0.2f, 0.2f,
+				+0.9f, 0.2f, 0.2f, 0.2f,
 		};
 		m_buffOrgColrs = GloneUtils.makeFloatBuffer(aftemp);
 	}

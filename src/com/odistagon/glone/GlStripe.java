@@ -19,17 +19,16 @@ public class GlStripe
 
 	private static final float	CFTEXSIZ = 1024f;
 	// hour stripe
-	private static final RectF	CRECTF_VTXHUR = new RectF(0.0f, 0.0f, 0.5f, 0.2f);
-	private static final float	CF_VTXHUR_Z = 0.9f;
+	public static final RectF	CRECTF_VTXHUR = new RectF(0.0f, 0.0f, 0.5f, 0.2f);
+	public static final float	CF_VTXHUR_Z = 0.9f;
 	private static final RectF	CRECTF_TEXHUR = new RectF(0.0f / CFTEXSIZ, 0.0f, 96f / CFTEXSIZ, 40f / CFTEXSIZ);
-//	private static final RectF	CRECTF_TEXHUR = new RectF(282f / CFTEXSIZ, 0.0f, (282f+96f) / CFTEXSIZ, 40f / CFTEXSIZ);
 	// numbers
-	private static final RectF	CRECTF_VTXNUM = new RectF(0.0f, 0.0f, 0.2f, 0.15f);
-	private static final float	CF_VTXNUM_Z = 0.2f;
+	public static final RectF	CRECTF_VTXNUM = new RectF(0.0f, 0.0f, 0.2f, 0.15f);
+	public static final float	CF_VTXNUM_Z = 1.2f;
 	private static final RectF	CRECTF_TEXNUM = new RectF(96f / CFTEXSIZ, 0.0f, 192f / CFTEXSIZ, 96f / CFTEXSIZ);
 	// name of months
-	private static final RectF	CRECTF_VTXMON = new RectF(0.0f, 0.0f, 0.3f, 0.15f);
-	private static final float	CF_VTXMON_Z = 0.2f;
+	public static final RectF	CRECTF_VTXMON = new RectF(0.0f, 0.0f, 0.3f, 0.15f);
+	public static final float	CF_VTXMON_Z = 1.2f;
 	private static final RectF	CRECTF_TEXMON = new RectF(192f / CFTEXSIZ, 0.0f, 288f / CFTEXSIZ, 48f / CFTEXSIZ);
 
 	public GlStripe() {
@@ -118,7 +117,12 @@ public class GlStripe
 		return	afbret;
 	}
 
-	public void drawStripe(GL10 gl, GloneTz gtz, long ltime) {
+	/**
+	 * @param gtz
+	 * @param ltime
+	 * @param fscrhgt logical height of screen
+	 */
+	public void drawStripe(GL10 gl, GloneTz gtz, long ltime, float fscrhgt) {
 		// set vertex array
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, m_fbVtxStrp);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
@@ -130,15 +134,16 @@ public class GlStripe
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 
 		// draw
-		int	nhrsheight = 11;	// TODO how many hours can be in screen height - must be calculated from screen height
+		int	nhrsheight = (int)(fscrhgt / CRECTF_VTXHUR.bottom);	// how many hours can be in screen height
 		int	antime[] = gtz.getTimeNumbers(ltime);
 		int	n0 = (24 + (antime[4] - (nhrsheight / 2))) % 24;	// hour at the bottom of screen. clip to < 24
 		gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour()
 				* ((float)n0 * -1f + (float)(nhrsheight / -2) + (float)antime[5] / -60.0f), 0.0f);
-		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, n0 * 4, 4 * (24 - n0));
-		if(24 - n0 < nhrsheight) {	// next day
+		int	ndraw = (24 - n0 > nhrsheight ? nhrsheight : 24 - n0);
+		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, n0 * 4, 4 * ndraw);
+		if(ndraw < nhrsheight) {	// next day
 			gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * (float)(24 - 0), 0.0f);
-			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4 * (nhrsheight - (24 - n0)));
+			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4 * (nhrsheight - ndraw));
 		}
 
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);

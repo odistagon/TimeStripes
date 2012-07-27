@@ -66,6 +66,7 @@ public class GloneTz
 	public String getDebugString(long ltime) {
 		Calendar	c0 = Calendar.getInstance(m_tz);
 		c0.setTimeInMillis(ltime);
+		sdf0.setTimeZone(m_tz);
 		return	sdf0.format(c0.getTime());
 	}
 

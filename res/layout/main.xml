@@ -1,39 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
-
-<RelativeLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/lo_main_rl0"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
-	android:layout_marginLeft="5sp" android:layout_marginRight="5sp"
 	>
 
+	<!-- right toolbar -->
+	<LinearLayout
+		android:id="@+id/lo_main_right"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:orientation="vertical" android:gravity="right"
+		>
+		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:id="@+id/iv_tb_fastfw" android:contentDescription="@string/hello"
+			android:src="@drawable/icon" />
+		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:id="@+id/iv_tb_thewld" android:contentDescription="@string/hello"
+			android:src="@drawable/icon" />
+		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:id="@+id/iv_tb_rewind" android:contentDescription="@string/hello"
+			android:src="@drawable/icon" />
+	</LinearLayout>
+
+	<!-- bottom toolbar -->
 	<LinearLayout
 		android:id="@+id/lo_main_bottom"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
 		android:gravity="bottom"
 		>
-
-	<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:id="@+id/iv_main_menu"
-		android:src="@drawable/icon" />
-
-	<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:id="@+id/iv_tb_zoomin"
-		android:src="@drawable/icon" />
-
-	<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:id="@+id/iv_tb_zoomou"
-		android:src="@drawable/icon" />
-<!-- 
- -->
-	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:text="@string/hello" />
-
+		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:id="@+id/iv_main_menu" android:contentDescription="@string/hello"
+			android:src="@drawable/icon" />
+		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:id="@+id/iv_tb_zoomin" android:contentDescription="@string/hello"
+			android:src="@drawable/icon" />
+		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:id="@+id/iv_tb_zoomou" android:contentDescription="@string/hello"
+			android:src="@drawable/icon" />
+		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="@string/hello" />
 	</LinearLayout>
 
 </RelativeLayout>
-
-</LinearLayout>

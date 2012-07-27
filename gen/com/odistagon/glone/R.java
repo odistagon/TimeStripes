@@ -18,11 +18,15 @@ public final class R {
     public static final class id {
         public static final int bt_seltz_find=0x7f050002;
         public static final int et_seltz_find=0x7f050001;
-        public static final int iv_main_menu=0x7f050009;
-        public static final int iv_tb_zoomin=0x7f05000a;
-        public static final int iv_tb_zoomou=0x7f05000b;
+        public static final int iv_main_menu=0x7f05000d;
+        public static final int iv_tb_fastfw=0x7f050009;
+        public static final int iv_tb_rewind=0x7f05000b;
+        public static final int iv_tb_thewld=0x7f05000a;
+        public static final int iv_tb_zoomin=0x7f05000e;
+        public static final int iv_tb_zoomou=0x7f05000f;
         public static final int lo_ligtz_main=0x7f050004;
-        public static final int lo_main_bottom=0x7f050008;
+        public static final int lo_main_bottom=0x7f05000c;
+        public static final int lo_main_right=0x7f050008;
         public static final int lo_main_rl0=0x7f050007;
         public static final int lo_seltz_main=0x7f050000;
         public static final int lv_seltz_main=0x7f050003;

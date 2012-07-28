@@ -151,41 +151,49 @@ public class DefRenderer implements Renderer
 		gl0.glScalef(1.0f, m_fStripeScaleH, 1.0f);
 		// stripes
 		Iterator<GloneTz>	it0 = altz.iterator();
-		final float			frmgn = 0.7f;	// right margin TODO not to be constant value
+		final float			frmgn = 0.4f;	// right margin TODO not to be constant value
 		float				fscrhight = calcClipHeight(GlStripe.CF_VTXHUR_Z);
 		float				fscrwidth = calcClipWidth(GlStripe.CF_VTXHUR_Z);
 		float				fm0 = (fscrwidth - frmgn) / altz.size();
-		gl0.glTranslatef(fscrwidth * -0.5f, 0.0f, 0.0f);	// draw from left edge toward right
+		gl0.glTranslatef(fscrwidth / 2f - (frmgn + GlStripe.CRECTF_VTXHUR.right), 0.0f, 0.0f);	// draw from right toward left edge 
+//		gl0.glTranslatef(fscrwidth * -0.5f, 0.0f, 0.0f);	// draw from left edge toward right
 		while(it0.hasNext()) {
+			GloneTz	gtz0 = it0.next();
 			gl0.glPushMatrix();
-			m_glstripe.drawStripe(gl0, it0.next(), m_doc.getTime(), fscrhight);
+			m_glstripe.drawStripe(gl0, gtz0, m_doc.getTime(), fscrhight);
 			gl0.glPopMatrix();
-			gl0.glTranslatef(fm0, 0.0f, 0.0f);	// -> right
+			// timezone names
+			String	s0 = gtz0.getTimeZoneId();
+			gl0.glPushMatrix();
+			gl0.glTranslatef(GlStripe.CRECTF_VTXHUR.right - GlStripe.CRECTF_VTXABC.right, fscrhight / 2 - GlStripe.CRECTF_VTXABC.bottom * 3f, 0f);
+			m_glstripe.drawAbcString(gl0, s0);
+			gl0.glPopMatrix();
+			gl0.glTranslatef(fm0 * -1f, 0.0f, 0.0f);	// -> left
+//			gl0.glTranslatef(fm0, 0.0f, 0.0f);	// -> right
 		}
 		gl0.glPopMatrix();
-
-		// date string
-		RectF	rfvnums = GlStripe.getVertexRectNumbers();
-		RectF	rfvmons = GlStripe.getVertexRectMonthNames();
-		gl0.glLoadIdentity();
-		gl0.glTranslatef(rfvnums.right * -4f, -0.20f, 0.0f);
-		m_glstripe.drawNumberString(gl0, andt[2]);	// day
-		gl0.glLoadIdentity();
-		gl0.glTranslatef(-0.65f, -0.20f, 0.0f);
-		m_glstripe.drawMonth(gl0, andt[1] - 1);		// month name
-		gl0.glLoadIdentity();
-		gl0.glTranslatef(rfvmons.right, -0.20f, 0.0f);
-		m_glstripe.drawNumberString(gl0, andt[0]);	// year
-		gl0.glLoadIdentity();
-		gl0.glScalef(1.5f, 1.5f, 1.0f);
-		gl0.glTranslatef(0.30f, -0.30f, 0.0f);
-		m_glstripe.drawNumberString(gl0, andt[4] * 100 + andt[5]);	// hour+min.
-
-		gl0.glDisable(GL10.GL_TEXTURE_2D);
 
 		gl0.glLoadIdentity();
 		// org
 		drawOrg(gl0);
+
+		// date string
+		float	fleft = fscrwidth * -0.5f + GlStripe.CRECTF_VTXNUM.right;
+		gl0.glTranslatef(fleft, -0.20f, 0f);
+		gl0.glPushMatrix();
+		m_glstripe.drawNumberString(gl0, andt[2]);	// day
+		gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right * 2f + GlStripe.CRECTF_VTXMON.right, 0f, 0f);
+		m_glstripe.drawMonth(gl0, andt[1] - 1);		// month name
+		gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right * 4 + 0.2f, 0f, 0f);
+		m_glstripe.drawNumberString(gl0, andt[0]);	// year
+		gl0.glPopMatrix();
+		gl0.glPushMatrix();
+		gl0.glScalef(1.5f, 1.5f, 1.0f);
+		gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right * 4f, GlStripe.CRECTF_VTXNUM.bottom * -1f, 0f);
+		m_glstripe.drawNumberString(gl0, andt[4] * 100 + andt[5]);	// hour+min.
+		gl0.glPopMatrix();
+
+		gl0.glDisable(GL10.GL_TEXTURE_2D);
 
 		// draw text
 		m_glstr.setColor(0xFFFFFFFF);
@@ -257,25 +265,15 @@ public class DefRenderer implements Renderer
 	 * @param gl
 	 */
 	private void drawOrg(GL10 gl) {
-		// prepare drawing
-		gl.glEnable(GL10.GL_BLEND);
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-
-		// set vertex array
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, m_buffOrgVerts);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		// set color array
 		gl.glColorPointer(4, GL10.GL_FLOAT, 0, m_buffOrgColrs);
 		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
-
-		// draw
 		for(int i = 0; i < 1; i++) {
 			gl.glNormal3f(0, 0, 1.0f);
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, i * 4, 4);
 		}
-
-		// disable things back
-		gl.glDisable(GL10.GL_BLEND);
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
 	}

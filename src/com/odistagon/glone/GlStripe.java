@@ -6,6 +6,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.RectF;
+import android.util.Log;
 
 public class GlStripe
 {
@@ -15,35 +16,33 @@ public class GlStripe
 	private FloatBuffer	m_fbTexNums; 
 	private FloatBuffer	m_fbVtxMons;
 	private FloatBuffer	m_fbTexMons; 
+	private FloatBuffer	m_fbVtxAbcs;
+	private FloatBuffer	m_fbTexAbcs; 
 //	private FloatBuffer	m_buffColor;
 
 	private static final float	CFTEXSIZ = 1024f;
 	// hour stripe
 	public static final RectF	CRECTF_VTXHUR = new RectF(0.0f, 0.0f, 0.5f, 0.2f);
-	public static final float	CF_VTXHUR_Z = 0.9f;
+	public static final float	CF_VTXHUR_Z = 1.2f;
 	private static final RectF	CRECTF_TEXHUR = new RectF(0.0f / CFTEXSIZ, 0.0f, 96f / CFTEXSIZ, 40f / CFTEXSIZ);
 	// numbers
 	public static final RectF	CRECTF_VTXNUM = new RectF(0.0f, 0.0f, 0.2f, 0.15f);
 	public static final float	CF_VTXNUM_Z = 1.2f;
-	private static final RectF	CRECTF_TEXNUM = new RectF(96f / CFTEXSIZ, 0.0f, 192f / CFTEXSIZ, 96f / CFTEXSIZ);
+	private static final RectF	CRECTF_TEXNUM = new RectF(480f / CFTEXSIZ, 0.0f, (480f + 96f) / CFTEXSIZ, 96f / CFTEXSIZ);
 	// name of months
 	public static final RectF	CRECTF_VTXMON = new RectF(0.0f, 0.0f, 0.3f, 0.15f);
 	public static final float	CF_VTXMON_Z = 1.2f;
-	private static final RectF	CRECTF_TEXMON = new RectF(192f / CFTEXSIZ, 0.0f, 288f / CFTEXSIZ, 48f / CFTEXSIZ);
+	private static final RectF	CRECTF_TEXMON = new RectF(192f / CFTEXSIZ, 0.0f, (192f + 96f) / CFTEXSIZ, 48f / CFTEXSIZ);
+	// alphabets
+	public static final RectF	CRECTF_VTXABC = new RectF(0.0f, 0.0f, 0.1f, 0.1f);
+	public static final float	CF_VTXABC_Z = 1.2f;
+	private static final RectF	CRECTF_TEXABC = new RectF(864f / CFTEXSIZ, 0.0f, (864f + 32f) / CFTEXSIZ, 32f / CFTEXSIZ);
 
 	public GlStripe() {
 	}
 
 	public static float getVtxHeightOfOneHour() {
 		return	CRECTF_VTXHUR.bottom;	// TODO take scaling into account
-	}
-
-	public static RectF getVertexRectNumbers() {
-		return	CRECTF_VTXNUM;
-	}
-
-	public static RectF getVertexRectMonthNames() {
-		return	CRECTF_VTXMON;
 	}
 
 	/** call this in Renderer#onSurfaceCreated()
@@ -59,6 +58,9 @@ public class GlStripe
 		// Name of months
 		fb0 = makeVertBuffs(10, CRECTF_VTXMON, false, CF_VTXMON_Z, CRECTF_TEXMON);
 		m_fbVtxMons = fb0[0];	m_fbTexMons = fb0[1];
+		// Alphabets
+		fb0 = makeVertBuffs(26 + 6, CRECTF_VTXABC, false, CF_VTXABC_Z, CRECTF_TEXABC);
+		m_fbVtxAbcs = fb0[0];	m_fbTexAbcs = fb0[1];
 	}
 
 	/** Makes coords for vertically arranged tile textures
@@ -175,6 +177,26 @@ public class GlStripe
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		gl.glNormal3f(0, 0, 1.0f);
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, narg * 4, 4);
+		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+	}
+
+	public void drawAbcString(GL10 gl, String sarg) {
+		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, m_fbVtxAbcs);
+		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glTexCoordPointer(2 ,GL10.GL_FLOAT, 0, m_fbTexAbcs);
+		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		for(int i = 0; i < sarg.length(); i++) {
+			char	c0 = sarg.charAt(i);
+			if(c0 >= 'A' && c0 <= 'Z')
+				c0 = (char)('a' + (c0 - 'A'));	// de-capitalize
+			else if(c0 < 'a' || c0 > 'z')
+				c0 = 'z' + 1;
+			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, (c0 - 'a') * 4, 4);
+			gl.glTranslatef(0.0f, CRECTF_VTXABC.bottom * -1f, 0.0f);
+			if(i > 10)	// maximum number of chars
+				break;
+		}
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 	}

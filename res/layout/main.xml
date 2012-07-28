@@ -12,13 +12,13 @@
 		>
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/iv_tb_fastfw" android:contentDescription="@string/hello"
-			android:src="@drawable/icon" />
+			android:src="@android:drawable/ic_media_ff" />
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/iv_tb_thewld" android:contentDescription="@string/hello"
-			android:src="@drawable/icon" />
+			android:src="@android:drawable/ic_media_pause" />
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/iv_tb_rewind" android:contentDescription="@string/hello"
-			android:src="@drawable/icon" />
+			android:src="@android:drawable/ic_media_rew" />
 	</LinearLayout>
 
 	<!-- bottom toolbar -->

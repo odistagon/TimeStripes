@@ -9,7 +9,6 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.RectF;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
@@ -23,14 +22,15 @@ public class DefRenderer implements Renderer
 	private int[]		m_nTextures = new int[1];
 	private int			m_nTextureId = 0;
 
-	private TestCube	m_testcube = new TestCube();
+	private TestCube	m_testcube = null;	//new TestCube();
 	private long		m_lLastRendered;
 	private float		m_fStripeScaleH;
 	private GlOneDoc	m_doc;
 	private Gl2DString	m_glstr;
 	private GlStripe	m_glstripe;
+	private boolean		m_bPersSet;			// perspective set.
 
-	public static final float	CF_PERS_FOVY = 45f;
+	public static float			CF_PERS_FOVY = 45f;
 	public static final float	CF_PERS_NEAR = 2.0f;	// distance from eye point to near plane
 	public static final float	CF_PERS_FAR_ = 6.0f;	// distance from eye point to far plane
 	public static final float	CF_LOOK_EYZ = 4.0f;		// eye point
@@ -82,12 +82,20 @@ public class DefRenderer implements Renderer
 		gl0.glLoadIdentity();
 		GLU.gluPerspective(gl0, CF_PERS_FOVY, (float)width / (float)height, CF_PERS_NEAR, CF_PERS_FAR_);
 		GLU.gluLookAt(gl0, 0, 0, CF_LOOK_EYZ, 0, 0, 0, 0, 1.0f, 0);
+		m_bPersSet = true;
 
 		gl0.glClearColor(0.2f, 0.0f, 0.0f, 1.0f);	// set background color (RGBA)
 	}
 
 	@Override
 	public void onDrawFrame(GL10 gl0) {
+		if(!m_bPersSet) {
+			gl0.glMatrixMode(GL10.GL_PROJECTION);
+			gl0.glLoadIdentity();
+			GLU.gluPerspective(gl0, CF_PERS_FOVY, (float)m_nWidth / (float)m_nHeight, CF_PERS_NEAR, CF_PERS_FAR_);
+			GLU.gluLookAt(gl0, 0, 0, CF_LOOK_EYZ, 0, 0, 0, 0, 1.0f, 0);
+		}
+
 		gl0.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 //		gl0.glOrthof(-1, 1, -1 / ratio, 1 / ratio, 0.01f, 100.0f);
 //		gl0.glViewport(0, 0, (int) _width, (int) _height);
@@ -131,13 +139,15 @@ public class DefRenderer implements Renderer
 		int[]				andt = gtz1.getTimeNumbers(m_doc.getTime());
 
 		// calc rotation
-		gl0.glPushMatrix();
-		gl0.glScalef(0.3f, 0.3f, 0.3f);
-		gl0.glRotatef((((float)andt[4]) / 24f) * 360f, 1f, 0f, 0f);
-		gl0.glTranslatef(-2.0f, -1.5f, -0.5f);
-		// cube
-		m_testcube.draw(gl0);
-		gl0.glPopMatrix();
+		if(m_testcube != null) {
+			gl0.glPushMatrix();
+			gl0.glScalef(0.3f, 0.3f, 0.3f);
+			gl0.glRotatef((((float)andt[4]) / 24f) * 360f, 1f, 0f, 0f);
+			gl0.glTranslatef(-2.0f, -1.5f, -0.5f);
+			// cube
+			m_testcube.draw(gl0);
+			gl0.glPopMatrix();
+		}
 
 		gl0.glDisable(GL10.GL_LIGHTING);
 		gl0.glDisable(GL10.GL_LIGHT0);
@@ -151,21 +161,21 @@ public class DefRenderer implements Renderer
 		gl0.glScalef(1.0f, m_fStripeScaleH, 1.0f);
 		// stripes
 		Iterator<GloneTz>	it0 = altz.iterator();
-		final float			frmgn = 0.4f;	// right margin TODO not to be constant value
-		float				fscrhight = calcClipHeight(GlStripe.CF_VTXHUR_Z);
-		float				fscrwidth = calcClipWidth(GlStripe.CF_VTXHUR_Z);
-		float				fm0 = (fscrwidth - frmgn) / altz.size();
-		gl0.glTranslatef(fscrwidth / 2f - (frmgn + GlStripe.CRECTF_VTXHUR.right), 0.0f, 0.0f);	// draw from right toward left edge 
+		float				fscrh = calcClipHeight(GlStripe.CF_VTXHUR_Z);
+		float				fscrw = calcClipWidth(GlStripe.CF_VTXHUR_Z);
+		final float			frmgn = fscrw * 0.2f;	// right margin
+		float				fm0 = (fscrw - frmgn) / altz.size();
+		gl0.glTranslatef(fscrw / 2f - (frmgn + GlStripe.CRECTF_VTXHUR.right), 0.0f, 0.0f);	// draw from right toward left edge 
 //		gl0.glTranslatef(fscrwidth * -0.5f, 0.0f, 0.0f);	// draw from left edge toward right
 		while(it0.hasNext()) {
 			GloneTz	gtz0 = it0.next();
 			gl0.glPushMatrix();
-			m_glstripe.drawStripe(gl0, gtz0, m_doc.getTime(), fscrhight);
+			m_glstripe.drawStripe(gl0, gtz0, m_doc.getTime(), fscrh);
 			gl0.glPopMatrix();
 			// timezone names
 			String	s0 = gtz0.getTimeZoneId();
 			gl0.glPushMatrix();
-			gl0.glTranslatef(GlStripe.CRECTF_VTXHUR.right - GlStripe.CRECTF_VTXABC.right, fscrhight / 2 - GlStripe.CRECTF_VTXABC.bottom * 3f, 0f);
+			gl0.glTranslatef(GlStripe.CRECTF_VTXHUR.right - GlStripe.CRECTF_VTXABC.right, fscrh / 2 - GlStripe.CRECTF_VTXABC.bottom * 3f, 0f);
 			m_glstripe.drawAbcString(gl0, s0);
 			gl0.glPopMatrix();
 			gl0.glTranslatef(fm0 * -1f, 0.0f, 0.0f);	// -> left
@@ -175,31 +185,31 @@ public class DefRenderer implements Renderer
 
 		gl0.glLoadIdentity();
 		// org
-		drawOrg(gl0);
+		gl0.glPushMatrix();
+		drawOrg(gl0, fscrw, fscrh);
+		gl0.glPopMatrix();
 
 		// date string
-		float	fleft = fscrwidth * -0.5f + GlStripe.CRECTF_VTXNUM.right;
-		gl0.glTranslatef(fleft, -0.20f, 0f);
+		gl0.glTranslatef(fscrw / -2f + GlStripe.CRECTF_VTXNUM.right, -0.20f, 0f);
 		gl0.glPushMatrix();
 		m_glstripe.drawNumberString(gl0, andt[2]);	// day
-		gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right * 2f + GlStripe.CRECTF_VTXMON.right, 0f, 0f);
+		gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right * 2f + 0.2f, 0f, 0f);
 		m_glstripe.drawMonth(gl0, andt[1] - 1);		// month name
-		gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right * 4 + 0.2f, 0f, 0f);
+		gl0.glTranslatef(GlStripe.CRECTF_VTXMON.right + 0.2f + GlStripe.CRECTF_VTXNUM.right * 2f, 0f, 0f);
 		m_glstripe.drawNumberString(gl0, andt[0]);	// year
 		gl0.glPopMatrix();
-		gl0.glPushMatrix();
-		gl0.glScalef(1.5f, 1.5f, 1.0f);
-		gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right * 4f, GlStripe.CRECTF_VTXNUM.bottom * -1f, 0f);
+		gl0.glLoadIdentity();
+		float	fscale0 = (fscrw / 4f) / GlStripe.CRECTF_VTXNUM.right;
+		gl0.glTranslatef(fscrw * 1f / 4f, GlStripe.CRECTF_VTXNUM.bottom * fscale0 * -1f + -0.2f, 0f);
+		gl0.glScalef(fscale0, fscale0, 1.0f);
 		m_glstripe.drawNumberString(gl0, andt[4] * 100 + andt[5]);	// hour+min.
-		gl0.glPopMatrix();
 
 		gl0.glDisable(GL10.GL_TEXTURE_2D);
 
-		// draw text
+		// draw debug text
 		m_glstr.setColor(0xFFFFFFFF);
 		gl0.glScalef(0.9f, 0.8f, 1.0f);
 		gl0.glTranslatef(0.0f, 0.6f, 1.2f);
-
 		altz = m_doc.getTzList();
 		it0 = altz.iterator();
 		while(it0.hasNext()) {
@@ -216,8 +226,14 @@ public class DefRenderer implements Renderer
 	}
 
 	public void zoomIn(float frelative) {
-		m_fStripeScaleH *= frelative;
-		Log.d("X", "zoom (" + m_fStripeScaleH  + ")");
+//		m_fStripeScaleH *= frelative;
+//		Log.d("X", "zoom (" + m_fStripeScaleH  + ")");
+		addFovy(frelative * -10f);
+		m_bPersSet = false;
+	}
+
+	public void addFovy(float fovy) {
+		CF_PERS_FOVY += fovy;
 	}
 
 	/**
@@ -245,10 +261,10 @@ public class DefRenderer implements Renderer
 	private void makeOrgBuffs() {
 		// vertices
 		float[]	aftemp = new float[] {
-				-0.9f,  0.0f, 1.2f,	// LT
-				+0.9f,  0.0f, 1.2f,	// RT
-				-0.9f, -1.0f, 1.2f,	// LB
-				+0.9f, -1.0f, 1.2f,	// RB
+				-0.9f,  0.0f, GlStripe.CF_VTXHUR_Z,	// LT
+				+0.9f,  0.0f, GlStripe.CF_VTXHUR_Z,	// RT
+				-0.9f, -0.9f, GlStripe.CF_VTXHUR_Z,	// LB
+				+0.9f, -0.9f, GlStripe.CF_VTXHUR_Z,	// RB
 		};
 		m_buffOrgVerts = GloneUtils.makeFloatBuffer(aftemp);
 		// colors RGBA
@@ -264,16 +280,15 @@ public class DefRenderer implements Renderer
 	/** 
 	 * @param gl
 	 */
-	private void drawOrg(GL10 gl) {
+	private void drawOrg(GL10 gl, float fscrw, float fscrh) {
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, m_buffOrgVerts);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glColorPointer(4, GL10.GL_FLOAT, 0, m_buffOrgColrs);
 		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
-		for(int i = 0; i < 1; i++) {
-			gl.glNormal3f(0, 0, 1.0f);
-			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, i * 4, 4);
-		}
+		gl.glScalef(fscrw, fscrh, 1f);
+		gl.glNormal3f(0, 0, 1.0f);
+		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
 	}

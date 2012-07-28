@@ -136,7 +136,7 @@ public class GlStripe
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 
 		// draw
-		int	nhrsheight = (int)(fscrhgt / CRECTF_VTXHUR.bottom);	// how many hours can be in screen height
+		int	nhrsheight = (int)(fscrhgt / CRECTF_VTXHUR.bottom) + 2;	// how many hours can be in screen height
 		int	antime[] = gtz.getTimeNumbers(ltime);
 		int	n0 = (24 + (antime[4] - (nhrsheight / 2))) % 24;	// hour at the bottom of screen. clip to < 24
 		gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour()

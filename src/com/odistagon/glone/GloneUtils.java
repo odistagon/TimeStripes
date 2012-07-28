@@ -19,10 +19,16 @@ public class GloneUtils
 //	public static final int		CMID_GLONE_GTZADD = 101;	// GloneTz add
 	public static final int		CMID_GLONE_GTZEDI = 102;	// GloneTz edit
 	public static final int		CMID_GLONE_GTZDEL = 103;	// GloneTz delete
+	public static final int		CMID_GLONE_SYSDAT = 191;	// System date setting
+	public static final int		CMID_GLONE_TGSEDI = 111;	// Tz set edit
+	public static final int		CMID_GLONE_JMPABS = 121;	// Jump absolute date
+	public static final int		CMID_GLONE_ZOOMIN = 131;	// Zoom in
+	public static final int		CMID_GLONE_ZOOMOU = 132;	// Zoom out
 	// dlg id
 	public static final int		NC_DLGID_TEST01 = 9;
 	public static final int		NC_DLGID_TZSET_ = 10;
-	public static final int		NC_DLGID_SELETZ = 11;
+	public static final int		NC_DLGID_SELETZ = 11;		// timezone selector
+	public static final int		NC_DLGID_DATPIC = 12;		// date picker dlg
 
 	public static FloatBuffer makeFloatBuffer(float[] values) {
 		ByteBuffer bb = ByteBuffer.allocateDirect(values.length * 4);

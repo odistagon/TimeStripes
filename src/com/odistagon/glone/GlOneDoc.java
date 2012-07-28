@@ -82,8 +82,27 @@ public class GlOneDoc
 		}
 	}
 
-	public void setTime(long ltime) {
+	/** Set absolute time goal.
+	 */
+	public void setTime(long ltime, boolean bAnim) {
+		if(bAnim) {
+			m_lTimePrev = m_lTimeCurr;
+			m_lTimeAnimStart = System.currentTimeMillis();
+		} else {
+			m_lTimeAnimStart = 0L;
+		}
 		m_lTimeCurr = ltime;
+	}
+
+	public void addTime(long ltime, boolean bAnim) {
+		if(bAnim) {
+			m_lTimePrev = m_lTimeCurr;
+			m_lTimeAnimStart = System.currentTimeMillis();
+		} else {
+			m_lTimeCurr = getTime();
+			m_lTimeAnimStart = 0L;
+		}
+		m_lTimeCurr += ltime;
 	}
 
 	public long getTime() {
@@ -123,17 +142,6 @@ public class GlOneDoc
 			if(sTzId.equals(gtz0.getTimeZoneId()))
 				it0.remove();
 		}
-	}
-
-	public void addTime(long ltime, boolean bAnim) {
-		if(bAnim) {
-			m_lTimePrev = m_lTimeCurr;
-			m_lTimeAnimStart = System.currentTimeMillis();
-		} else {
-			m_lTimeCurr = getTime();
-			m_lTimeAnimStart = 0L;
-		}
-		m_lTimeCurr += ltime;
 	}
 
 }

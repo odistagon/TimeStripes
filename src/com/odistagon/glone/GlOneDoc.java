@@ -12,14 +12,15 @@ import android.util.Log;
 
 public class GlOneDoc
 {
-	private long				m_lTimeCurr, m_lTimePrev;
+	private long				m_lTimeOffset, m_lTimePrev;
+	private long				m_lTimePreserved;			// preserved system time ms. used when paused.
 	private long				m_lTimeAnimStart;
 	private ArrayList<GloneTz>	m_artzs;
 
-	public static final long	CL_ANIMPERD = 2500L;	// ms. until fling anim stops
+	public static final long	CL_ANIMPERD = 2500L;		// ms. until fling anim stops
 
 	public GlOneDoc() {
-		m_lTimeCurr = System.currentTimeMillis();
+		m_lTimeOffset = 0L;
 
 		readConfig();
 	}
@@ -82,40 +83,53 @@ public class GlOneDoc
 		}
 	}
 
-	/** Set absolute time goal.
-	 */
-	public void setTime(long ltime, boolean bAnim) {
-		if(bAnim) {
-			m_lTimePrev = m_lTimeCurr;
-			m_lTimeAnimStart = System.currentTimeMillis();
+	public void togglePause() {
+		if(isPaused()) {
+			m_lTimeOffset -= (System.currentTimeMillis() - m_lTimePreserved);
+			m_lTimePreserved = 0L;
 		} else {
-			m_lTimeAnimStart = 0L;
+			m_lTimePreserved = getTime();
 		}
-		m_lTimeCurr = ltime;
 	}
 
-	public void addTime(long ltime, boolean bAnim) {
+	public boolean isPaused() {
+		return	(m_lTimePreserved > 0);
+	}
+
+	public void zeroOffset() {
+		addTimeOffset(m_lTimeOffset * -1L + CL_ANIMPERD, true);
+	}
+
+	/** Set absolute time goal.
+	 */
+	public void setTimeAbsolute(long ltime, boolean bAnim) {
+		addTimeOffset(ltime - getTime(), true);
+	}
+
+	public void addTimeOffset(long ltime, boolean bAnim) {
 		if(bAnim) {
-			m_lTimePrev = m_lTimeCurr;
+			m_lTimePrev = m_lTimeOffset;
 			m_lTimeAnimStart = System.currentTimeMillis();
 		} else {
-			m_lTimeCurr = getTime();
+			m_lTimeOffset = getTime() - System.currentTimeMillis();
 			m_lTimeAnimStart = 0L;
 		}
-		m_lTimeCurr += ltime;
+		m_lTimeOffset += ltime;
 	}
 
 	public long getTime() {
 		long	ldiff = System.currentTimeMillis() - m_lTimeAnimStart;
+		long	lret = m_lTimeOffset;
 		if(ldiff < CL_ANIMPERD) {
 			float	f0 = 1.0f - ((float)ldiff / (float)CL_ANIMPERD);	// linear 1f->0f
 			if(true)	// use smooth stop?
 				f0 = FloatMath.cos((f0 + 2) * 0.5f * (float)Math.PI) + 1f;	// use a part of sin curve for smooth flick stop
-			long	l0 = (long)((float)(m_lTimeCurr - m_lTimePrev) * f0);
-//			Log.d(getClass().getName(), "getTime r(" + f0 + ")[" + m_lTimeCurr + " * " + l0 + "]");
-			return	m_lTimeCurr - l0;
+			long	l0 = (long)((float)(m_lTimeOffset - m_lTimePrev) * f0);
+			lret -= l0;
 		}
-		return	m_lTimeCurr;
+		return	(m_lTimePreserved > 0 ? 
+				lret + m_lTimePreserved :
+				lret + System.currentTimeMillis());
 	}
 
 	public ArrayList<GloneTz> getTzList() {

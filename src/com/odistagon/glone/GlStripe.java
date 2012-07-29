@@ -56,7 +56,7 @@ public class GlStripe
 		fb0 = makeVertBuffs(10, CRECTF_VTXNUM, false, CF_VTXNUM_Z, CRECTF_TEXNUM);
 		m_fbVtxNums = fb0[0];	m_fbTexNums = fb0[1];
 		// Name of months
-		fb0 = makeVertBuffs(10, CRECTF_VTXMON, false, CF_VTXMON_Z, CRECTF_TEXMON);
+		fb0 = makeVertBuffs(12, CRECTF_VTXMON, false, CF_VTXMON_Z, CRECTF_TEXMON);
 		m_fbVtxMons = fb0[0];	m_fbTexMons = fb0[1];
 		// Alphabets
 		fb0 = makeVertBuffs(26 + 6, CRECTF_VTXABC, false, CF_VTXABC_Z, CRECTF_TEXABC);
@@ -125,13 +125,10 @@ public class GlStripe
 	 * @param fscrhgt logical height of screen
 	 */
 	public void drawStripe(GL10 gl, GloneTz gtz, long ltime, float fscrhgt) {
-		// set vertex array
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, m_fbVtxStrp);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		// set color array - not using
 //		gl.glColorPointer(4, GL10.GL_FLOAT, 0, m_buffColor);
 //		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
-		// set texture array
 		gl.glTexCoordPointer(2 ,GL10.GL_FLOAT, 0, m_fbTexStrp);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 
@@ -143,28 +140,49 @@ public class GlStripe
 				* ((float)n0 * -1f + (float)(nhrsheight / -2) + (float)antime[5] / -60.0f), 0.0f);
 		int	ndraw = (24 - n0 > nhrsheight ? nhrsheight : 24 - n0);
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, n0 * 4, 4 * ndraw);
-		if(ndraw < nhrsheight) {	// next day
-			gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * (float)(24 - 0), 0.0f);
-			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4 * (nhrsheight - ndraw));
+		// next day
+		if(ndraw < nhrsheight) {
+			gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * 24f, 0.0f);
+			// draw 0, 1
+			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 4 * 0, 4 * 2);
+			// draw from 2
+			float	fdstoffset = gtz.getDSTOffsetToNextDay(ltime) / (60 * 60 * 1000);
+			if(fdstoffset > 0) {
+				gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * 1f, 0.0f);
+				gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 4 * 1, 4 * 1);	// duplicate 1
+				gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * -1f, 0.0f);
+			}
+			gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * (fdstoffset), 0.0f);
+			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 4 * 2, 4 * (nhrsheight - ndraw - 2));
 		}
 
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 	}
 
-	public void drawNumberString(GL10 gl, int narg) {
+	/**
+	 * @param narg
+	 * @param nmindigits minimum digits number (0 fill)
+	 */
+	public void drawNumberString(GL10 gl, int narg, int nmindigits) {
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, m_fbVtxNums);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glTexCoordPointer(2 ,GL10.GL_FLOAT, 0, m_fbTexNums);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		int		nd = 0;
 		while(true) {
 			int	n0 = narg % 10;
 			gl.glNormal3f(0, 0, 1.0f);
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, n0 * 4, 4);
 			gl.glTranslatef(CRECTF_VTXNUM.right * -1f, 0.0f, 0.0f);
+			nd++;
 			if(narg < 10)
 				break;
 			narg /= 10;
+		}
+		for(int i = nd; i < nmindigits; i++) {
+			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0 * 4, 4);
+			gl.glTranslatef(CRECTF_VTXNUM.right * -1f, 0.0f, 0.0f);
 		}
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
@@ -181,7 +199,12 @@ public class GlStripe
 		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 	}
 
-	public void drawAbcString(GL10 gl, String sarg) {
+	/**
+	 * @param gl
+	 * @param sarg
+	 * @param nmax maximum number of characters drawing
+	 */
+	public void drawAbcString(GL10 gl, String sarg, int nmax) {
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, m_fbVtxAbcs);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glTexCoordPointer(2 ,GL10.GL_FLOAT, 0, m_fbTexAbcs);
@@ -194,7 +217,7 @@ public class GlStripe
 				c0 = 'z' + 1;
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, (c0 - 'a') * 4, 4);
 			gl.glTranslatef(0.0f, CRECTF_VTXABC.bottom * -1f, 0.0f);
-			if(i > 10)	// maximum number of chars
+			if(i > nmax)	// maximum number of chars
 				break;
 		}
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);

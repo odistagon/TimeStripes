@@ -112,7 +112,7 @@ public class GlOneDoc
 			if(true)	// use smooth stop?
 				f0 = FloatMath.cos((f0 + 2) * 0.5f * (float)Math.PI) + 1f;	// use a part of sin curve for smooth flick stop
 			long	l0 = (long)((float)(m_lTimeCurr - m_lTimePrev) * f0);
-			Log.d(getClass().getName(), "getTime r(" + f0 + ")[" + m_lTimeCurr + " * " + l0 + "]");
+//			Log.d(getClass().getName(), "getTime r(" + f0 + ")[" + m_lTimeCurr + " * " + l0 + "]");
 			return	m_lTimeCurr - l0;
 		}
 		return	m_lTimeCurr;

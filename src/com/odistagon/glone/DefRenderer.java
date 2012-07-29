@@ -28,7 +28,7 @@ public class DefRenderer implements Renderer
 	private GlOneDoc	m_doc;
 	private Gl2DString	m_glstr;
 	private GlStripe	m_glstripe;
-	private boolean		m_bPersSet;			// perspective set.
+	private boolean		m_bNeedPersSet = true;	// perspective set.
 
 	public static float			CF_PERS_FOVY = 45f;
 	public static final float	CF_PERS_NEAR = 2.0f;	// distance from eye point to near plane
@@ -82,18 +82,19 @@ public class DefRenderer implements Renderer
 		gl0.glLoadIdentity();
 		GLU.gluPerspective(gl0, CF_PERS_FOVY, (float)width / (float)height, CF_PERS_NEAR, CF_PERS_FAR_);
 		GLU.gluLookAt(gl0, 0, 0, CF_LOOK_EYZ, 0, 0, 0, 0, 1.0f, 0);
-		m_bPersSet = true;
+		m_bNeedPersSet = false;
 
 		gl0.glClearColor(0.2f, 0.0f, 0.0f, 1.0f);	// set background color (RGBA)
 	}
 
 	@Override
 	public void onDrawFrame(GL10 gl0) {
-		if(!m_bPersSet) {
+		if(m_bNeedPersSet) {
 			gl0.glMatrixMode(GL10.GL_PROJECTION);
 			gl0.glLoadIdentity();
 			GLU.gluPerspective(gl0, CF_PERS_FOVY, (float)m_nWidth / (float)m_nHeight, CF_PERS_NEAR, CF_PERS_FAR_);
 			GLU.gluLookAt(gl0, 0, 0, CF_LOOK_EYZ, 0, 0, 0, 0, 1.0f, 0);
+			m_bNeedPersSet = false;
 		}
 
 		gl0.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
@@ -165,8 +166,9 @@ public class DefRenderer implements Renderer
 		float				fscrw = calcClipWidth(GlStripe.CF_VTXHUR_Z);
 		final float			frmgn = fscrw * 0.2f;	// right margin
 		float				fm0 = (fscrw - frmgn) / altz.size();
+		final int			ncharstz = 8;
+		float				frabc = (fscrh / 2f) / (GlStripe.CRECTF_VTXABC.bottom * (float)ncharstz);
 		gl0.glTranslatef(fscrw / 2f - (frmgn + GlStripe.CRECTF_VTXHUR.right), 0.0f, 0.0f);	// draw from right toward left edge 
-//		gl0.glTranslatef(fscrwidth * -0.5f, 0.0f, 0.0f);	// draw from left edge toward right
 		while(it0.hasNext()) {
 			GloneTz	gtz0 = it0.next();
 			gl0.glPushMatrix();
@@ -175,11 +177,12 @@ public class DefRenderer implements Renderer
 			// timezone names
 			String	s0 = gtz0.getTimeZoneId();
 			gl0.glPushMatrix();
-			gl0.glTranslatef(GlStripe.CRECTF_VTXHUR.right - GlStripe.CRECTF_VTXABC.right, fscrh / 2 - GlStripe.CRECTF_VTXABC.bottom * 3f, 0f);
-			m_glstripe.drawAbcString(gl0, s0);
+			gl0.glTranslatef(GlStripe.CRECTF_VTXHUR.right - GlStripe.CRECTF_VTXABC.right,
+					fscrh / 2 - GlStripe.CRECTF_VTXABC.bottom * 2f, 0f);
+			gl0.glScalef(frabc, frabc, 1f);
+			m_glstripe.drawAbcString(gl0, s0, ncharstz);
 			gl0.glPopMatrix();
 			gl0.glTranslatef(fm0 * -1f, 0.0f, 0.0f);	// -> left
-//			gl0.glTranslatef(fm0, 0.0f, 0.0f);	// -> right
 		}
 		gl0.glPopMatrix();
 
@@ -192,17 +195,17 @@ public class DefRenderer implements Renderer
 		// date string
 		gl0.glTranslatef(fscrw / -2f + GlStripe.CRECTF_VTXNUM.right, -0.20f, 0f);
 		gl0.glPushMatrix();
-		m_glstripe.drawNumberString(gl0, andt[2]);	// day
+		m_glstripe.drawNumberString(gl0, andt[2], 2);	// day
 		gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right * 2f + 0.2f, 0f, 0f);
 		m_glstripe.drawMonth(gl0, andt[1] - 1);		// month name
 		gl0.glTranslatef(GlStripe.CRECTF_VTXMON.right + 0.2f + GlStripe.CRECTF_VTXNUM.right * 2f, 0f, 0f);
-		m_glstripe.drawNumberString(gl0, andt[0]);	// year
+		m_glstripe.drawNumberString(gl0, andt[0], 4);	// year
 		gl0.glPopMatrix();
 		gl0.glLoadIdentity();
 		float	fscale0 = (fscrw / 4f) / GlStripe.CRECTF_VTXNUM.right;
 		gl0.glTranslatef(fscrw * 1f / 4f, GlStripe.CRECTF_VTXNUM.bottom * fscale0 * -1f + -0.2f, 0f);
 		gl0.glScalef(fscale0, fscale0, 1.0f);
-		m_glstripe.drawNumberString(gl0, andt[4] * 100 + andt[5]);	// hour+min.
+		m_glstripe.drawNumberString(gl0, andt[4] * 100 + andt[5], 4);	// hour+min.
 
 		gl0.glDisable(GL10.GL_TEXTURE_2D);
 
@@ -226,10 +229,8 @@ public class DefRenderer implements Renderer
 	}
 
 	public void zoomIn(float frelative) {
-//		m_fStripeScaleH *= frelative;
-//		Log.d("X", "zoom (" + m_fStripeScaleH  + ")");
 		addFovy(frelative * -10f);
-		m_bPersSet = false;
+		m_bNeedPersSet = true;
 	}
 
 	public void addFovy(float fovy) {

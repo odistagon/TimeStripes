@@ -81,6 +81,11 @@ public class AyTop extends Activity
 		switch(id) {
 		case GloneUtils.NC_DLGID_TEST01:
 			break;
+		case GloneUtils.NC_DLGID_DATPIC:
+			final GloneTz		gtz1 = GloneApp.getDoc().getTzList().get(0);
+			int[]				andt = gtz1.getTimeNumbers(GloneApp.getDoc().getTime());
+			((DatePickerDialog)dialog).updateDate(andt[0], andt[1] - 1, andt[2]);
+			break;
 		default:
 			super.onPrepareDialog(id, dialog);
 		}
@@ -104,18 +109,18 @@ public class AyTop extends Activity
 			dret = builder.create();
 			break;
 		case GloneUtils.NC_DLGID_DATPIC:
-			final GloneTz		gtz1 = GloneApp.getDoc().getTzList().get(0);
-			int[]				andt = gtz1.getTimeNumbers(GloneApp.getDoc().getTime());
 			DatePickerDialog	dlg0 = new DatePickerDialog(this,
 				new DatePickerDialog.OnDateSetListener() {
 					@Override
 					public void onDateSet(DatePicker view, int nyer, int nmnt, int nday) {
 						// Jump absolute
-						Calendar	c0 = Calendar.getInstance(gtz1.getTimeZone());
+						final GloneTz	gtz1 = GloneApp.getDoc().getTzList().get(0);
+						Calendar		c0 = Calendar.getInstance(gtz1.getTimeZone());
 						c0.set(nyer, nmnt, nday);
 						GloneApp.getDoc().setTime(c0.getTimeInMillis(), true);
 					}
-				}, andt[0], andt[1], andt[2]);
+				}, 0, 0, 0);	// date will be set onPrepareDialog()
+			dlg0.setTitle("Pick a goal date");
 			dret = dlg0;
 			break;
 		default:

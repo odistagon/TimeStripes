@@ -53,14 +53,23 @@ public class GloneTz
 	public int[] getTimeNumbers(long ltime) {
 		Calendar	c0 = Calendar.getInstance(m_tz);
 		c0.setTimeInMillis(ltime);
-		int			anret[] = new int[6];
+		int			anret[] = new int[7];
 		anret[0] = c0.get(Calendar.YEAR);
-		anret[1] = c0.get(Calendar.MONTH) + 1;
+		anret[1] = c0.get(Calendar.MONTH) + 1;		// -> 1 based
 		anret[2] = c0.get(Calendar.DAY_OF_MONTH);
 		anret[3] = c0.get(Calendar.DAY_OF_WEEK);
 		anret[4] = c0.get(Calendar.HOUR_OF_DAY);
 		anret[5] = c0.get(Calendar.MINUTE);
+//		anret[6] = c0.get(Calendar.DST_OFFSET);		// daylight savings offset in milliseconds
 		return	anret;
+	}
+
+	public long getDSTOffsetToNextDay(long ltime) {
+		Calendar	c0 = Calendar.getInstance(m_tz);
+		c0.setTimeInMillis(ltime);
+		long		l0 = c0.get(Calendar.DST_OFFSET);
+		c0.setTimeInMillis(ltime + (24 * 60 * 60 * 1000));
+		return	(l0 - c0.get(Calendar.DST_OFFSET));
 	}
 
 	public String getDebugString(long ltime) {

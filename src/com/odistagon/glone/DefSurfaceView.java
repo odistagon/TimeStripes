@@ -39,7 +39,7 @@ public class DefSurfaceView extends GLSurfaceView
 
 //				Log.d(getClass().getName(), "moved (" + fmoved + " / " + m_renderer.getHeight() + ")");
 //				Log.d(getClass().getName(), "scroll(" + fcy + " -> " + ltimemoved + ")");
-				GloneApp.getDoc().addTime(ltimemoved * -1L, false);
+				GloneApp.getDoc().addTimeOffset(ltimemoved * -1L, false);
 
 				return false;
 			}
@@ -54,7 +54,7 @@ public class DefSurfaceView extends GLSurfaceView
 
 //				Log.d(getClass().getName(), "moved (" + fmoved + " / " + m_renderer.getHeight() + ")");
 //				Log.d(getClass().getName(), "fling (" + fcy + " -> " + ltimemoved + ")");
-				GloneApp.getDoc().addTime(ltimemoved * +1L, true);
+				GloneApp.getDoc().addTimeOffset(ltimemoved * +1L, true);
 
 				return false;
 			}

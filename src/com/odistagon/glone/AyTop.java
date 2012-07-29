@@ -8,6 +8,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -51,6 +52,37 @@ public class AyTop extends Activity
 			@Override
 			public void onClick(View v) {
 				m_gv.zoomIn(1.1f);
+			}
+		});
+		// side toolbar buttons
+		v0 = findViewById(R.id.iv_tb_fastfw);
+		v0.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				GloneApp.getDoc().addTimeOffset(24 * 60 * 60 * 1000 * +1L, true);
+			}
+		});
+		v0 = findViewById(R.id.iv_tb_rewind);
+		v0.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				GloneApp.getDoc().addTimeOffset(24 * 60 * 60 * 1000 * -1L, true);
+			}
+		});
+		v0 = findViewById(R.id.iv_tb_thewld);
+		v0.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				GloneApp.getDoc().togglePause();
+				boolean	bpaused = GloneApp.getDoc().isPaused();
+				v.setBackgroundColor(bpaused ? Color.YELLOW : Color.TRANSPARENT);
+			}
+		});
+		v0.setOnLongClickListener(new View.OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				GloneApp.getDoc().zeroOffset();
+				return	true;
 			}
 		});
 	}
@@ -117,7 +149,7 @@ public class AyTop extends Activity
 						final GloneTz	gtz1 = GloneApp.getDoc().getTzList().get(0);
 						Calendar		c0 = Calendar.getInstance(gtz1.getTimeZone());
 						c0.set(nyer, nmnt, nday);
-						GloneApp.getDoc().setTime(c0.getTimeInMillis(), true);
+						GloneApp.getDoc().setTimeAbsolute(c0.getTimeInMillis(), true);
 					}
 				}, 0, 0, 0);	// date will be set onPrepareDialog()
 			dlg0.setTitle("Pick a goal date");

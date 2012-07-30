@@ -38,7 +38,6 @@ public class Gl2DString
 	private int		m_nTextureId = 0;
 
 	private float	m_fxpos, m_fypos;	// text pos
-	private float	m_fRotZ = 0.0f;		// rotation angle
 	private int		m_nColor;
 	private int		m_nBmpWidth, m_nBmpHeight;	// texture size
 
@@ -105,11 +104,7 @@ public class Gl2DString
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 
 		// draw
-		gl.glPushMatrix();
-		gl.glTranslatef(0.0f, 0.0f, 1.0f);
-		gl.glRotatef(m_fRotZ, 0.0f, 0.0f, -1.0f);
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		gl.glPopMatrix();
 		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 
 		// disable things back
@@ -124,10 +119,6 @@ public class Gl2DString
 		fb.put(values);
 		fb.position(0);
 		return	fb;
-	}
-
-	public void setRotatef(float frotx, float froty, float frotz) {
-		m_fRotZ = frotz;
 	}
 
 	/**

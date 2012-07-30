@@ -85,10 +85,11 @@ public class GlOneDoc
 
 	public void togglePause() {
 		if(isPaused()) {
-			m_lTimeOffset -= (System.currentTimeMillis() - m_lTimePreserved);
+			long	lgap = (System.currentTimeMillis() - m_lTimePreserved);
 			m_lTimePreserved = 0L;
+			addTimeOffset(lgap, true);
 		} else {
-			m_lTimePreserved = getTime();
+			m_lTimePreserved = System.currentTimeMillis();
 		}
 	}
 

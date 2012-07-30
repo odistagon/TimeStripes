@@ -211,8 +211,8 @@ public class DefRenderer implements Renderer
 
 		// draw debug text
 		m_glstr.setColor(0xFFFFFFFF);
-		gl0.glScalef(0.9f, 0.8f, 1.0f);
-		gl0.glTranslatef(0.0f, 0.6f, 1.2f);
+		gl0.glScalef(0.3f, 0.3f, 1.0f);
+		gl0.glTranslatef(1.4f, 0.9f, 1.2f);
 		altz = m_doc.getTzList();
 		it0 = altz.iterator();
 		while(it0.hasNext()) {

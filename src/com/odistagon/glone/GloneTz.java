@@ -64,6 +64,10 @@ public class GloneTz
 		return	anret;
 	}
 
+	/**
+	 * @param ltime
+	 * @return DST offset at the moment in milliseconds.
+	 */
 	public long getDSTOffsetToNextDay(long ltime) {
 		Calendar	c0 = Calendar.getInstance(m_tz);
 		c0.setTimeInMillis(ltime);

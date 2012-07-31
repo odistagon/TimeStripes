@@ -1,6 +1,7 @@
 package com.odistagon.glone;
 
 import java.nio.FloatBuffer;
+import java.util.Calendar;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -133,37 +134,45 @@ public class GlStripe
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 
 		// draw
-//		int	nhrsheight = (int)(fscrhgt / CRECTF_VTXHUR.bottom) + 2;	// how many hours can be in screen height
-		int		antime[] = gtz.getTimeNumbers(ltime);
+		float	fhrsfrommn = gtz.getHoursFromMidNight(ltime);				// hour number is useless because sometimes 1 a.m. comes twice
 		gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour()
-				* (-24f + (float)antime[4] * -1f + (float)antime[5] / -60.0f), 0.0f);
-		long	ltimeat3am = (ltime - (antime[4] + 24 * 2 - 3) * 60L * 60L * 1000L);	// ltime at 3 a.m.
-		float	fdstoffset = 0f;
+				* (fhrsfrommn * -1f), 0.0f);								// apply hour, minute offset
+		Calendar	c0 = Calendar.getInstance(gtz.getTimeZone());
+		c0.setTimeInMillis(ltime);
+		// start from a day before
+		c0.roll(Calendar.DAY_OF_MONTH, false);
+		float	fdstoffset = gtz.getDSTOffsetInTheDay(c0.getTimeInMillis());
+		float	fhrs = (24f + fdstoffset);
+		gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * (fhrs * -1f), 0.0f);
+		// loop 3 days
 		for(int i = 0; i < 3; i++) {
-			fdstoffset = (float)(gtz.getDSTOffsetToNextDay(ltimeat3am)) / (60f * 60f * 1000f);
-			drawAStripe(gl, gtz, fdstoffset, 24);//(nhrsheight - ndraw));
-			// next day
-			ltimeat3am += (24L * 60L * 60L * 1000L);
+			drawAStripe(gl, gtz, fdstoffset);
 			gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * 24f, 0.0f);
+			// go to the next day
+			c0.roll(Calendar.DAY_OF_MONTH, true);
+			fdstoffset = gtz.getDSTOffsetInTheDay(c0.getTimeInMillis());
 		}
 
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 	}
 
-	private static void drawAStripe(GL10 gl, GloneTz gtz, float fdstoffset, int nhours) {
+	private static void drawAStripe(GL10 gl, GloneTz gtz, float fdstoffset) {
+		int	n0 = 0;
 		// draw 0, 1
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 4 * 0, 4 * 2);
 		// draw from 2
-//		long	ltimeat3am = (ltime - (antime[4] - 3) * 60L * 60L * 1000L);	// ltime at 3 a.m.
-//		float	fdstoffset = (float)(gtz.getDSTOffsetToNextDay(ltimeat3am)) / (60f * 60f * 1000f);
 		if(fdstoffset > 0) {
 			gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * 1f, 0.0f);
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 4 * 1, 4 * 1);	// duplicate 1
 			gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * -1f, 0.0f);
+		} else
+		if(fdstoffset < 0) {
+			// don't cover 1 and restart with 3.
+			n0 = 1;
 		}
 		gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * (fdstoffset), 0.0f);
-		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 4 * 2, 4 * (nhours - 2));
+		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 4 * (2 + n0), 4 * (24 - 2 - n0));
 	}
 
 	/**

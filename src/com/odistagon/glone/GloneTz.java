@@ -76,6 +76,29 @@ public class GloneTz
 		return	(l0 - c0.get(Calendar.DST_OFFSET));
 	}
 
+	public float getHoursFromMidNight(long ltime) {
+		Calendar	c0 = Calendar.getInstance(getTimeZone());
+		c0.setTimeInMillis(ltime);
+		c0.set(Calendar.HOUR_OF_DAY, 0);
+		c0.set(Calendar.MINUTE, 0);
+		return	((float)ltime - c0.getTimeInMillis()) / (60f * 60f * 1000);
+	}
+
+	/** Calculate how many offset time the specified day has.
+	 * @param ltime
+	 * @return
+	 */
+	public float getDSTOffsetInTheDay(long ltime) {
+		Calendar	c0 = Calendar.getInstance(getTimeZone());
+		c0.setTimeInMillis(ltime);
+		long		lhr0 = ltime - (c0.get(Calendar.HOUR_OF_DAY) * (60 * 60 * 1000));	// 0 or 1 a.m.
+		c0.setTimeInMillis(lhr0);
+		int			n0 = c0.get(Calendar.DST_OFFSET);
+		long		lhr3 = lhr0 + (3 * (60 * 60 * 1000));	// 3 hrs later from 0 a.m. (2, 3 or 4 a.m.)
+		c0.setTimeInMillis(lhr3);
+		return	(float)(n0 - c0.get(Calendar.DST_OFFSET)) / (60 * 60 * 1000);
+	}
+
 	public String getDebugString(long ltime) {
 		Calendar	c0 = Calendar.getInstance(m_tz);
 		c0.setTimeInMillis(ltime);

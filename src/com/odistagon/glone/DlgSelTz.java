@@ -115,12 +115,15 @@ public class DlgSelTz extends Dialog
 				return;
 			}
 
-			ArrayList<GloneTz> al0 = new ArrayList<GloneTz>();
+			String				s0 = sarg.toUpperCase();
+			ArrayList<GloneTz>	al0 = new ArrayList<GloneTz>();
 			Iterator<GloneTz>	it0 = m_atz.iterator();
 			while(it0.hasNext()) {
-				GloneTz	tz0 = it0.next();
-				if(tz0.getTimeZoneId().toUpperCase().indexOf(sarg.toUpperCase()) >= 0)
-					al0.add(tz0);
+				GloneTz		gtz0 = it0.next();
+				TimeZone	tz0 = gtz0.getTimeZone();
+				if(tz0.getID().toUpperCase().indexOf(s0) >= 0 ||
+						tz0.getDisplayName().toUpperCase().indexOf(s0) >= 0)
+					al0.add(gtz0);
 			}
 			m_atzsub = al0;
 			notifyDataSetChanged();

@@ -217,7 +217,8 @@ public class DefRenderer implements Renderer
 		it0 = altz.iterator();
 		while(it0.hasNext()) {
 			GloneTz	tz0 = it0.next();
-			m_glstr.setTextString(gl0, tz0.getDebugString(m_doc.getTime()));
+			String	s0 = Float.toString(tz0.getDSTOffsetInTheDay(GloneApp.getDoc().getTime()));
+			m_glstr.setTextString(gl0, s0 + "*" + tz0.getDebugString(m_doc.getTime()));
 			m_glstr.draw(gl0);
 			gl0.glTranslatef(-0.1f, 0.2f, 0.0f);
 		}

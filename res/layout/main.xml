@@ -8,16 +8,18 @@
 	<LinearLayout
 		android:id="@+id/lo_main_right"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
-		android:orientation="vertical" android:gravity="right"
+		android:orientation="vertical" android:gravity="right|center_vertical"
 		>
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/iv_tb_fastfw" android:contentDescription="@string/hello"
+			android:layout_marginBottom="20dp"
 			android:src="@android:drawable/ic_media_ff" />
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/iv_tb_thewld" android:contentDescription="@string/hello"
 			android:src="@android:drawable/ic_media_pause" />
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/iv_tb_rewind" android:contentDescription="@string/hello"
+			android:layout_marginTop="20dp"
 			android:src="@android:drawable/ic_media_rew" />
 	</LinearLayout>
 

@@ -38,6 +38,12 @@ public class AyTzSet extends Activity
 	}
 
 	@Override
+	protected void onDestroy() {
+		GloneApp.getDoc().saveConifg();
+		super.onDestroy();
+	}
+
+	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		Object	o0 = v.getTag();
 		if(o0 instanceof GloneTz) {

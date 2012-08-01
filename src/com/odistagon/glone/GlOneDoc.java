@@ -7,6 +7,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.util.FloatMath;
 import android.util.Log;
 
@@ -25,46 +28,57 @@ public class GlOneDoc
 		readConfig();
 	}
 
-	public void readConfig() {
-		String sJson = "{"
-			+ "	\"globalbg\" : \"bg.png\","
-			+ "	\"usethemebg\" : true,"
-			+ "	\"curr-tzset\" : \"default tz set\","
-			+ "	\"curr-theme\" : \"default theme\","
-			+ "	\"tzset-list\" : ["
-			+ "		{"
-			+ "			\"name\" : \"default tz set\","
-			+ "			\"tz-list\" : ["
-			+ "				{"
-			+ "					\"name\" : \"JP\","
-			+ "					\"timezone\" : \"Japan\","
-			+ "					\"color\" : \"#FF000000\""
-			+ "				},"
-			+ "				{"
-			+ "					\"name\" : \"London\","
-			+ "					\"timezone\" : \"GMT\","
-			+ "					\"color\" : \"#FF000000\""
-			+ "				},"
-			+ "				{"
-			+ "					\"name\" : \"Los Angeles\","
-			+ "					\"timezone\" : \"America/Los_Angeles\","
-			+ "					\"color\" : \"#FF000000\""
-			+ "				}"
-			+ "			]"
-			+ "		}"
-			+ "	],"
-			+ "	\"theme-list\" : ["
-			+ "		{"
-			+ "			\"name\" : \"default theme\","
-			+ "			\"origin\" : \"builtin:/\","
-			+ "			\"texpng\" : \"tex.png\","
-			+ "			\"bgimg\" : \"abcd.png\""
-			+ "		}" 
-			+ "	]"
-			+ "}";
+	public static final String	PREFNAME_CONFJSON = "PREFNAME_CONFJSON";
+// example of config json
+//	{
+//		"globalbg" : "bg.png",
+//		"usethemebg" : true,
+//		"curr-tzset" : "default tz set",
+//		"curr-theme" : "default theme",
+//		"tzset-list" : [
+//			{
+//				"name" : "default tz set",
+//				"tz-list" : [
+//					{
+//						"name" : "JP",
+//						"timezone" : "Japan",
+//						"color" : "#FF000000"
+//					},
+//					{
+//						...
+//					}
+//				]
+//			}
+//		],
+//		"theme-list" : [
+//			{
+//				"name" : "default theme",
+//				"origin" : "builtin:/",
+//				"texpng" : "tex.png",
+//				"bgimg" : "abcd.png"
+//			} 
+//		]
+//	}
 
+	private void makeDefaultConfig() {
+		m_artzs = new ArrayList<GloneTz>();
+		addTzToList(GloneTz.getInstance("Japan"));
+		addTzToList(GloneTz.getInstance("GMT"));
+		addTzToList(GloneTz.getInstance("America/Los_Angeles"));
+	}
+
+	public void readConfig() {
+		SharedPreferences	pref = GloneApp.getContext().getSharedPreferences(
+				GloneApp.class.getCanonicalName(), Context.MODE_PRIVATE);
+		String	sConf = pref.getString(PREFNAME_CONFJSON, null);
 		try {
-			JSONObject	obj = new JSONObject(sJson);
+			if(sConf == null) {
+				makeDefaultConfig();
+				JSONObject	obj = serializeConf();
+				sConf = obj.toString();
+			}
+
+			JSONObject	obj = new JSONObject(sConf);
 
 			m_artzs = new ArrayList<GloneTz>();
 			JSONArray	ja1 = obj.getJSONArray("tzset-list");
@@ -73,7 +87,6 @@ public class GlOneDoc
 				JSONArray	a0 = o0.getJSONArray("tz-list");
 				for(int ii = 0; ii < a0.length(); ii++) {
 					JSONObject	o00 = a0.getJSONObject(ii);
-					Log.d("XXXX", o00.getString("name"));
 					m_artzs.add(GloneTz.getInstance(o00.getString("timezone")));
 				}
 			}
@@ -81,6 +94,58 @@ public class GlOneDoc
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public void saveConifg() {
+		SharedPreferences	pref = GloneApp.getContext().getSharedPreferences(
+				GloneApp.class.getCanonicalName(), Context.MODE_PRIVATE);
+		JSONObject jo0 = null;
+		try {
+			jo0 = serializeConf();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Editor	ed0 = pref.edit();
+		ed0.putString(PREFNAME_CONFJSON, jo0.toString());
+		ed0.commit();
+	}
+
+	public JSONObject serializeConf()
+	throws JSONException {
+		JSONObject		jo0 = new JSONObject();
+		jo0.put("globalbg", "bg.png");
+		jo0.put("usethemebg", true);
+		jo0.put("curr-tzset", "default tz set");
+		jo0.put("curr-theme", "default theme");
+		JSONArray		jatzsets = new JSONArray();
+		{
+			JSONObject	jotzset = new JSONObject();
+			jotzset.put("name", "default tz set");
+			JSONArray	jatzs = new JSONArray();
+			Iterator<GloneTz>	it0 = m_artzs.iterator();
+			while(it0.hasNext()) {
+				GloneTz	gtz0 = it0.next();
+				JSONObject	jotz = new JSONObject();
+				jotz.put("name", gtz0.getTimeZoneId());
+				jotz.put("timezone", gtz0.getTimeZone().getID());
+				jotz.put("color", "#FF000000");
+				jatzs.put(jotz);
+			}
+			jotzset.put("tz-list", jatzs);
+			jatzsets.put(jotzset);
+		}
+		jo0.put("tzset-list", jatzsets);
+		JSONArray		jathemes = new JSONArray();
+		{
+			JSONObject	jotheme = new JSONObject();
+			jotheme.put("name", "default theme");
+			jotheme.put("origin", "builtin:/");
+			jotheme.put("texpng", "tex.png");
+			jotheme.put("bgimg", "abcd.png");
+		}
+		jo0.put("theme-list", jathemes);
+		return	jo0;
 	}
 
 	public void togglePause() {

@@ -3,6 +3,7 @@ package com.odistagon.glone;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.TimeZone;
 
 import android.view.View;
 import android.widget.TextView;
@@ -47,9 +48,12 @@ public class GloneUtils
 		TextView	tv0 = null;
 		tv0 = (TextView)vliarg.findViewById(R.id.tv_ligtz_name);
 		if(gtzarg != null) {
-			tv0.setText(gtzarg.getTimeZone().getDisplayName());
+			TimeZone	tz0 = gtzarg.getTimeZone();
+			tv0.setText(tz0.getDisplayName());
 			tv0 = (TextView)vliarg.findViewById(R.id.tv_ligtz_id);
-			tv0.setText(gtzarg.getTimeZoneId());
+			float		foffset = (float)tz0.getOffset(System.currentTimeMillis()) / (60f * 60f * 1000f);
+			tv0.setText(gtzarg.getTimeZoneId() + (foffset >= 0f ? " GMT+" : " GMT")
+					+ foffset + " " + (tz0.useDaylightTime() ? " [+DST]" : ""));
 			vliarg.setTag(gtzarg);
 		} else {
 			tv0.setText(" + add new");

@@ -57,6 +57,10 @@ public class AyTzSet extends Activity
 			menu.setHeaderIcon(android.R.drawable.ic_media_ff);
 			menu.add(0, GloneUtils.CMID_GLONE_GTZDEL, 0, "Remove ...");
 		}
+		menu.setHeaderIcon(android.R.drawable.ic_media_ff);
+		menu.add(0, GloneUtils.CMID_GLONE_GTZUPR, 0, "Move up");
+		menu.setHeaderIcon(android.R.drawable.ic_media_ff);
+		menu.add(0, GloneUtils.CMID_GLONE_GTZLWR, 0, "Move down");
 
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
@@ -73,6 +77,14 @@ public class AyTzSet extends Activity
 			m_laTzSetList.notifyDataSetChanged();
 			return	true;
 		}
+		case GloneUtils.CMID_GLONE_GTZUPR:
+			GloneApp.getDoc().moveTzOrder(m_sTzIdOpr, -1);
+			m_laTzSetList.notifyDataSetChanged();
+			break;
+		case GloneUtils.CMID_GLONE_GTZLWR:
+			GloneApp.getDoc().moveTzOrder(m_sTzIdOpr, +1);
+			m_laTzSetList.notifyDataSetChanged();
+			break;
 		default:
 		}
 		return super.onContextItemSelected(item); 

@@ -1,8 +1,10 @@
 package com.odistagon.glone;
 
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.GestureDetector.OnGestureListener;
 
 public class DefSurfaceView extends GLSurfaceView
@@ -36,12 +38,15 @@ public class DefSurfaceView extends GLSurfaceView
 				// reverse calc pixels -> time
 				float	fmoved = (fcy / (float)m_renderer.getHeight()); 
 				long	ltimemoved = (long)(fmoved * (60f * 60f * 1000f) / GlStripe.getVtxHeightOfOneHour());
-
 //				Log.d(getClass().getName(), "moved (" + fmoved + " / " + m_renderer.getHeight() + ")");
 //				Log.d(getClass().getName(), "scroll(" + fcy + " -> " + ltimemoved + ")");
 				GloneApp.getDoc().addTimeOffset(ltimemoved * -1L, false);
 
-				return false;
+				float	fhorz = (fcx / (float)m_renderer.getWidth());
+				m_renderer.addHorizontalShift(fhorz * -1f);
+//				Log.d("(X)", "onScroll() action: " + e2.getAction());
+
+				return	false;
 			}
 
 			@Override
@@ -66,16 +71,25 @@ public class DefSurfaceView extends GLSurfaceView
 
 			@Override
 			public boolean onDown(MotionEvent e) {
-				return false;
+				return	false;
 			}
 		};
 		m_gdtctr = new GestureDetector(getContext(), ogl0);
-	}
 
-	public boolean fireTouchEvent(MotionEvent event) {
-		m_gdtctr.onTouchEvent(event);
-
-		return super.onTouchEvent(event);
+		setLongClickable(true);	// this is important to enable ACTION_UP event
+		setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+//				Log.d("XXXX", "ACTION_(" + event.getAction());
+				switch(event.getAction()) {
+				case MotionEvent.ACTION_UP:
+					m_renderer.releaseHorizontal();
+					break;
+				}
+				m_gdtctr.onTouchEvent(event);
+				return	false;
+			}
+		});
 	}
 
 	public void zoomIn(float frelative) {

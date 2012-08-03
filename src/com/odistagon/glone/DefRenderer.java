@@ -22,20 +22,23 @@ public class DefRenderer implements Renderer
 	private int[]		m_nTextures = new int[1];
 	private int			m_nTextureId = 0;
 
-	private TestCube	m_testcube = null;	//new TestCube();
+	private TestCube	m_testcube = null;//new TestCube();
 	private long		m_lLastRendered;
 	private float		m_fStripeScaleH;
 	private GlOneDoc	m_doc;
 	private Gl2DString	m_glstr;
 	private GlStripe	m_glstripe;
-	private boolean		m_bNeedPersSet = true;	// perspective set.
+	private boolean		m_bNeedPersSet = true;			// perspective set.
+	private float		m_fHorzShift = 0f;
+	private long		m_lHorzReld = 0L;				// time when horizontal shift touch released
 
 	public static float			CF_PERS_FOVY = 45f;
 	public static final float	CF_PERS_NEAR = 2.0f;	// distance from eye point to near plane
 	public static final float	CF_PERS_FAR_ = 6.0f;	// distance from eye point to far plane
 	public static final float	CF_LOOK_EYZ = 4.0f;		// eye point
 
-	private static final long	CL_FRAMPERD = 16L;	// constant frame period
+	private static final long	CL_FRAMPERD = 16L;		// constant frame period
+	public static final long	CL_HORZRELD = 800L;		// time to released horizontal shift go back
 
 	public DefRenderer(GlOneDoc doc) {
 		m_lLastRendered = System.currentTimeMillis();
@@ -77,14 +80,8 @@ public class DefRenderer implements Renderer
 		m_nWidth = width;
 		m_nHeight = height;
 		gl0.glViewport(0, 0, width, height);
-
-		gl0.glMatrixMode(GL10.GL_PROJECTION);
-		gl0.glLoadIdentity();
-		GLU.gluPerspective(gl0, CF_PERS_FOVY, (float)width / (float)height, CF_PERS_NEAR, CF_PERS_FAR_);
-		GLU.gluLookAt(gl0, 0, 0, CF_LOOK_EYZ, 0, 0, 0, 0, 1.0f, 0);
-		m_bNeedPersSet = false;
-
 		gl0.glClearColor(0.2f, 0.0f, 0.0f, 1.0f);	// set background color (RGBA)
+		m_bNeedPersSet = true;
 	}
 
 	@Override
@@ -112,7 +109,6 @@ public class DefRenderer implements Renderer
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		m_lLastRendered = System.currentTimeMillis();
 
 		gl0.glEnable(GL10.GL_BLEND);
 		gl0.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
@@ -168,7 +164,19 @@ public class DefRenderer implements Renderer
 		float				fm0 = (fscrw - frmgn) / altz.size();
 		final int			ncharstz = 8;
 		float				frabc = (fscrh / 2f) / (GlStripe.CRECTF_VTXABC.bottom * (float)ncharstz);
-		gl0.glTranslatef(fscrw / 2f - (frmgn + GlStripe.CRECTF_VTXHUR.right), 0.0f, 0.0f);	// draw from right toward left edge 
+		float				fhorz = 0f;
+		if(m_lHorzReld == 0) {
+			fhorz = m_fHorzShift;
+		} else
+		if(m_lHorzReld + CL_HORZRELD > System.currentTimeMillis()) {
+			float	f1 = ((float)(CL_HORZRELD - (System.currentTimeMillis() - m_lHorzReld)));
+			fhorz = (m_fHorzShift * (f1 / CL_HORZRELD));
+		} else {
+			m_fHorzShift = 0f;
+			m_lHorzReld = 0L;
+		}
+		gl0.glTranslatef(fscrw / 2f - (frmgn + GlStripe.CRECTF_VTXHUR.right)
+				+ fhorz, 0.0f, 0.0f);	// draw from right toward left edge 
 		while(it0.hasNext()) {
 			GloneTz	gtz0 = it0.next();
 			gl0.glPushMatrix();
@@ -236,6 +244,22 @@ public class DefRenderer implements Renderer
 
 	public void addFovy(float fovy) {
 		CF_PERS_FOVY += fovy;
+	}
+
+	public void addHorizontalShift(float farg) {
+		m_fHorzShift += farg;
+		m_lHorzReld = 0L;
+	}
+
+	public void releaseHorizontal() {
+		m_lHorzReld = System.currentTimeMillis();
+	}
+
+	/**
+	 * @return view width in pixels
+	 */
+	public int getWidth() {
+		return	m_nWidth;
 	}
 
 	/**

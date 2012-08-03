@@ -20,6 +20,8 @@ public class GloneUtils
 //	public static final int		CMID_GLONE_GTZADD = 101;	// GloneTz add
 	public static final int		CMID_GLONE_GTZEDI = 102;	// GloneTz edit
 	public static final int		CMID_GLONE_GTZDEL = 103;	// GloneTz delete
+	public static final int		CMID_GLONE_GTZUPR = 111;	// GloneTz move upper
+	public static final int		CMID_GLONE_GTZLWR = 112;	// GloneTz move lower
 	public static final int		CMID_GLONE_SYSDAT = 191;	// System date setting
 	public static final int		CMID_GLONE_TGSEDI = 111;	// Tz set edit
 	public static final int		CMID_GLONE_JMPABS = 121;	// Jump absolute date

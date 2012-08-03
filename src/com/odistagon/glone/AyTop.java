@@ -15,7 +15,6 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.DatePicker;
@@ -88,15 +87,6 @@ public class AyTop extends Activity
 				return	true;
 			}
 		});
-	}
-
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-
-		// onFling seems only occurs for Events on Activity (not available on View)
-		m_gv.fireTouchEvent(event);
-
-		return super.onTouchEvent(event);
 	}
 
 	@Override

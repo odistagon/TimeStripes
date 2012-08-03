@@ -224,4 +224,23 @@ public class GlOneDoc
 		}
 	}
 
+	public void moveTzOrder(String sTzId, int nMove) {
+		if(nMove == 0)
+			return;
+
+		int	i = 0, nTarget = -1;
+		Iterator<GloneTz>	it0 = m_artzs.iterator();
+		while(it0.hasNext()) {
+			GloneTz	gtz0 = it0.next();
+			if(sTzId.equals(gtz0.getTimeZoneId()))
+				nTarget = i;
+			i++;
+		}
+		if((nTarget == 0 && nMove < 0) ||
+				(nTarget == (m_artzs.size() - 1) && nMove > 0))
+			return;	// can't move over start or end
+		GloneTz	gtz0 = m_artzs.get(nTarget);
+		m_artzs.remove(nTarget);
+		m_artzs.add(nTarget + nMove, gtz0);
+	}
 }

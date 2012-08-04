@@ -10,7 +10,6 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.ClipboardManager;
 import android.util.Log;
@@ -21,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 public class AyTop extends Activity
@@ -34,24 +34,21 @@ public class AyTop extends Activity
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		m_gv = new DefSurfaceView(this);
-		setContentView(R.layout.main);
-
 		// main layout
+		setContentView(R.layout.main);
 		RelativeLayout	rl0 = (RelativeLayout)findViewById(R.id.lo_main_rl0);
-
 		// insert GL view into the main layout
+		m_gv = new DefSurfaceView(this);
 		rl0.addView(m_gv, 0);
 
-//		final Activity	atop = this;
+		final Activity	atop = this;
 
 		//bottom toolbar buttons
 		View	v0 = findViewById(R.id.iv_main_menu);
 		v0.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-//				atop.openContextMenu(v);
-				showDialog(GloneUtils.NC_DLGID_TEST01);
+				atop.openContextMenu(v);
 			}
 		});
 		v0 = findViewById(R.id.iv_tb_zoomin);
@@ -88,8 +85,8 @@ public class AyTop extends Activity
 			@Override
 			public void onClick(View v) {
 				GloneApp.getDoc().togglePause();
-				boolean	bpaused = GloneApp.getDoc().isPaused();
-				v.setBackgroundColor(bpaused ? Color.YELLOW : Color.TRANSPARENT);
+				((ImageView)v).setImageResource(GloneApp.getDoc().isPaused()
+						? R.drawable.ic_menu_stwp : R.drawable.ic_menu_stwm);
 			}
 		});
 		v0.setOnLongClickListener(new View.OnLongClickListener() {

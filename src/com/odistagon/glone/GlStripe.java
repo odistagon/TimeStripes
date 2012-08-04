@@ -29,11 +29,11 @@ public class GlStripe
 	// numbers
 	public static final RectF	CRECTF_VTXNUM = new RectF(0.0f, 0.0f, 0.2f, 0.15f);
 	public static final float	CF_VTXNUM_Z = 1.2f;
-	private static final RectF	CRECTF_TEXNUM = new RectF(480f / CFTEXSIZ, 0.0f, (480f + 96f) / CFTEXSIZ, 96f / CFTEXSIZ);
+	private static final RectF	CRECTF_TEXNUM = new RectF(96f / CFTEXSIZ, 0.0f, (96f + 96f) / CFTEXSIZ, 96f / CFTEXSIZ);
 	// name of months
 	public static final RectF	CRECTF_VTXMON = new RectF(0.0f, 0.0f, 0.3f, 0.15f);
 	public static final float	CF_VTXMON_Z = 1.2f;
-	private static final RectF	CRECTF_TEXMON = new RectF(192f / CFTEXSIZ, 0.0f, (192f + 96f) / CFTEXSIZ, 48f / CFTEXSIZ);
+	private static final RectF	CRECTF_TEXMON = new RectF(96f * 2f / CFTEXSIZ, 0.0f, (96f * 2f + 96f) / CFTEXSIZ, 48f / CFTEXSIZ);
 	// alphabets
 	public static final RectF	CRECTF_VTXABC = new RectF(0.0f, 0.0f, 0.1f, 0.1f);
 	public static final float	CF_VTXABC_Z = 1.2f;

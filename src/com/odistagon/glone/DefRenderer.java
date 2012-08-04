@@ -18,6 +18,8 @@ public class DefRenderer implements Renderer
 {
 	private int			m_nWidth;
 	private int			m_nHeight;
+	float				m_fscrw;						// screen width in opengl unit
+	float				m_fscrh;						// screen height in opengl unit
 
 	private int[]		m_nTextures = new int[1];
 	private int			m_nTextureId = 0;
@@ -39,6 +41,7 @@ public class DefRenderer implements Renderer
 
 	private static final long	CL_FRAMPERD = 16L;		// constant frame period
 	public static final long	CL_HORZRELD = 800L;		// time to released horizontal shift go back
+	private static final float	CF_RIGHMRGN = 0.1f;		// right margin where stripes not being drawn
 
 	public DefRenderer(GlOneDoc doc) {
 		m_lLastRendered = System.currentTimeMillis();
@@ -80,7 +83,10 @@ public class DefRenderer implements Renderer
 		m_nWidth = width;
 		m_nHeight = height;
 		gl0.glViewport(0, 0, width, height);
-		gl0.glClearColor(0.2f, 0.0f, 0.0f, 1.0f);	// set background color (RGBA)
+		gl0.glClearColor(0.85f, 0.85f, 0.85f, 1.0f);	// set background color (RGBA)
+
+		m_fscrh = calcClipHeight(GlStripe.CF_VTXHUR_Z);
+		m_fscrw = calcClipWidth(GlStripe.CF_VTXHUR_Z);
 		m_bNeedPersSet = true;
 	}
 
@@ -158,12 +164,10 @@ public class DefRenderer implements Renderer
 		gl0.glScalef(1.0f, m_fStripeScaleH, 1.0f);
 		// stripes
 		Iterator<GloneTz>	it0 = altz.iterator();
-		float				fscrh = calcClipHeight(GlStripe.CF_VTXHUR_Z);
-		float				fscrw = calcClipWidth(GlStripe.CF_VTXHUR_Z);
-		final float			frmgn = fscrw * 0.2f;	// right margin
-		float				fm0 = (fscrw - frmgn) / altz.size();
+		final float			frmgn = m_fscrw * CF_RIGHMRGN;	// right margin
+		float				fm0 = (m_fscrw - frmgn) / altz.size();
 		final int			ncharstz = 8;
-		float				frabc = (fscrh / 2f) / (GlStripe.CRECTF_VTXABC.bottom * (float)ncharstz);
+		float				frabc = (m_fscrh / 2f) / (GlStripe.CRECTF_VTXABC.bottom * (float)ncharstz);
 		float				fhorz = 0f;
 		if(m_lHorzReld == 0) {
 			fhorz = m_fHorzShift;
@@ -175,18 +179,18 @@ public class DefRenderer implements Renderer
 			m_fHorzShift = 0f;
 			m_lHorzReld = 0L;
 		}
-		gl0.glTranslatef(fscrw / 2f - (frmgn + GlStripe.CRECTF_VTXHUR.right)
+		gl0.glTranslatef(m_fscrw / 2f - (frmgn + GlStripe.CRECTF_VTXHUR.right)
 				+ fhorz, 0.0f, 0.0f);	// draw from right toward left edge 
 		while(it0.hasNext()) {
 			GloneTz	gtz0 = it0.next();
 			gl0.glPushMatrix();
-			m_glstripe.drawStripe(gl0, gtz0, m_doc.getTime(), fscrh);
+			m_glstripe.drawStripe(gl0, gtz0, m_doc.getTime(), m_fscrh);
 			gl0.glPopMatrix();
 			// timezone names
 			String	s0 = gtz0.getTimeZoneId();
 			gl0.glPushMatrix();
 			gl0.glTranslatef(GlStripe.CRECTF_VTXHUR.right - GlStripe.CRECTF_VTXABC.right,
-					fscrh / 2 - GlStripe.CRECTF_VTXABC.bottom * 2f, 0f);
+					m_fscrh / 2 - GlStripe.CRECTF_VTXABC.bottom * 2f, 0f);
 			gl0.glScalef(frabc, frabc, 1f);
 			m_glstripe.drawAbcString(gl0, s0, ncharstz);
 			gl0.glPopMatrix();
@@ -194,14 +198,18 @@ public class DefRenderer implements Renderer
 		}
 		gl0.glPopMatrix();
 
+		gl0.glDisable(GL10.GL_TEXTURE_2D);
+
 		gl0.glLoadIdentity();
 		// org
 		gl0.glPushMatrix();
-		drawOrg(gl0, fscrw, fscrh);
+		drawOrg(gl0);
 		gl0.glPopMatrix();
 
+		gl0.glEnable(GL10.GL_TEXTURE_2D);
+
 		// date string
-		gl0.glTranslatef(fscrw / -2f + GlStripe.CRECTF_VTXNUM.right, -0.20f, 0f);
+		gl0.glTranslatef(m_fscrw / -2f + GlStripe.CRECTF_VTXNUM.right, -0.20f, 0f);
 		gl0.glPushMatrix();
 		m_glstripe.drawNumberString(gl0, andt[2], 2);	// day
 		gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right * 2f + 0.2f, 0f, 0f);
@@ -210,15 +218,15 @@ public class DefRenderer implements Renderer
 		m_glstripe.drawNumberString(gl0, andt[0], 4);	// year
 		gl0.glPopMatrix();
 		gl0.glLoadIdentity();
-		float	fscale0 = (fscrw / 4f) / GlStripe.CRECTF_VTXNUM.right;
-		gl0.glTranslatef(fscrw * 1f / 4f, GlStripe.CRECTF_VTXNUM.bottom * fscale0 * -1f + -0.2f, 0f);
+		float	fscale0 = (m_fscrw / 4f) / GlStripe.CRECTF_VTXNUM.right;
+		gl0.glTranslatef(m_fscrw * 1f / 4f, GlStripe.CRECTF_VTXNUM.bottom * fscale0 * -1f + -0.2f, 0f);
 		gl0.glScalef(fscale0, fscale0, 1.0f);
 		m_glstripe.drawNumberString(gl0, andt[4] * 100 + andt[5], 4);	// hour+min.
 
 		gl0.glDisable(GL10.GL_TEXTURE_2D);
 
 		// draw debug text
-		m_glstr.setColor(0xFFFFFFFF);
+		m_glstr.setColor(0xFF0000FF);
 		gl0.glScalef(0.3f, 0.3f, 1.0f);
 		gl0.glTranslatef(1.4f, 0.9f, 1.2f);
 		altz = m_doc.getTzList();
@@ -244,11 +252,26 @@ public class DefRenderer implements Renderer
 
 	public void addFovy(float fovy) {
 		CF_PERS_FOVY += fovy;
+		m_fscrh = calcClipHeight(GlStripe.CF_VTXHUR_Z);
+		m_fscrw = calcClipWidth(GlStripe.CF_VTXHUR_Z);
 	}
 
 	public void addHorizontalShift(float farg) {
 		m_fHorzShift += farg;
 		m_lHorzReld = 0L;
+
+		// change order when distance go over a threshold
+		float	frmgn = m_fscrw * CF_RIGHMRGN;
+		float	fm0 = (m_fscrw - frmgn) / m_doc.getTzList().size();
+//		Log.d("XXXX", "add (" + m_fHorzShift + ", " + f0);
+		if(m_fHorzShift > fm0) {
+			m_fHorzShift -= fm0;
+			m_doc.shiftTzOrder(false);
+		} else
+		if(m_fHorzShift < -fm0) {
+			m_fHorzShift += fm0;
+			m_doc.shiftTzOrder(true);
+		}
 	}
 
 	public void releaseHorizontal() {
@@ -295,10 +318,10 @@ public class DefRenderer implements Renderer
 		m_buffOrgVerts = GloneUtils.makeFloatBuffer(aftemp);
 		// colors RGBA
 		aftemp = new float[] {
-				+0.3f, 0.0f, 0.5f, 0.4f,
-				+0.3f, 0.0f, 0.5f, 0.4f,
-				+0.9f, 0.2f, 0.2f, 0.2f,
-				+0.9f, 0.2f, 0.2f, 0.2f,
+				+0.0f, 0.0f, 0.0f, 0.6f,
+				+0.0f, 0.0f, 0.0f, 0.6f,
+				+0.5f, 0.2f, 0.2f, 0.1f,
+				+0.5f, 0.2f, 0.2f, 0.1f,
 		};
 		m_buffOrgColrs = GloneUtils.makeFloatBuffer(aftemp);
 	}
@@ -306,13 +329,13 @@ public class DefRenderer implements Renderer
 	/** 
 	 * @param gl
 	 */
-	private void drawOrg(GL10 gl, float fscrw, float fscrh) {
+	private void drawOrg(GL10 gl) {
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, m_buffOrgVerts);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glColorPointer(4, GL10.GL_FLOAT, 0, m_buffOrgColrs);
 		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
-		gl.glScalef(fscrw, fscrh, 1f);
+		gl.glScalef(m_fscrw, m_fscrh, 1f);
 		gl.glNormal3f(0, 0, 1.0f);
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);

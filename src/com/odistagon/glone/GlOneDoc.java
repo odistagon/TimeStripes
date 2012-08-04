@@ -243,4 +243,22 @@ public class GlOneDoc
 		m_artzs.remove(nTarget);
 		m_artzs.add(nTarget + nMove, gtz0);
 	}
+
+	/** Change array order as shifting all elements left/right.
+	 * @param bpush
+	 */
+	public void shiftTzOrder(boolean bpush) {
+		ArrayList<GloneTz>	altmp = new ArrayList<GloneTz>();
+		altmp.addAll(m_artzs);
+		if(bpush) {
+			GloneTz	gtz0 = altmp.get(altmp.size() - 1);
+			altmp.remove(altmp.size() - 1);
+			altmp.add(0, gtz0);
+		} else {
+			GloneTz	gtz0 = altmp.get(0);
+			altmp.remove(0);
+			altmp.add(gtz0);
+		}
+		m_artzs = altmp;
+	}
 }

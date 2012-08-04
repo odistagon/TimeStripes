@@ -12,32 +12,42 @@
 		>
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/iv_tb_fastfw" android:contentDescription="@string/hello"
-			android:layout_marginBottom="20dp"
-			android:src="@android:drawable/ic_media_ff" />
+			android:layout_marginTop="10dp" android:layout_marginBottom="10dp"
+			android:layout_marginRight="2dp"
+			android:src="@drawable/ic_menu_ffwd" />
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/iv_tb_thewld" android:contentDescription="@string/hello"
-			android:src="@android:drawable/ic_media_pause" />
+			android:layout_marginTop="10dp" android:layout_marginBottom="10dp"
+			android:layout_marginRight="2dp"
+			android:src="@drawable/ic_menu_stwm" />
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/iv_tb_rewind" android:contentDescription="@string/hello"
-			android:layout_marginTop="20dp"
-			android:src="@android:drawable/ic_media_rew" />
+			android:layout_marginTop="10dp" android:layout_marginBottom="10dp"
+			android:layout_marginRight="2dp"
+			android:src="@drawable/ic_menu_rewd" />
 	</LinearLayout>
 
 	<!-- bottom toolbar -->
 	<LinearLayout
 		android:id="@+id/lo_main_bottom"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
-		android:gravity="bottom"
+		android:gravity="bottom|center_horizontal"
 		>
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/iv_main_menu" android:contentDescription="@string/hello"
+			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+			android:layout_marginBottom="2dp"
 			android:src="@drawable/icon" />
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/iv_tb_zoomin" android:contentDescription="@string/hello"
-			android:src="@drawable/icon" />
+			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+			android:layout_marginBottom="2dp"
+			android:src="@drawable/ic_menu_zoin" />
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/iv_tb_zoomou" android:contentDescription="@string/hello"
-			android:src="@drawable/icon" />
+			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+			android:layout_marginBottom="2dp"
+			android:src="@drawable/ic_menu_zout" />
 		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:text="@string/hello" />
 	</LinearLayout>

@@ -1,6 +1,8 @@
 package com.odistagon.glone;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.ClipboardManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -41,6 +44,8 @@ public class AyTop extends Activity
 		rl0.addView(m_gv, 0);
 
 //		final Activity	atop = this;
+
+		//bottom toolbar buttons
 		View	v0 = findViewById(R.id.iv_main_menu);
 		v0.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -54,6 +59,13 @@ public class AyTop extends Activity
 			@Override
 			public void onClick(View v) {
 				m_gv.zoomIn(1.1f);
+			}
+		});
+		v0 = findViewById(R.id.iv_tb_zoomou);
+		v0.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				m_gv.zoomIn(-1.1f);
 			}
 		});
 		// side toolbar buttons
@@ -148,6 +160,38 @@ public class AyTop extends Activity
 			dlg0.setTitle("Pick a goal date");
 			dret = dlg0;
 			break;
+		case GloneUtils.NC_DLGID_SHWTXT: {
+			AlertDialog.Builder	dlgbldr = new AlertDialog.Builder(this);
+			dlgbldr.setTitle("Date times");
+			long				lcurr = GloneApp.getDoc().getTime();
+			StringBuilder		sb0 = new StringBuilder();
+			ArrayList<GloneTz>	altz0 = GloneApp.getDoc().getTzList();
+			Iterator<GloneTz>	it0 = altz0.iterator();
+			while(it0.hasNext()) {
+				GloneTz	gtz0 = it0.next();
+				sb0.append(gtz0.getTimeZoneId());
+				sb0.append("\n  ");
+				sb0.append(gtz0.getDebugString(lcurr));
+				sb0.append("\n");
+			}
+			final String		smsg = sb0.toString();
+			dlgbldr.setMessage(smsg);
+			dlgbldr.setNeutralButton(R.string.hello, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					ClipboardManager	cbm0 = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE); 
+//					int					nSdkVer = android.os.Build.VERSION.SDK_INT;
+//					if(nSdkVer >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+//						ClipData		cd0 = ClipData.newPlainText("label", "Text to copy");
+//						cbm0.setPrimaryClip(cd0);
+//					} else {
+						cbm0.setText(smsg);
+//					}
+				}
+			});
+			dlgbldr.setNegativeButton(R.string.hello, null);
+			dret = dlgbldr.create();
+		}	break;
 		default:
 			Log.e(getClass().getName(), "onCreateDialog() called with invalid id.");
 		}
@@ -157,6 +201,8 @@ public class AyTop extends Activity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuItem	mi0 = null;
+		mi0 = menu.add(0, GloneUtils.CMID_GLONE_SHWTXT, 0, "Show in text");
+		mi0.setIcon(android.R.drawable.stat_notify_sync);
 		mi0 = menu.add(0, GloneUtils.CMID_GLONE_SYSDAT, 0, "System Date Setting");
 		mi0.setIcon(android.R.drawable.stat_notify_sync);
 		mi0 = menu.add(0, GloneUtils.CMID_GLONE_JMPABS, 0, "Jump absolute");
@@ -174,6 +220,9 @@ public class AyTop extends Activity
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
+		case GloneUtils.CMID_GLONE_SHWTXT:
+			showDialog(GloneUtils.NC_DLGID_SHWTXT);
+			break;
 		case GloneUtils.CMID_GLONE_SYSDAT:
 			startActivity(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS));
 			break;

@@ -22,6 +22,7 @@ public class GloneUtils
 	public static final int		CMID_GLONE_GTZDEL = 103;	// GloneTz delete
 	public static final int		CMID_GLONE_GTZUPR = 111;	// GloneTz move upper
 	public static final int		CMID_GLONE_GTZLWR = 112;	// GloneTz move lower
+	public static final int		CMID_GLONE_SHWTXT = 141;	// Show date times by text
 	public static final int		CMID_GLONE_SYSDAT = 191;	// System date setting
 	public static final int		CMID_GLONE_TGSEDI = 111;	// Tz set edit
 	public static final int		CMID_GLONE_JMPABS = 121;	// Jump absolute date
@@ -32,6 +33,7 @@ public class GloneUtils
 	public static final int		NC_DLGID_TZSET_ = 10;
 	public static final int		NC_DLGID_SELETZ = 11;		// timezone selector
 	public static final int		NC_DLGID_DATPIC = 12;		// date picker dlg
+	public static final int		NC_DLGID_SHWTXT = 13;		// show date times by text
 
 	public static FloatBuffer makeFloatBuffer(float[] values) {
 		ByteBuffer bb = ByteBuffer.allocateDirect(values.length * 4);

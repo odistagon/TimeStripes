@@ -10,7 +10,9 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -99,6 +101,12 @@ public class AyTop extends Activity
 	}
 
 	@Override
+	protected void onPostResume() {
+		GloneApp.getDoc().syncPreference(this);
+		super.onPostResume();
+	}
+
+	@Override
 	protected void onPause() {
 		super.onPause();
 		m_gv.onPause();
@@ -113,8 +121,6 @@ public class AyTop extends Activity
 	@Override
 	protected void onPrepareDialog(int id, Dialog dialog) {
 		switch(id) {
-		case GloneUtils.NC_DLGID_TEST01:
-			break;
 		case GloneUtils.NC_DLGID_DATPIC:
 			final GloneTz		gtz1 = GloneApp.getDoc().getTzList().get(0);
 			int[]				andt = gtz1.getTimeNumbers(GloneApp.getDoc().getTime());
@@ -129,19 +135,6 @@ public class AyTop extends Activity
 	protected Dialog onCreateDialog(int id) {
 		Dialog	dret = null;
 		switch(id) {
-		case GloneUtils.NC_DLGID_TEST01:
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			final String[] ITEM = new String[]{"Xxxx", "ê‘", "ê¬", "óŒ", "â©", "éá"};
-			builder.setTitle("debug");
-//			builder.setMessage("XXXX");
-			builder.setItems(ITEM, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					Log.v("Alert", "Item No : " + which);
-				}
-			});
-			dret = builder.create();
-			break;
 		case GloneUtils.NC_DLGID_DATPIC:
 			DatePickerDialog	dlg0 = new DatePickerDialog(this,
 				new DatePickerDialog.OnDateSetListener() {
@@ -200,6 +193,8 @@ public class AyTop extends Activity
 		MenuItem	mi0 = null;
 		mi0 = menu.add(0, GloneUtils.CMID_GLONE_SHWTXT, 0, "Show in text");
 		mi0.setIcon(android.R.drawable.stat_notify_sync);
+		mi0 = menu.add(0, GloneUtils.CMID_GLONE_PRFMAI, 0, "Preferences");
+		mi0.setIcon(android.R.drawable.stat_notify_sync);
 		mi0 = menu.add(0, GloneUtils.CMID_GLONE_SYSDAT, 0, "System Date Setting");
 		mi0.setIcon(android.R.drawable.stat_notify_sync);
 		mi0 = menu.add(0, GloneUtils.CMID_GLONE_JMPABS, 0, "Jump absolute");
@@ -209,6 +204,8 @@ public class AyTop extends Activity
 		mi0 = menu.add(0, GloneUtils.CMID_GLONE_ZOOMIN, 0, "Zoom in");
 		mi0.setIcon(android.R.drawable.stat_notify_sync);
 		mi0 = menu.add(0, GloneUtils.CMID_GLONE_TGSEDI, 0, "Edit timezones");
+		mi0.setIcon(android.R.drawable.stat_notify_sync);
+		mi0 = menu.add(0, GloneUtils.CMID_GLONE_ABOUT_, 0, "About this app");
 		mi0.setIcon(android.R.drawable.stat_notify_sync);
 
 		return super.onCreateOptionsMenu(menu);
@@ -220,6 +217,11 @@ public class AyTop extends Activity
 		case GloneUtils.CMID_GLONE_SHWTXT:
 			showDialog(GloneUtils.NC_DLGID_SHWTXT);
 			break;
+		case GloneUtils.CMID_GLONE_PRFMAI:	{
+			Intent	i0 = new Intent(GloneApp.getContext(), (new AyPrefMain()).getClass());
+			i0.setAction(Intent.ACTION_VIEW);
+			startActivityForResult(i0, 0);
+		}	break;
 		case GloneUtils.CMID_GLONE_SYSDAT:
 			startActivity(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS));
 			break;
@@ -232,11 +234,16 @@ public class AyTop extends Activity
 		case GloneUtils.CMID_GLONE_ZOOMIN:
 			m_gv.zoomIn(+1.0f);
 			break;
-		case GloneUtils.CMID_GLONE_TGSEDI:
+		case GloneUtils.CMID_GLONE_TGSEDI:	{
 			Intent	i0 = new Intent(GloneApp.getContext(), (new AyTzSet()).getClass());
 			i0.setAction(Intent.ACTION_VIEW);
 			startActivityForResult(i0, 0);
-			break;
+		}	break;
+		case GloneUtils.CMID_GLONE_ABOUT_:	{
+			Intent	i0 = new Intent(GloneApp.getContext(), (new AyAbout()).getClass());
+			i0.setAction(Intent.ACTION_VIEW);
+			startActivityForResult(i0, 0);
+		}	break;
 		}
 		return super.onOptionsItemSelected(item);
 	}

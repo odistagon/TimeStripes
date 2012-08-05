@@ -14,7 +14,13 @@
 			</intent-filter>
 		</activity>
 
+		<activity android:label="@string/app_name" android:name=".AyPrefMain">
+		</activity>
+
 		<activity android:label="@string/app_name" android:name=".AyTzSet">
+		</activity>
+
+		<activity android:label="@string/app_name" android:name=".AyAbout">
 		</activity>
 
 	</application>

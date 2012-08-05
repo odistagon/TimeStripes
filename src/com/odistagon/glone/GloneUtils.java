@@ -17,13 +17,14 @@ public class GloneUtils
 	public static final int		CMID_GLONE_TEST03 = 903;
 	public static final int		CMID_GLONE_TEST04 = 904;
 	public static final int		CMID_GLONE_TEST05 = 905;
-//	public static final int		CMID_GLONE_GTZADD = 101;	// GloneTz add
+	public static final int		CMID_GLONE_PRFMAI = 101;	// Preference Activity
 	public static final int		CMID_GLONE_GTZEDI = 102;	// GloneTz edit
 	public static final int		CMID_GLONE_GTZDEL = 103;	// GloneTz delete
 	public static final int		CMID_GLONE_GTZUPR = 111;	// GloneTz move upper
 	public static final int		CMID_GLONE_GTZLWR = 112;	// GloneTz move lower
 	public static final int		CMID_GLONE_SHWTXT = 141;	// Show date times by text
 	public static final int		CMID_GLONE_SYSDAT = 191;	// System date setting
+	public static final int		CMID_GLONE_ABOUT_ = 199;	// About
 	public static final int		CMID_GLONE_TGSEDI = 111;	// Tz set edit
 	public static final int		CMID_GLONE_JMPABS = 121;	// Jump absolute date
 	public static final int		CMID_GLONE_ZOOMIN = 131;	// Zoom in

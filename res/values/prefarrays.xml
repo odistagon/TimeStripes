@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string-array name="stra_shwclk">
+		<item name="0">None</item>
+		<item name="1">System time</item>
+		<item name="2">First (right-most) TZ</item>
+	</string-array>
+
+</resources>

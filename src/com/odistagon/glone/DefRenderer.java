@@ -166,6 +166,9 @@ public class DefRenderer implements Renderer
 		Iterator<GloneTz>	it0 = altz.iterator();
 		final float			frmgn = m_fscrw * CF_RIGHMRGN;	// right margin
 		float				fm0 = (m_fscrw - frmgn) / altz.size();
+		if(fm0 > GlStripe.CRECTF_VTXHUR.right) {
+			fm0 = GlStripe.CRECTF_VTXHUR.right;
+		}
 		final int			ncharstz = 8;
 		float				frabc = (m_fscrh / 2f) / (GlStripe.CRECTF_VTXABC.bottom * (float)ncharstz);
 		float				fhorz = 0f;
@@ -225,18 +228,20 @@ public class DefRenderer implements Renderer
 
 		gl0.glDisable(GL10.GL_TEXTURE_2D);
 
-		// draw debug text
-		m_glstr.setColor(0xFF0000FF);
-		gl0.glScalef(0.3f, 0.3f, 1.0f);
-		gl0.glTranslatef(1.4f, 0.9f, 1.2f);
-		altz = m_doc.getTzList();
-		it0 = altz.iterator();
-		while(it0.hasNext()) {
-			GloneTz	tz0 = it0.next();
-			String	s0 = Float.toString(tz0.getDSTOffsetInTheDay(GloneApp.getDoc().getTime()));
-			m_glstr.setTextString(gl0, s0 + "*" + tz0.getDebugString(m_doc.getTime()));
-			m_glstr.draw(gl0);
-			gl0.glTranslatef(-0.1f, 0.2f, 0.0f);
+		if(GloneApp.getDoc().isDebug()) {
+			// draw debug text
+			m_glstr.setColor(0xFF0000FF);
+			gl0.glScalef(0.3f, 0.3f, 1.0f);
+			gl0.glTranslatef(1.4f, 0.9f, 1.2f);
+			altz = m_doc.getTzList();
+			it0 = altz.iterator();
+			while(it0.hasNext()) {
+				GloneTz	tz0 = it0.next();
+				String	s0 = Float.toString(tz0.getDSTOffsetInTheDay(GloneApp.getDoc().getTime()));
+				m_glstr.setTextString(gl0, s0 + "*" + tz0.getDebugString(m_doc.getTime()));
+				m_glstr.draw(gl0);
+				gl0.glTranslatef(-0.1f, 0.2f, 0.0f);
+			}
 		}
 
 		//
@@ -261,8 +266,8 @@ public class DefRenderer implements Renderer
 		m_lHorzReld = 0L;
 
 		// change order when distance go over a threshold
-		float	frmgn = m_fscrw * CF_RIGHMRGN;
-		float	fm0 = (m_fscrw - frmgn) / m_doc.getTzList().size();
+		final float	frmgn = m_fscrw * CF_RIGHMRGN;	// right margin
+		float		fm0 = (m_fscrw - frmgn) / m_doc.getTzList().size();
 //		Log.d("XXXX", "add (" + m_fHorzShift + ", " + f0);
 		if(m_fHorzShift > fm0) {
 			m_fHorzShift -= fm0;

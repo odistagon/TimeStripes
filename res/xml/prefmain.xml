@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<PreferenceCategory android:key="PCK_PRFMAI_1"
+		android:title="Display settings">
+
+	<CheckBoxPreference android:key="PK_DEBUG_"
+		android:title="Enable debug"
+		android:summary="Use debugging output"
+		android:defaultValue="false" />
+
+	<ListPreference android:key="PK_CLOKTZ"
+		android:title="Clock Timezone"
+		android:summary="Which TZ do you like in the main clock"
+		android:defaultValue="1" 
+		android:dialogTitle="Clock timezone"
+		android:entries="@array/stra_shwclk"
+		android:entryValues="@array/stra_shwclk" />
+
+	</PreferenceCategory>
+	
+<!-- 
+	android:dependency="perform_updates" />
+
+	<EditTextPreference
+		android:key="welcome_message"
+		android:title="Welcome Message" 
+		android:summary="Define the Welcome message to be shown"
+		android:dialogTitle="Welcome Message"
+		android:dialogMessage="Provide a message"    
+		android:defaultValue="Default welcome message" />
+ -->
+</PreferenceScreen>

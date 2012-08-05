@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
 import android.util.FloatMath;
 import android.util.Log;
 
@@ -19,6 +20,7 @@ public class GlOneDoc
 	private long				m_lTimePreserved;			// preserved system time ms. used when paused.
 	private long				m_lTimeAnimStart;
 	private ArrayList<GloneTz>	m_artzs;
+	private boolean				m_bdebug;
 
 	public static final long	CL_ANIMPERD = 2500L;		// ms. until fling anim stops
 
@@ -260,5 +262,18 @@ public class GlOneDoc
 			altmp.add(gtz0);
 		}
 		m_artzs = altmp;
+	}
+
+	public void syncPreference(Context ctxa) {
+		SharedPreferences	pref = PreferenceManager.getDefaultSharedPreferences(ctxa);
+		m_bdebug = pref.getBoolean("PK_DEBUG_", false);
+	}
+
+//	public void setDebug(boolean bdebug) {
+//		m_bdebug = bdebug;
+//	}
+
+	public boolean isDebug() {
+		return	m_bdebug;
 	}
 }

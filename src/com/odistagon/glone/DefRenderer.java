@@ -18,8 +18,9 @@ public class DefRenderer implements Renderer
 {
 	private int			m_nWidth;
 	private int			m_nHeight;
-	float				m_fscrw;						// screen width in opengl unit
-	float				m_fscrh;						// screen height in opengl unit
+	private float		m_fscrw;						// screen width in opengl unit
+	private float		m_fscrh;						// screen height in opengl unit
+	private float		m_frmgn;						// right margin in opengl unit
 
 	private int[]		m_nTextures = new int[1];
 	private int			m_nTextureId = 0;
@@ -87,6 +88,7 @@ public class DefRenderer implements Renderer
 
 		m_fscrh = calcClipHeight(GlStripe.CF_VTXHUR_Z);
 		m_fscrw = calcClipWidth(GlStripe.CF_VTXHUR_Z);
+		m_frmgn = (m_fscrw * CF_RIGHMRGN);
 		m_bNeedPersSet = true;
 	}
 
@@ -164,11 +166,7 @@ public class DefRenderer implements Renderer
 		gl0.glScalef(1.0f, m_fStripeScaleH, 1.0f);
 		// stripes
 		Iterator<GloneTz>	it0 = altz.iterator();
-		final float			frmgn = m_fscrw * CF_RIGHMRGN;	// right margin
-		float				fm0 = (m_fscrw - frmgn) / altz.size();
-		if(fm0 > GlStripe.CRECTF_VTXHUR.right) {
-			fm0 = GlStripe.CRECTF_VTXHUR.right;
-		}
+		float				fm0 = calcStripesShiftWidth();
 		final int			ncharstz = 8;
 		float				frabc = (m_fscrh / 2f) / (GlStripe.CRECTF_VTXABC.bottom * (float)ncharstz);
 		float				fhorz = 0f;
@@ -182,7 +180,7 @@ public class DefRenderer implements Renderer
 			m_fHorzShift = 0f;
 			m_lHorzReld = 0L;
 		}
-		gl0.glTranslatef(m_fscrw / 2f - (frmgn + GlStripe.CRECTF_VTXHUR.right)
+		gl0.glTranslatef(m_fscrw / 2f - (m_frmgn + GlStripe.CRECTF_VTXHUR.right)
 				+ fhorz, 0.0f, 0.0f);	// draw from right toward left edge 
 		while(it0.hasNext()) {
 			GloneTz	gtz0 = it0.next();
@@ -192,8 +190,8 @@ public class DefRenderer implements Renderer
 			// timezone names
 			String	s0 = gtz0.getTimeZoneId();
 			gl0.glPushMatrix();
-			gl0.glTranslatef(GlStripe.CRECTF_VTXHUR.right - GlStripe.CRECTF_VTXABC.right,
-					m_fscrh / 2 - GlStripe.CRECTF_VTXABC.bottom * 2f, 0f);
+			gl0.glTranslatef(GlStripe.CRECTF_VTXHUR.right - (frabc / (float)ncharstz / 2f),
+					m_fscrh / 2 - frabc / (float)ncharstz, 0f);
 			gl0.glScalef(frabc, frabc, 1f);
 			m_glstripe.drawAbcString(gl0, s0, ncharstz);
 			gl0.glPopMatrix();
@@ -250,6 +248,14 @@ public class DefRenderer implements Renderer
 		gl0.glDisable(GL10.GL_BLEND);
 	}
 
+	private float calcStripesShiftWidth() {
+		float	fm0 = (m_fscrw - m_frmgn) / GloneApp.getDoc().getTzList().size();
+		if(fm0 > GlStripe.CRECTF_VTXHUR.right) {
+			fm0 = GlStripe.CRECTF_VTXHUR.right;
+		}
+		return	fm0;
+	}
+
 	public void zoomIn(float frelative) {
 		addFovy(frelative * -10f);
 		m_bNeedPersSet = true;
@@ -266,8 +272,7 @@ public class DefRenderer implements Renderer
 		m_lHorzReld = 0L;
 
 		// change order when distance go over a threshold
-		final float	frmgn = m_fscrw * CF_RIGHMRGN;	// right margin
-		float		fm0 = (m_fscrw - frmgn) / m_doc.getTzList().size();
+		float		fm0 = calcStripesShiftWidth();
 //		Log.d("XXXX", "add (" + m_fHorzShift + ", " + f0);
 		if(m_fHorzShift > fm0) {
 			m_fHorzShift -= fm0;

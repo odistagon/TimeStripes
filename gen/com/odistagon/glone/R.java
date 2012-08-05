@@ -55,14 +55,39 @@ public final class R {
         public static final int main=0x7f030004;
     }
     public static final class string {
+        public static final int app_desc_long=0x7f060003;
         public static final int app_name=0x7f060001;
         public static final int app_vers=0x7f060002;
+        public static final int dlg_seltz_desc=0x7f060005;
+        public static final int dlg_seltz_title=0x7f060004;
+        public static final int dlg_tzset_desc=0x7f060009;
         public static final int hello=0x7f060000;
-        public static final int rs_dlg_neg=0x7f060007;
-        public static final int rs_dlg_pos=0x7f060006;
-        public static final int rs_seltzdlg_desc=0x7f060004;
-        public static final int rs_seltzdlg_filt=0x7f060005;
-        public static final int rs_seltzdlg_title=0x7f060003;
+        public static final int li_addnew=0x7f060020;
+        public static final int mi_jmpabs=0x7f060018;
+        public static final int mi_mdntz_=0x7f06001f;
+        public static final int mi_muptz_=0x7f06001e;
+        public static final int mi_pictz_=0x7f06001c;
+        public static final int mi_prefes=0x7f060017;
+        public static final int mi_remtz_=0x7f06001d;
+        public static final int mi_shwtxt=0x7f060016;
+        public static final int mi_zoomin=0x7f060019;
+        public static final int mi_zoomou=0x7f06001a;
+        public static final int mt_editz_=0x7f06001b;
+        public static final int pref_cloktz_dlgt=0x7f06000c;
+        public static final int pref_cloktz_s=0x7f06000d;
+        public static final int pref_cloktz_t=0x7f06000b;
+        public static final int pref_debug__s=0x7f060013;
+        public static final int pref_debug__t=0x7f060012;
+        public static final int pref_edittz_s=0x7f060010;
+        public static final int pref_edittz_t=0x7f06000f;
+        public static final int pref_lauabt_s=0x7f060015;
+        public static final int pref_lauabt_t=0x7f060014;
+        public static final int prefcat_disp=0x7f06000a;
+        public static final int prefcat_oths=0x7f060011;
+        public static final int prefcat_tzns=0x7f06000e;
+        public static final int rs_dlg_neg=0x7f060008;
+        public static final int rs_dlg_pos=0x7f060007;
+        public static final int rs_seltzdlg_filt=0x7f060006;
     }
     public static final class xml {
         public static final int prefmain=0x7f040000;

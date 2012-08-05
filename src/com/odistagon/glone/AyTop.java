@@ -10,13 +10,9 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,14 +39,14 @@ public class AyTop extends Activity
 		m_gv = new DefSurfaceView(this);
 		rl0.addView(m_gv, 0);
 
-		final Activity	atop = this;
+//		final Activity	atop = this;
 
 		//bottom toolbar buttons
 		View	v0 = findViewById(R.id.iv_main_menu);
 		v0.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				atop.openContextMenu(v);
+				//TODO
 			}
 		});
 		v0 = findViewById(R.id.iv_tb_zoomin);
@@ -191,22 +187,22 @@ public class AyTop extends Activity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuItem	mi0 = null;
-		mi0 = menu.add(0, GloneUtils.CMID_GLONE_SHWTXT, 0, "Show in text");
+		mi0 = menu.add(0, GloneUtils.CMID_GLONE_SHWTXT, 0, R.string.mi_shwtxt);
 		mi0.setIcon(android.R.drawable.stat_notify_sync);
-		mi0 = menu.add(0, GloneUtils.CMID_GLONE_PRFMAI, 0, "Preferences");
+		mi0 = menu.add(0, GloneUtils.CMID_GLONE_JMPABS, 0, R.string.mi_jmpabs);
 		mi0.setIcon(android.R.drawable.stat_notify_sync);
-		mi0 = menu.add(0, GloneUtils.CMID_GLONE_SYSDAT, 0, "System Date Setting");
+		mi0 = menu.add(0, GloneUtils.CMID_GLONE_ZOOMIN, 0, R.string.mi_zoomin);
+		mi0.setIcon(R.drawable.ic_menu_zoin);
+		mi0 = menu.add(0, GloneUtils.CMID_GLONE_ZOOMOU, 0, R.string.mi_zoomou);
+		mi0.setIcon(R.drawable.ic_menu_zout);
+		mi0 = menu.add(0, GloneUtils.CMID_GLONE_PRFMAI, 0, R.string.mi_prefes);
 		mi0.setIcon(android.R.drawable.stat_notify_sync);
-		mi0 = menu.add(0, GloneUtils.CMID_GLONE_JMPABS, 0, "Jump absolute");
-		mi0.setIcon(android.R.drawable.stat_notify_sync);
-		mi0 = menu.add(0, GloneUtils.CMID_GLONE_ZOOMOU, 0, "Zoom out");
-		mi0.setIcon(android.R.drawable.stat_notify_sync);
-		mi0 = menu.add(0, GloneUtils.CMID_GLONE_ZOOMIN, 0, "Zoom in");
-		mi0.setIcon(android.R.drawable.stat_notify_sync);
-		mi0 = menu.add(0, GloneUtils.CMID_GLONE_TGSEDI, 0, "Edit timezones");
-		mi0.setIcon(android.R.drawable.stat_notify_sync);
-		mi0 = menu.add(0, GloneUtils.CMID_GLONE_ABOUT_, 0, "About this app");
-		mi0.setIcon(android.R.drawable.stat_notify_sync);
+//		mi0 = menu.add(0, GloneUtils.CMID_GLONE_TGSEDI, 0, "Edit timezones");
+//		mi0.setIcon(android.R.drawable.stat_notify_sync);
+//		mi0 = menu.add(0, GloneUtils.CMID_GLONE_ABOUT_, 0, "About this app");
+//		mi0.setIcon(android.R.drawable.stat_notify_sync);
+//		mi0 = menu.add(0, GloneUtils.CMID_GLONE_SYSDAT, 0, "System Date Setting");
+//		mi0.setIcon(android.R.drawable.stat_notify_sync);
 
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -217,53 +213,34 @@ public class AyTop extends Activity
 		case GloneUtils.CMID_GLONE_SHWTXT:
 			showDialog(GloneUtils.NC_DLGID_SHWTXT);
 			break;
+		case GloneUtils.CMID_GLONE_JMPABS:
+			showDialog(GloneUtils.NC_DLGID_DATPIC);
+			break;
+		case GloneUtils.CMID_GLONE_ZOOMIN:
+			m_gv.zoomIn(+1.0f);
+			break;
+		case GloneUtils.CMID_GLONE_ZOOMOU:
+			m_gv.zoomIn(-1.0f);
+			break;
 		case GloneUtils.CMID_GLONE_PRFMAI:	{
 			Intent	i0 = new Intent(GloneApp.getContext(), (new AyPrefMain()).getClass());
 			i0.setAction(Intent.ACTION_VIEW);
 			startActivityForResult(i0, 0);
 		}	break;
-		case GloneUtils.CMID_GLONE_SYSDAT:
-			startActivity(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS));
-			break;
-		case GloneUtils.CMID_GLONE_JMPABS:
-			showDialog(GloneUtils.NC_DLGID_DATPIC);
-			break;
-		case GloneUtils.CMID_GLONE_ZOOMOU:
-			m_gv.zoomIn(-1.0f);
-			break;
-		case GloneUtils.CMID_GLONE_ZOOMIN:
-			m_gv.zoomIn(+1.0f);
-			break;
-		case GloneUtils.CMID_GLONE_TGSEDI:	{
-			Intent	i0 = new Intent(GloneApp.getContext(), (new AyTzSet()).getClass());
-			i0.setAction(Intent.ACTION_VIEW);
-			startActivityForResult(i0, 0);
-		}	break;
-		case GloneUtils.CMID_GLONE_ABOUT_:	{
-			Intent	i0 = new Intent(GloneApp.getContext(), (new AyAbout()).getClass());
-			i0.setAction(Intent.ACTION_VIEW);
-			startActivityForResult(i0, 0);
-		}	break;
+//		case GloneUtils.CMID_GLONE_TGSEDI:	{
+//			Intent	i0 = new Intent(GloneApp.getContext(), (new AyTzSet()).getClass());
+//			i0.setAction(Intent.ACTION_VIEW);
+//			startActivityForResult(i0, 0);
+//		}	break;
+//		case GloneUtils.CMID_GLONE_ABOUT_:	{
+//			Intent	i0 = new Intent(GloneApp.getContext(), (new AyAbout()).getClass());
+//			i0.setAction(Intent.ACTION_VIEW);
+//			startActivityForResult(i0, 0);
+//		}	break;
+//		case GloneUtils.CMID_GLONE_SYSDAT:
+//			startActivity(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS));
+//			break;
 		}
 		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		menu.setHeaderTitle("Menu");
-		menu.setHeaderIcon(android.R.drawable.ic_media_ff);
-		menu.add(0, GloneUtils.CMID_GLONE_TEST01, 0, "Show Profile ...");
-
-		super.onCreateContextMenu(menu, v, menuInfo);
-	}
-
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case GloneUtils.CMID_GLONE_TEST01:
-			return	true;
-		default:
-		}
-		return super.onContextItemSelected(item); 
 	}
 }

@@ -30,7 +30,7 @@ public class DlgSelTz extends Dialog
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.dlgseltz);
 		Resources	r0 = getContext().getResources();
-		setTitle(r0.getString(R.string.rs_seltzdlg_title));
+		setTitle(r0.getString(R.string.dlg_seltz_title));
 
 		{
 			final EditText	et0 = (EditText)findViewById(R.id.et_seltz_find);

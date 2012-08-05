@@ -61,7 +61,7 @@ public class GloneUtils
 					+ foffset + " " + (tz0.useDaylightTime() ? " [+DST]" : ""));
 			vliarg.setTag(gtzarg);
 		} else {
-			tv0.setText(" + add new");
+			tv0.setText(R.string.li_addnew);
 		}
 	}
 }

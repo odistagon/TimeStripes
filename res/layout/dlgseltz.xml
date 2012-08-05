@@ -6,7 +6,7 @@
 	android:orientation="vertical">
 
 	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:text="@string/rs_seltzdlg_desc" />
+		android:text="@string/dlg_seltz_desc" />
 
 	<LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:orientation="horizontal" >

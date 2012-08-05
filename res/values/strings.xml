@@ -1,11 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, Main!</string>
-    <string name="app_name">Time Stripes Beta</string><string name="app_vers">b 1.0</string>
-    <string name="rs_seltzdlg_title">Select timezone</string>
-    <string name="rs_seltzdlg_desc">Pick a timezone. You can use filter by putting in a part of the name (3 &lt; chars) into the box below and press the button.</string><string name="rs_seltzdlg_filt">Filter</string><string name="rs_dlg_pos">OK</string>
-    <string name="rs_dlg_neg">No</string>
-    
-    
-    
+
+	<string name="hello">Hello World, Main!</string>
+	<string name="app_name">Time Stripes Beta</string>
+	<string name="app_vers">b 1.0</string>
+	<string name="app_desc_long">&quot;Time Stripes&quot; is an app by that you can see how much is the time gap of between multiple timezones.\n\nPrograms, graphics and UI design:\n  openeddistagon@gmail.com\n\nFont licenser:\n  ....</string>
+	<string name="dlg_seltz_title">Pick a timezone</string>
+	<string name="dlg_seltz_desc">You can use filter by putting in a part of the name (3 &lt; chars) into the box below and press the button.</string>
+	<string name="rs_seltzdlg_filt">Filter</string>
+	<string name="rs_dlg_pos">OK</string>
+	<string name="rs_dlg_neg">No</string>
+	<string name="dlg_tzset_desc">Configure a set of timezones. You can add, alter and remove each item as you like.</string>
+
+	<string name="prefcat_disp">Display settings</string>
+	<string name="pref_cloktz_t">Clock timezone</string>
+	<string name="pref_cloktz_dlgt">Pick a clock timezone</string>
+	<string name="pref_cloktz_s">Which TZ do you like in the main clock</string>
+	<string name="prefcat_tzns">Timezone Settings</string>
+	<string name="pref_edittz_t">Edit timezone</string>
+	<string name="pref_edittz_s">Edit current combination of timezones</string>
+	<string name="prefcat_oths">Others</string>
+	<string name="pref_debug__t">Debug</string>
+	<string name="pref_debug__s">Enable debug output</string>
+	<string name="pref_lauabt_t">About</string>
+	<string name="pref_lauabt_s">Descriptions about this app</string>
+
+	<string name="mi_shwtxt">Show as text</string>
+	<string name="mi_prefes">Preferences</string>
+	<string name="mi_jmpabs">Jump absolute</string>
+	<string name="mi_zoomin">Zoom in</string>
+	<string name="mi_zoomou">Zoom out</string>
+
+	<string name="mt_editz_">Edit a timezone</string>
+	<string name="mi_pictz_">Pick a timezone</string>
+	<string name="mi_remtz_">Remove</string>
+	<string name="mi_muptz_">Move up</string>
+	<string name="mi_mdntz_">Move down</string>
+
+	<string name="li_addnew">+ Add new</string>
+
 </resources>

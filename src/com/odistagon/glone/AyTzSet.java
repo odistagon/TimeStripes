@@ -30,7 +30,7 @@ public class AyTzSet extends Activity
 
 		setContentView(R.layout.dlgtzset);
 		Resources	r0 = GloneApp.getContext().getResources();
-		setTitle(r0.getString(R.string.rs_seltzdlg_title));
+		setTitle(r0.getString(R.string.dlg_seltz_title));
 
 		ListView	lv0 = (ListView)findViewById(R.id.lv_seltz_main);
 		m_laTzSetList = new GloneTzSetListAdapter(this);
@@ -50,17 +50,17 @@ public class AyTzSet extends Activity
 			m_sTzIdOpr = ((GloneTz)o0).getTimeZoneId();
 		}
 
-		menu.setHeaderTitle("Menu");
+		menu.setHeaderTitle(R.string.mt_editz_);
 		menu.setHeaderIcon(android.R.drawable.ic_media_ff);
-		menu.add(0, GloneUtils.CMID_GLONE_GTZEDI, 0, "Pick a timezone ...");
+		menu.add(0, GloneUtils.CMID_GLONE_GTZEDI, 0, R.string.mi_pictz_);
 		if(o0 != null) {
 			menu.setHeaderIcon(android.R.drawable.ic_media_ff);
-			menu.add(0, GloneUtils.CMID_GLONE_GTZDEL, 0, "Remove ...");
+			menu.add(0, GloneUtils.CMID_GLONE_GTZDEL, 0, R.string.mi_remtz_);
 		}
 		menu.setHeaderIcon(android.R.drawable.ic_media_ff);
-		menu.add(0, GloneUtils.CMID_GLONE_GTZUPR, 0, "Move up");
+		menu.add(0, GloneUtils.CMID_GLONE_GTZUPR, 0, R.string.mi_muptz_);
 		menu.setHeaderIcon(android.R.drawable.ic_media_ff);
-		menu.add(0, GloneUtils.CMID_GLONE_GTZLWR, 0, "Move down");
+		menu.add(0, GloneUtils.CMID_GLONE_GTZLWR, 0, R.string.mi_mdntz_);
 
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}

@@ -1,24 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<PreferenceCategory android:key="PCK_PRFMAI_1"
-		android:title="Display settings">
-
-	<CheckBoxPreference android:key="PK_DEBUG_"
-		android:title="Enable debug"
-		android:summary="Use debugging output"
-		android:defaultValue="false" />
+	<PreferenceCategory
+		android:title="@string/prefcat_disp">
 
 	<ListPreference android:key="PK_CLOKTZ"
-		android:title="Clock Timezone"
-		android:summary="Which TZ do you like in the main clock"
-		android:defaultValue="1" 
-		android:dialogTitle="Clock timezone"
-		android:entries="@array/stra_shwclk"
-		android:entryValues="@array/stra_shwclk" />
+		android:title="@string/pref_cloktz_t" android:dialogTitle="@string/pref_cloktz_dlgt"
+		android:summary="@string/pref_cloktz_s"
+		android:defaultValue="1"
+		android:entries="@array/stra_shwclk" android:entryValues="@array/stra_shwclk" />
 
 	</PreferenceCategory>
+
+	<PreferenceCategory
+		android:title="@string/prefcat_tzns">
+
+	<Preference android:key="PK_EDITTZ"
+		android:title="@string/pref_edittz_t" android:summary="@string/pref_edittz_s">
+		<intent
+			android:targetPackage="com.odistagon.glone"
+			android:targetClass="com.odistagon.glone.AyTzSet" />
+	</Preference>	
+
+	</PreferenceCategory>
+
+	<PreferenceCategory
+		android:title="@string/prefcat_oths">
+
+	<CheckBoxPreference android:key="PK_DEBUG_"
+		android:title="@string/pref_debug__t" android:summary="@string/pref_debug__s"
+		android:defaultValue="false" />
 	
+	<Preference android:key="PK_LAUABT"
+		android:title="@string/pref_lauabt_t" android:summary="@string/pref_lauabt_s">
+		<intent
+			android:targetPackage="com.odistagon.glone"
+			android:targetClass="com.odistagon.glone.AyAbout" />
+	</Preference>	
+
+	</PreferenceCategory>
 <!-- 
 	android:dependency="perform_updates" />
 

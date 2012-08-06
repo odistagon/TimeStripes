@@ -11,7 +11,9 @@
 	<string name="rs_dlg_pos">OK</string>
 	<string name="rs_dlg_neg">No</string>
 	<string name="dlg_tzset_desc">Configure a set of timezones. You can add, alter and remove each item as you like.</string>
-
+	<string name="dlg_datpic_t">Pick a goal date</string>
+	<string name="dlg_shwtxt_t">Date times</string>
+		
 	<string name="prefcat_disp">Display settings</string>
 	<string name="pref_cloktz_t">Clock timezone</string>
 	<string name="pref_cloktz_dlgt">Pick a clock timezone</string>
@@ -30,7 +32,9 @@
 	<string name="mi_jmpabs">Jump absolute</string>
 	<string name="mi_zoomin">Zoom in</string>
 	<string name="mi_zoomou">Zoom out</string>
-
+	<string name="mi_fdstne">Find next DST change</string>
+	<string name="mi_fdstpr">Find prev DST change</string>
+	
 	<string name="mt_editz_">Edit a timezone</string>
 	<string name="mi_pictz_">Pick a timezone</string>
 	<string name="mi_remtz_">Remove</string>

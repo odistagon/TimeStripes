@@ -142,13 +142,14 @@ public class AyTop extends Activity
 						c0.set(nyer, nmnt, nday);
 						GloneApp.getDoc().setTimeAbsolute(c0.getTimeInMillis(), true);
 					}
-				}, 0, 0, 0);	// date will be set onPrepareDialog()
-			dlg0.setTitle("Pick a goal date");
+				}, 2000, 1, 1);	// date will be set onPrepareDialog()
+								// but 0,0,0 or 1970,1,1 are not acceptable for some android versions even a tiny moment...
+			dlg0.setTitle(R.string.dlg_datpic_t);
 			dret = dlg0;
 			break;
 		case GloneUtils.NC_DLGID_SHWTXT: {
 			AlertDialog.Builder	dlgbldr = new AlertDialog.Builder(this);
-			dlgbldr.setTitle("Date times");
+			dlgbldr.setTitle(R.string.dlg_shwtxt_t);
 			long				lcurr = GloneApp.getDoc().getTime();
 			StringBuilder		sb0 = new StringBuilder();
 			ArrayList<GloneTz>	altz0 = GloneApp.getDoc().getTzList();
@@ -191,9 +192,13 @@ public class AyTop extends Activity
 		mi0.setIcon(android.R.drawable.stat_notify_sync);
 		mi0 = menu.add(0, GloneUtils.CMID_GLONE_JMPABS, 0, R.string.mi_jmpabs);
 		mi0.setIcon(android.R.drawable.stat_notify_sync);
-		mi0 = menu.add(0, GloneUtils.CMID_GLONE_ZOOMIN, 0, R.string.mi_zoomin);
+//		mi0 = menu.add(0, GloneUtils.CMID_GLONE_ZOOMIN, 0, R.string.mi_zoomin);
+//		mi0.setIcon(R.drawable.ic_menu_zoin);
+//		mi0 = menu.add(0, GloneUtils.CMID_GLONE_ZOOMOU, 0, R.string.mi_zoomou);
+//		mi0.setIcon(R.drawable.ic_menu_zout);
+		mi0 = menu.add(0, GloneUtils.CMID_GLONE_FDSTNE, 0, R.string.mi_fdstne);
 		mi0.setIcon(R.drawable.ic_menu_zoin);
-		mi0 = menu.add(0, GloneUtils.CMID_GLONE_ZOOMOU, 0, R.string.mi_zoomou);
+		mi0 = menu.add(0, GloneUtils.CMID_GLONE_FDSTPR, 0, R.string.mi_fdstpr);
 		mi0.setIcon(R.drawable.ic_menu_zout);
 		mi0 = menu.add(0, GloneUtils.CMID_GLONE_PRFMAI, 0, R.string.mi_prefes);
 		mi0.setIcon(android.R.drawable.stat_notify_sync);
@@ -216,12 +221,20 @@ public class AyTop extends Activity
 		case GloneUtils.CMID_GLONE_JMPABS:
 			showDialog(GloneUtils.NC_DLGID_DATPIC);
 			break;
-		case GloneUtils.CMID_GLONE_ZOOMIN:
-			m_gv.zoomIn(+1.0f);
-			break;
-		case GloneUtils.CMID_GLONE_ZOOMOU:
-			m_gv.zoomIn(-1.0f);
-			break;
+//		case GloneUtils.CMID_GLONE_ZOOMIN:
+//			m_gv.zoomIn(+1.0f);
+//			break;
+//		case GloneUtils.CMID_GLONE_ZOOMOU:
+//			m_gv.zoomIn(-1.0f);
+//			break;
+		case GloneUtils.CMID_GLONE_FDSTNE:
+		case GloneUtils.CMID_GLONE_FDSTPR:	{
+			GloneTz	gtz0 = GloneApp.getDoc().getTzList().get(0);
+			long	lgoto = gtz0.findNextDstChange(GloneApp.getDoc().getTime(),
+				item.getItemId() == GloneUtils.CMID_GLONE_FDSTNE);
+			if(lgoto > 0)
+				GloneApp.getDoc().setTimeAbsolute(lgoto, true);
+		}	break;
 		case GloneUtils.CMID_GLONE_PRFMAI:	{
 			Intent	i0 = new Intent(GloneApp.getContext(), (new AyPrefMain()).getClass());
 			i0.setAction(Intent.ACTION_VIEW);

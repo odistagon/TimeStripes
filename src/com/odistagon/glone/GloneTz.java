@@ -110,4 +110,30 @@ public class GloneTz
 		m_sTzId = gtz.m_sTzId;
 		m_tz = gtz.m_tz;
 	}
+
+	/**
+	 * @param ltime
+	 * @param bnext
+	 * @return next or previous dst offset change date in milliseconds.
+	 */
+	public long findNextDstChange(long ltime, boolean bnext) {
+		if(!getTimeZone().useDaylightTime())
+			return	-1;
+
+		Calendar	c0 = Calendar.getInstance(getTimeZone());
+		c0.setTimeInMillis(ltime);
+		long		lcurr = c0.get(Calendar.DST_OFFSET);
+		c0.set(Calendar.HOUR_OF_DAY, (bnext ? 3 : 1));
+		c0.set(Calendar.MINUTE, 0);
+		for(int i = 0; i < 300; i++) {	// note Calendar.DAY_OF_YEAR is not the number of days within year
+			long	l0 = c0.get(Calendar.DST_OFFSET);
+//			Log.d("XXXX", "(" + c0.getTime() + ", " + lcurr + ", " + l0 + ")");
+			if(lcurr != l0)
+				break;
+//			c0.roll(Calendar.DAY_OF_MONTH, bnext);	// never rolls month. completely useless.
+			c0.setTimeInMillis(c0.getTimeInMillis()
+					+ (24L * 60L * 60L * 1000L) * (bnext ? +1L : -1L));
+		}
+		return	c0.getTimeInMillis();
+	}
 }

@@ -29,6 +29,8 @@ public class GloneUtils
 	public static final int		CMID_GLONE_JMPABS = 121;	// Jump absolute date
 	public static final int		CMID_GLONE_ZOOMIN = 131;	// Zoom in
 	public static final int		CMID_GLONE_ZOOMOU = 132;	// Zoom out
+	public static final int		CMID_GLONE_FDSTNE = 133;	// Find next dst change
+	public static final int		CMID_GLONE_FDSTPR = 134;	// Find prev dst change
 	// dlg id
 	public static final int		NC_DLGID_TEST01 = 9;
 	public static final int		NC_DLGID_TZSET_ = 10;

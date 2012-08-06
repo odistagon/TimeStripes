@@ -4,7 +4,10 @@
 	<string name="hello">Hello World, Main!</string>
 	<string name="app_name">Time Stripes Beta</string>
 	<string name="app_vers">b 1.0</string>
-	<string name="app_desc_long">&quot;Time Stripes&quot; is an app by that you can see how much is the time gap of between multiple timezones.\n\nPrograms, graphics and UI design:\n  openeddistagon@gmail.com\n\nFont licenser:\n  ....</string>
+	<string name="app_desc_long_1">&quot;Time Stripes&quot; is an app by that you can see how much is the time gap of between multiple timezones.\n\nPrograms, graphics and UI design:\n  openeddistagon@gmail.com</string>
+	<string name="app_desc_long_font">This app is using &quot;Neuropol&quot; from Larabie fonts. all rights reserved.</string>
+	<string name="app_desc_long_src">You can see all source files public on https://github.com/odistagon/TimeStripes, under the licence of:</string>
+	<string name="app_desc_long_note">Note you CANNOT make and distribute derivatives.</string>
 	<string name="dlg_seltz_title">Pick a timezone</string>
 	<string name="dlg_seltz_desc">You can use filter by putting in a part of the name (3 &lt; chars) into the box below and press the button.</string>
 	<string name="rs_seltzdlg_filt">Filter</string>
@@ -13,7 +16,10 @@
 	<string name="dlg_tzset_desc">Configure a set of timezones. You can add, alter and remove each item as you like.</string>
 	<string name="dlg_datpic_t">Pick a goal date</string>
 	<string name="dlg_shwtxt_t">Date times</string>
-		
+	<string name="icdesc_font_neuropol">Neuropol font by Larabie fonts</string>
+	<string name="icdesc_cc">Creative Commons Attribution-NoDerivs</string>
+	<string name="icdesc_cc_url">http://creativecommons.org/licenses/by-nd/3.0/deed.en_US</string>
+
 	<string name="prefcat_disp">Display settings</string>
 	<string name="pref_cloktz_t">Clock timezone</string>
 	<string name="pref_cloktz_dlgt">Pick a clock timezone</string>

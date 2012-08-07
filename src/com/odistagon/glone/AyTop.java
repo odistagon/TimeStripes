@@ -163,7 +163,7 @@ public class AyTop extends Activity
 			}
 			final String		smsg = sb0.toString();
 			dlgbldr.setMessage(smsg);
-			dlgbldr.setNeutralButton(R.string.hello, new DialogInterface.OnClickListener() {
+			dlgbldr.setNeutralButton(R.string.dlgbtn_copycb, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					ClipboardManager	cbm0 = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE); 
@@ -176,7 +176,7 @@ public class AyTop extends Activity
 //					}
 				}
 			});
-			dlgbldr.setNegativeButton(R.string.hello, null);
+			dlgbldr.setNegativeButton(R.string.dlgbtn_close_, null);
 			dret = dlgbldr.create();
 		}	break;
 		default:

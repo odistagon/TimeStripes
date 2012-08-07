@@ -34,8 +34,16 @@ public class DefRenderer implements Renderer
 	private boolean		m_bNeedPersSet = true;			// perspective set.
 	private float		m_fHorzShift = 0f;
 	private long		m_lHorzReld = 0L;				// time when horizontal shift touch released
+	private float		m_fFovySrc;						// zoom src
+	private float		m_fFovyDst = 45f;				// FoVY (zoom dst)
+	private long		m_lTimeZoomStart;				// time when zoom started
+	private static final long	CL_ZOOMPERD = 1000L;
 
-	public static float			CF_PERS_FOVY = 45f;
+	private int			m_nframes;						// fps counter
+	private int			m_nframesprev;					// fps of previous second
+	private long		m_lfpsprev;						// the last time fps counted
+
+//	public static float			CF_PERS_FOVY = 45f;
 	public static final float	CF_PERS_NEAR = 2.0f;	// distance from eye point to near plane
 	public static final float	CF_PERS_FAR_ = 6.0f;	// distance from eye point to far plane
 	public static final float	CF_LOOK_EYZ = 4.0f;		// eye point
@@ -86,18 +94,18 @@ public class DefRenderer implements Renderer
 		gl0.glViewport(0, 0, width, height);
 		gl0.glClearColor(0.85f, 0.85f, 0.85f, 1.0f);	// set background color (RGBA)
 
-		m_fscrh = calcClipHeight(GlStripe.CF_VTXHUR_Z);
-		m_fscrw = calcClipWidth(GlStripe.CF_VTXHUR_Z);
-		m_frmgn = (m_fscrw * CF_RIGHMRGN);
 		m_bNeedPersSet = true;
 	}
 
 	@Override
 	public void onDrawFrame(GL10 gl0) {
+		m_fscrh = calcClipHeight(GlStripe.CF_VTXHUR_Z);
+		m_fscrw = calcClipWidth(GlStripe.CF_VTXHUR_Z);
+		m_frmgn = (m_fscrw * CF_RIGHMRGN);
 		if(m_bNeedPersSet) {
 			gl0.glMatrixMode(GL10.GL_PROJECTION);
 			gl0.glLoadIdentity();
-			GLU.gluPerspective(gl0, CF_PERS_FOVY, (float)m_nWidth / (float)m_nHeight, CF_PERS_NEAR, CF_PERS_FAR_);
+			GLU.gluPerspective(gl0, getCurrentFovy(), (float)m_nWidth / (float)m_nHeight, CF_PERS_NEAR, CF_PERS_FAR_);
 			GLU.gluLookAt(gl0, 0, 0, CF_LOOK_EYZ, 0, 0, 0, 0, 1.0f, 0);
 			m_bNeedPersSet = false;
 		}
@@ -109,14 +117,7 @@ public class DefRenderer implements Renderer
 		gl0.glLoadIdentity();
 
 		// make constant fps
-		// http://stackoverflow.com/questions/4772693/
-		long	ldt = System.currentTimeMillis() - m_lLastRendered;
-		try {
-			if(ldt < CL_FRAMPERD)
-				Thread.sleep(CL_FRAMPERD - ldt);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		waitConstant();
 
 		gl0.glEnable(GL10.GL_BLEND);
 		gl0.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
@@ -171,12 +172,15 @@ public class DefRenderer implements Renderer
 		float				frabc = (m_fscrh / 2f) / (GlStripe.CRECTF_VTXABC.bottom * (float)ncharstz);
 		float				fhorz = 0f;
 		if(m_lHorzReld == 0) {
+			// dragging
 			fhorz = m_fHorzShift;
 		} else
 		if(m_lHorzReld + CL_HORZRELD > System.currentTimeMillis()) {
+			// released and moving
 			float	f1 = ((float)(CL_HORZRELD - (System.currentTimeMillis() - m_lHorzReld)));
 			fhorz = (m_fHorzShift * (f1 / CL_HORZRELD));
 		} else {
+			// released -> reset
 			m_fHorzShift = 0f;
 			m_lHorzReld = 0L;
 		}
@@ -210,27 +214,41 @@ public class DefRenderer implements Renderer
 		gl0.glEnable(GL10.GL_TEXTURE_2D);
 
 		// date string
-		gl0.glTranslatef(m_fscrw / -2f + GlStripe.CRECTF_VTXNUM.right, -0.20f, 0f);
+		// day month year
+		float	flocmgn = 0.2f;
+		float	fscale0 = m_fscrw / ((GlStripe.CRECTF_VTXNUM.right * (2 + 4)) + GlStripe.CRECTF_VTXMON.right + flocmgn * 2f);
 		gl0.glPushMatrix();
+		gl0.glScalef(fscale0, fscale0, 1.0f);
+		gl0.glTranslatef((GlStripe.CRECTF_VTXNUM.right + GlStripe.CRECTF_VTXMON.right) * -1f, -0.20f, 0f);
 		m_glstripe.drawNumberString(gl0, andt[2], 2);	// day
-		gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right * 2f + 0.2f, 0f, 0f);
+		gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right * 2f + flocmgn, 0f, 0f);
 		m_glstripe.drawMonth(gl0, andt[1] - 1);		// month name
-		gl0.glTranslatef(GlStripe.CRECTF_VTXMON.right + 0.2f + GlStripe.CRECTF_VTXNUM.right * 2f, 0f, 0f);
+		gl0.glTranslatef(GlStripe.CRECTF_VTXMON.right + flocmgn + GlStripe.CRECTF_VTXNUM.right * 2f, 0f, 0f);
 		m_glstripe.drawNumberString(gl0, andt[0], 4);	// year
 		gl0.glPopMatrix();
+		// hour + min
 		gl0.glLoadIdentity();
-		float	fscale0 = (m_fscrw / 4f) / GlStripe.CRECTF_VTXNUM.right;
-		gl0.glTranslatef(m_fscrw * 1f / 4f, GlStripe.CRECTF_VTXNUM.bottom * fscale0 * -1f + -0.2f, 0f);
+		fscale0 = (m_fscrw / 4f) / GlStripe.CRECTF_VTXNUM.right;
+//		gl0.glTranslatef(m_fscrw * 1f / 4f, GlStripe.CRECTF_VTXNUM.bottom * fscale0 * -1f + -0.2f, 0f);
 		gl0.glScalef(fscale0, fscale0, 1.0f);
+		gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right, GlStripe.CRECTF_VTXNUM.bottom * -1f + -0.1f, 0f);
 		m_glstripe.drawNumberString(gl0, andt[4] * 100 + andt[5], 4);	// hour+min.
 
 		gl0.glDisable(GL10.GL_TEXTURE_2D);
 
 		if(GloneApp.getDoc().isDebug()) {
-			// draw debug text
 			m_glstr.setColor(0xFF0000FF);
-			gl0.glScalef(0.3f, 0.3f, 1.0f);
-			gl0.glTranslatef(1.4f, 0.9f, 1.2f);
+			// fps
+			countFramesPerSecond();
+			gl0.glLoadIdentity();
+			gl0.glScalef(0.7f, 0.7f, 1.0f);
+			gl0.glTranslatef(0f, -0.9f, 1.2f);
+			m_glstr.setTextString(gl0, "fps:" + m_nframesprev);
+			m_glstr.draw(gl0);
+			// date time string of each tz
+			gl0.glLoadIdentity();
+			gl0.glScalef(0.7f, 0.7f, 1.0f);
+			gl0.glTranslatef(0.4f, 0.1f, 1.2f);
 			altz = m_doc.getTzList();
 			it0 = altz.iterator();
 			while(it0.hasNext()) {
@@ -257,14 +275,31 @@ public class DefRenderer implements Renderer
 	}
 
 	public void zoomIn(float frelative) {
-		addFovy(frelative * -10f);
+		m_fFovySrc = m_fFovyDst;
+		m_fFovyDst += (frelative * -5f);
+		if(m_fFovyDst < 20f)
+			m_fFovyDst = 20f;
+		else if(m_fFovyDst > 120f)
+			m_fFovyDst = 120f;
+		m_lTimeZoomStart = System.currentTimeMillis();
 		m_bNeedPersSet = true;
 	}
 
-	public void addFovy(float fovy) {
-		CF_PERS_FOVY += fovy;
-		m_fscrh = calcClipHeight(GlStripe.CF_VTXHUR_Z);
-		m_fscrw = calcClipWidth(GlStripe.CF_VTXHUR_Z);
+	private float getCurrentFovy() {
+		if(m_lTimeZoomStart == 0L)
+			return	m_fFovyDst;
+
+		float	fret = m_fFovyDst;
+		long	lnow = System.currentTimeMillis();
+		if(CL_ZOOMPERD > lnow - m_lTimeZoomStart) {
+			float	frate = (float)(lnow - m_lTimeZoomStart) / (float)CL_ZOOMPERD;
+			Log.d("XXXX", m_fFovySrc + "->" + m_fFovyDst + " * " + frate + " =(" + lnow + "-" + m_lTimeZoomStart + ")/" + (float)CL_ZOOMPERD);
+			fret = m_fFovySrc + (m_fFovyDst - m_fFovySrc) * frate;
+		} else {
+			m_lTimeZoomStart = 0L;
+		}
+		m_bNeedPersSet = true;
+		return	fret;
 	}
 
 	public void addHorizontalShift(float farg) {
@@ -308,10 +343,40 @@ public class DefRenderer implements Renderer
 
 	/** Calculate and return the height in logical unit, how tall things are drew in view.
 	 */
-	public static float calcClipHeight(float fz) {
-		float	fradian = (float)Math.PI * ((CF_PERS_FOVY / 2f) / 180f);
+	public float calcClipHeight(float fz) {
+		float	fradian = (float)Math.PI * ((getCurrentFovy() / 2f) / 180f);
 		float	fret = (float)Math.tan(fradian) * (CF_LOOK_EYZ - fz);
 		return	fret * 2;
+	}
+
+	private void countFramesPerSecond() {
+		long	l0 = System.currentTimeMillis();
+		if(m_lfpsprev < (l0 - 1000L)) {
+			m_nframesprev = m_nframes;
+			m_nframes = 0;
+			m_lfpsprev = l0;
+		} else {
+			m_nframes++;
+		}
+	}
+
+	/** Wait constant period to make stable fps. When app is idle, 
+	 * stall fps and conserve battery consumptions.
+	 */
+	private void waitConstant() {
+		long	lwait = CL_FRAMPERD;
+//		if(m_fHorzShift == 0)			// drawing is active?
+//			lwait = (1000L / 2L);		// stalled
+
+		// make constant fps
+		// http://stackoverflow.com/questions/4772693/
+		long	ldt = System.currentTimeMillis() - m_lLastRendered;
+		try {
+			if(ldt < lwait)
+				Thread.sleep(lwait - ldt);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private FloatBuffer	m_buffOrgVerts = null;

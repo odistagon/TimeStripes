@@ -58,18 +58,20 @@ public class GloneUtils
 	 * @param gtzarg
 	 */
 	public static void setGloneTzListItem(View vliarg, GloneTz gtzarg) {
-		TextView	tv0 = null;
-		tv0 = (TextView)vliarg.findViewById(R.id.tv_ligtz_name);
+		TextView	tvName = (TextView)vliarg.findViewById(R.id.tv_ligtz_name);
+		TextView	tvId = (TextView)vliarg.findViewById(R.id.tv_ligtz_id);
 		if(gtzarg != null) {
 			TimeZone	tz0 = gtzarg.getTimeZone();
-			tv0.setText(tz0.getDisplayName());
-			tv0 = (TextView)vliarg.findViewById(R.id.tv_ligtz_id);
+			tvName.setText(tz0.getDisplayName());
 			float		foffset = (float)tz0.getOffset(System.currentTimeMillis()) / (60f * 60f * 1000f);
-			tv0.setText(gtzarg.getTimeZoneId() + (foffset >= 0f ? " GMT+" : " GMT")
+			tvId.setText(gtzarg.getTimeZoneId() + (foffset >= 0f ? " GMT+" : " GMT")
 					+ foffset + " " + (tz0.useDaylightTime() ? " [+DST]" : ""));
 			vliarg.setTag(gtzarg);
 		} else {
-			tv0.setText(R.string.li_addnew);
+			// "+add new" item
+			tvName.setText(R.string.li_addnew);
+			tvId.setText("");
+			vliarg.setTag(null);
 		}
 	}
 }

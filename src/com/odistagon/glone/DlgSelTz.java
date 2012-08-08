@@ -115,7 +115,7 @@ public class DlgSelTz extends Dialog
 				return;
 			}
 
-			String				s0 = sarg.toUpperCase();
+			String				s0 = sarg.toUpperCase().trim();
 			ArrayList<GloneTz>	al0 = new ArrayList<GloneTz>();
 			Iterator<GloneTz>	it0 = m_atz.iterator();
 			while(it0.hasNext()) {

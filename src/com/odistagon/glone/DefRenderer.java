@@ -142,8 +142,12 @@ public class DefRenderer implements Renderer
 
 		// draw objects
 		ArrayList<GloneTz>	altz = m_doc.getTzList();
-		GloneTz				gtz1 = altz.get(0);
-		int[]				andt = gtz1.getTimeNumbers(m_doc.getTime());
+		GloneTz				gtz1 = null;
+		int[]				andt = null;
+		if(altz.size() > 0) {
+			gtz1 = altz.get(0);
+			andt = gtz1.getTimeNumbers(m_doc.getTime());
+		}
 
 		// calc rotation
 		if(m_testcube != null) {
@@ -215,7 +219,7 @@ public class DefRenderer implements Renderer
 		// date string
 		// day month year
 		if(m_nClockTz != GloneUtils.NC_PREF_CLOCKTZ_NONE) {
-			if(m_nClockTz == GloneUtils.NC_PREF_CLOCKTZ_SYST) {
+			if(andt == null || m_nClockTz == GloneUtils.NC_PREF_CLOCKTZ_SYST) {
 				andt = m_doc.getSystemTz().getTimeNumbers(m_doc.getTime());
 			}
 

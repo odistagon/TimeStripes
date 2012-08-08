@@ -1,6 +1,7 @@
 package com.odistagon.glone;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 
 import org.json.JSONArray;
@@ -12,13 +13,13 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.util.FloatMath;
-import android.util.Log;
 
 public class GlOneDoc
 {
 	private long				m_lTimeOffset, m_lTimePrev;
 	private long				m_lTimePreserved;			// preserved system time ms. used when paused.
 	private long				m_lTimeAnimStart;
+	private GloneTz				m_tzSystem;
 	private ArrayList<GloneTz>	m_artzs;
 	private boolean				m_bdebug;
 
@@ -26,6 +27,8 @@ public class GlOneDoc
 
 	public GlOneDoc() {
 		m_lTimeOffset = 0L;
+		m_tzSystem = GloneTz.getInstance(
+				(GregorianCalendar.getInstance()).getTimeZone().getID());
 
 		readConfig();
 	}
@@ -198,6 +201,10 @@ public class GlOneDoc
 		return	(m_lTimePreserved > 0 ? 
 				lret + m_lTimePreserved :
 				lret + System.currentTimeMillis());
+	}
+
+	public GloneTz getSystemTz() {
+		return	m_tzSystem;
 	}
 
 	public ArrayList<GloneTz> getTzList() {

@@ -3,6 +3,7 @@ package com.odistagon.glone;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.Calendar;
 import java.util.TimeZone;
 
 import android.view.View;
@@ -37,6 +38,11 @@ public class GloneUtils
 	public static final int		NC_DLGID_SELETZ = 11;		// timezone selector
 	public static final int		NC_DLGID_DATPIC = 12;		// date picker dlg
 	public static final int		NC_DLGID_SHWTXT = 13;		// show date times by text
+	// prefs
+	public static final String	PK_CLOCKTZ = "PK_CLOKTZ";	// show date times by text
+	public static final int		NC_PREF_CLOCKTZ_NONE = 0;	// don't show clock
+	public static final int		NC_PREF_CLOCKTZ_FIRT = 1;	// first timezone
+	public static final int		NC_PREF_CLOCKTZ_SYST = 2;	// system timezone
 
 	public static FloatBuffer makeFloatBuffer(float[] values) {
 		ByteBuffer bb = ByteBuffer.allocateDirect(values.length * 4);

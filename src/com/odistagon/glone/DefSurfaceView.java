@@ -92,6 +92,10 @@ public class DefSurfaceView extends GLSurfaceView
 		});
 	}
 
+	public void setClockTz(int nClockTz) {
+		m_renderer.setClockTz(nClockTz);
+	}
+
 	public void zoomIn(float frelative) {
 		m_renderer.zoomIn(frelative);
 	}

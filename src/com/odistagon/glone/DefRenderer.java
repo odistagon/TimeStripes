@@ -42,6 +42,7 @@ public class DefRenderer implements Renderer
 	private int			m_nframes;						// fps counter
 	private int			m_nframesprev;					// fps of previous second
 	private long		m_lfpsprev;						// the last time fps counted
+	private int			m_nClockTz;						// which clock kind to be shown?
 
 //	public static float			CF_PERS_FOVY = 45f;
 	public static final float	CF_PERS_NEAR = 2.0f;	// distance from eye point to near plane
@@ -211,30 +212,36 @@ public class DefRenderer implements Renderer
 		drawOrg(gl0);
 		gl0.glPopMatrix();
 
-		gl0.glEnable(GL10.GL_TEXTURE_2D);
-
 		// date string
 		// day month year
-		float	flocmgn = 0.2f;
-		float	fscale0 = m_fscrw / ((GlStripe.CRECTF_VTXNUM.right * (2 + 4)) + GlStripe.CRECTF_VTXMON.right + flocmgn * 2f);
-		gl0.glPushMatrix();
-		gl0.glScalef(fscale0, fscale0, 1.0f);
-		gl0.glTranslatef((GlStripe.CRECTF_VTXNUM.right + GlStripe.CRECTF_VTXMON.right) * -1f, -0.20f, 0f);
-		m_glstripe.drawNumberString(gl0, andt[2], 2);	// day
-		gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right * 2f + flocmgn, 0f, 0f);
-		m_glstripe.drawMonth(gl0, andt[1] - 1);		// month name
-		gl0.glTranslatef(GlStripe.CRECTF_VTXMON.right + flocmgn + GlStripe.CRECTF_VTXNUM.right * 2f, 0f, 0f);
-		m_glstripe.drawNumberString(gl0, andt[0], 4);	// year
-		gl0.glPopMatrix();
-		// hour + min
-		gl0.glLoadIdentity();
-		fscale0 = (m_fscrw / 4f) / GlStripe.CRECTF_VTXNUM.right;
-//		gl0.glTranslatef(m_fscrw * 1f / 4f, GlStripe.CRECTF_VTXNUM.bottom * fscale0 * -1f + -0.2f, 0f);
-		gl0.glScalef(fscale0, fscale0, 1.0f);
-		gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right, GlStripe.CRECTF_VTXNUM.bottom * -1f + -0.1f, 0f);
-		m_glstripe.drawNumberString(gl0, andt[4] * 100 + andt[5], 4);	// hour+min.
+		if(m_nClockTz != GloneUtils.NC_PREF_CLOCKTZ_NONE) {
+			if(m_nClockTz == GloneUtils.NC_PREF_CLOCKTZ_SYST) {
+				andt = m_doc.getSystemTz().getTimeNumbers(m_doc.getTime());
+			}
 
-		gl0.glDisable(GL10.GL_TEXTURE_2D);
+			gl0.glEnable(GL10.GL_TEXTURE_2D);
+
+			float	flocmgn = 0.2f;
+			float	fscale0 = m_fscrw / ((GlStripe.CRECTF_VTXNUM.right * (2 + 4)) + GlStripe.CRECTF_VTXMON.right + flocmgn * 2f);
+			gl0.glPushMatrix();
+			gl0.glScalef(fscale0, fscale0, 1.0f);
+			gl0.glTranslatef((GlStripe.CRECTF_VTXNUM.right + GlStripe.CRECTF_VTXMON.right) * -1f, -0.20f, 0f);
+			m_glstripe.drawNumberString(gl0, andt[2], 2);	// day
+			gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right * 2f + flocmgn, 0f, 0f);
+			m_glstripe.drawMonth(gl0, andt[1] - 1);		// month name
+			gl0.glTranslatef(GlStripe.CRECTF_VTXMON.right + flocmgn + GlStripe.CRECTF_VTXNUM.right * 2f, 0f, 0f);
+			m_glstripe.drawNumberString(gl0, andt[0], 4);	// year
+			gl0.glPopMatrix();
+			// hour + min
+			gl0.glLoadIdentity();
+			fscale0 = (m_fscrw / 4f) / GlStripe.CRECTF_VTXNUM.right;
+			//		gl0.glTranslatef(m_fscrw * 1f / 4f, GlStripe.CRECTF_VTXNUM.bottom * fscale0 * -1f + -0.2f, 0f);
+			gl0.glScalef(fscale0, fscale0, 1.0f);
+			gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right, GlStripe.CRECTF_VTXNUM.bottom * -1f + -0.1f, 0f);
+			m_glstripe.drawNumberString(gl0, andt[4] * 100 + andt[5], 4);	// hour+min.
+
+			gl0.glDisable(GL10.GL_TEXTURE_2D);
+		}
 
 		if(GloneApp.getDoc().isDebug()) {
 			m_glstr.setColor(0xFF0000FF);
@@ -274,15 +281,22 @@ public class DefRenderer implements Renderer
 		return	fm0;
 	}
 
+	/**
+	 * @param frelative relative angle that will be added
+	 */
 	public void zoomIn(float frelative) {
-		m_fFovySrc = m_fFovyDst;
-		m_fFovyDst += (frelative * -5f);
+		m_fFovySrc = getCurrentFovy();
+		m_fFovyDst += frelative;
 		if(m_fFovyDst < 20f)
 			m_fFovyDst = 20f;
 		else if(m_fFovyDst > 120f)
 			m_fFovyDst = 120f;
 		m_lTimeZoomStart = System.currentTimeMillis();
 		m_bNeedPersSet = true;
+	}
+
+	public void setClockTz(int nClockTz) {
+		m_nClockTz = nClockTz;
 	}
 
 	private float getCurrentFovy() {

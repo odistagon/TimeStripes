@@ -26,6 +26,9 @@
 	<string name="pref_cloktz_t">Clock timezone</string>
 	<string name="pref_cloktz_dlgt">Pick a clock timezone</string>
 	<string name="pref_cloktz_s">Which TZ do you like in the main clock</string>
+	<string name="pref_cloktz_opt1">None</string>
+	<string name="pref_cloktz_opt2">First (right-most) TZ</string>
+	<string name="pref_cloktz_opt3">System TZ</string>
 	<string name="prefcat_tzns">Timezone Settings</string>
 	<string name="pref_edittz_t">Edit timezone</string>
 	<string name="pref_edittz_s">Edit current combination of timezones</string>

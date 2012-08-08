@@ -53,14 +53,14 @@ public class AyTzSet extends Activity
 		menu.setHeaderTitle(R.string.mt_editz_);
 		menu.setHeaderIcon(android.R.drawable.ic_media_ff);
 		menu.add(0, GloneUtils.CMID_GLONE_GTZEDI, 0, R.string.mi_pictz_);
-		if(o0 != null) {
+		if(o0 != null) {	// not for "add new" item
 			menu.setHeaderIcon(android.R.drawable.ic_media_ff);
 			menu.add(0, GloneUtils.CMID_GLONE_GTZDEL, 0, R.string.mi_remtz_);
+			menu.setHeaderIcon(android.R.drawable.ic_media_ff);
+			menu.add(0, GloneUtils.CMID_GLONE_GTZUPR, 0, R.string.mi_muptz_);
+			menu.setHeaderIcon(android.R.drawable.ic_media_ff);
+			menu.add(0, GloneUtils.CMID_GLONE_GTZLWR, 0, R.string.mi_mdntz_);
 		}
-		menu.setHeaderIcon(android.R.drawable.ic_media_ff);
-		menu.add(0, GloneUtils.CMID_GLONE_GTZUPR, 0, R.string.mi_muptz_);
-		menu.setHeaderIcon(android.R.drawable.ic_media_ff);
-		menu.add(0, GloneUtils.CMID_GLONE_GTZLWR, 0, R.string.mi_mdntz_);
 
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}

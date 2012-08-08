@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<string-array name="stra_shwclk">
-		<item name="0">None</item>
-		<item name="1">System time</item>
-		<item name="2">First (right-most) TZ</item>
+	<string-array name="stra_shwclk_key">
+		<item>@string/pref_cloktz_opt1</item>
+		<item>@string/pref_cloktz_opt2</item>
+		<item>@string/pref_cloktz_opt3</item>
 	</string-array>
-
+	<string-array name="stra_shwclk_val">
+		<item>0</item>
+		<item>1</item>
+		<item>2</item>
+	</string-array>
+	
 </resources>

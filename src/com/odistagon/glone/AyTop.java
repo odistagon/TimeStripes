@@ -10,7 +10,10 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
 import android.util.Log;
 import android.view.Menu;
@@ -53,14 +56,14 @@ public class AyTop extends Activity
 		v0.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				m_gv.zoomIn(1.1f);
+				m_gv.zoomIn(-7f);
 			}
 		});
 		v0 = findViewById(R.id.iv_tb_zoomou);
 		v0.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				m_gv.zoomIn(-1.1f);
+				m_gv.zoomIn(+7f);
 			}
 		});
 		// side toolbar buttons
@@ -99,6 +102,13 @@ public class AyTop extends Activity
 	@Override
 	protected void onPostResume() {
 		GloneApp.getDoc().syncPreference(this);
+
+		SharedPreferences	pref = PreferenceManager.getDefaultSharedPreferences(this);
+		String				s0 = pref.getString(
+				GloneUtils.PK_CLOCKTZ, Integer.toString(GloneUtils.NC_PREF_CLOCKTZ_FIRT));
+		int					nClockTz = Integer.parseInt(s0);
+		m_gv.setClockTz(nClockTz);
+
 		super.onPostResume();
 	}
 

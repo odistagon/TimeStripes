@@ -56,6 +56,9 @@ public class DefSurfaceView extends GLSurfaceView
 				// reverse calc pixels -> time
 				float	fmoved = (fcy / (float)m_renderer.getHeight()); 
 				long	ltimemoved = (long)(fmoved * (60f * 60f * 1000f) / GlStripe.getVtxHeightOfOneHour());
+				// set threashold not to be hypersensitive
+				if(Math.abs(ltimemoved) < (2f * 60f * 60f * 1000f))
+					return	false;
 
 //				Log.d(getClass().getName(), "moved (" + fmoved + " / " + m_renderer.getHeight() + ")");
 //				Log.d(getClass().getName(), "fling (" + fcy + " -> " + ltimemoved + ")");
@@ -84,6 +87,9 @@ public class DefSurfaceView extends GLSurfaceView
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_UP:
 					m_renderer.releaseHorizontal();
+					break;
+				case MotionEvent.ACTION_DOWN:
+					GloneApp.getDoc().addTimeOffset(0, false);
 					break;
 				}
 				m_gdtctr.onTouchEvent(event);

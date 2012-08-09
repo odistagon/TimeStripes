@@ -25,7 +25,7 @@ public final class R {
         public static final int icon=0x7f020007;
         public static final int ot_cc_by_nd=0x7f020008;
         public static final int ot_font_neuropol=0x7f020009;
-        public static final int timestr_m=0x7f02000a;
+        public static final int timestr_tex=0x7f02000a;
     }
     public static final class id {
         public static final int bt_seltz_find=0x7f070009;

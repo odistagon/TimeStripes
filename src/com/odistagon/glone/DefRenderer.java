@@ -80,7 +80,7 @@ public class DefRenderer implements Renderer
 		m_nTextureId = m_nTextures[0];
 		gl0.glBindTexture(GL10.GL_TEXTURE_2D, m_nTextureId);
 		// NOTE if image is read from another dpi resource, that will be resized automatically. 
-		Bitmap	bm0 = BitmapFactory.decodeResource(GloneApp.getContext().getResources(), R.drawable.timestr_m);
+		Bitmap	bm0 = BitmapFactory.decodeResource(GloneApp.getContext().getResources(), R.drawable.timestr_tex);
 		Log.d(getClass().getName(), "texture size: (u, v each must be x^2) (" + bm0.getWidth() + ", " + bm0.getHeight() + ")");
 		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bm0, 0);
 		gl0.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);

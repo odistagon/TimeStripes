@@ -21,23 +21,24 @@ public class GlStripe
 	private FloatBuffer	m_fbTexAbcs; 
 //	private FloatBuffer	m_buffColor;
 
-	private static final float	CFTEXSIZ = 1024f;
+	private static final float	CFTEXCX = 1024f;	// texture width in px
+	private static final float	CFTEXCY = 1024f;	// texture height in px
 	// hour stripe
 	public static final RectF	CRECTF_VTXHUR = new RectF(0.0f, 0.0f, 0.5f, 0.2f);
 	public static final float	CF_VTXHUR_Z = 1.2f;
-	private static final RectF	CRECTF_TEXHUR = new RectF(0.0f / CFTEXSIZ, 0.0f, 96f / CFTEXSIZ, 40f / CFTEXSIZ);
+	private static final RectF	CRECTF_TEXHUR = new RectF(0.0f / CFTEXCX, 0.0f, 96f / CFTEXCX, 40f / CFTEXCY);
 	// numbers
 	public static final RectF	CRECTF_VTXNUM = new RectF(0.0f, 0.0f, 0.2f, 0.15f);
 	public static final float	CF_VTXNUM_Z = 1.2f;
-	private static final RectF	CRECTF_TEXNUM = new RectF(96f / CFTEXSIZ, 0.0f, (96f + 96f) / CFTEXSIZ, 96f / CFTEXSIZ);
+	private static final RectF	CRECTF_TEXNUM = new RectF(96f / CFTEXCX, 0.0f, (96f + 96f) / CFTEXCX, 96f / CFTEXCY);
 	// name of months
 	public static final RectF	CRECTF_VTXMON = new RectF(0.0f, 0.0f, 0.3f, 0.15f);
 	public static final float	CF_VTXMON_Z = 1.2f;
-	private static final RectF	CRECTF_TEXMON = new RectF(96f * 2f / CFTEXSIZ, 0.0f, (96f * 2f + 96f) / CFTEXSIZ, 48f / CFTEXSIZ);
+	private static final RectF	CRECTF_TEXMON = new RectF(96f * 2f / CFTEXCX, 0.0f, (96f * 2f + 96f) / CFTEXCX, 48f / CFTEXCY);
 	// alphabets
 	public static final RectF	CRECTF_VTXABC = new RectF(0.0f, 0.0f, 0.1f, 0.1f);
 	public static final float	CF_VTXABC_Z = 1.2f;
-	private static final RectF	CRECTF_TEXABC = new RectF(864f / CFTEXSIZ, 0.0f, (864f + 32f) / CFTEXSIZ, 32f / CFTEXSIZ);
+	private static final RectF	CRECTF_TEXABC = new RectF(288f / CFTEXCX, 0.0f, (288f + 32f) / CFTEXCX, 32f / CFTEXCY);
 
 	public GlStripe() {
 	}

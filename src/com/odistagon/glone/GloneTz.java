@@ -134,6 +134,7 @@ public class GloneTz
 			c0.setTimeInMillis(c0.getTimeInMillis()
 					+ (24L * 60L * 60L * 1000L) * (bnext ? +1L : -1L));
 		}
+		c0.set(Calendar.HOUR_OF_DAY, 1);
 		return	c0.getTimeInMillis();
 	}
 }

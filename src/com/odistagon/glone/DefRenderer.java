@@ -238,11 +238,14 @@ public class DefRenderer implements Renderer
 			gl0.glPopMatrix();
 			// hour + min
 			gl0.glLoadIdentity();
-			fscale0 = (m_fscrw / 4f) / GlStripe.CRECTF_VTXNUM.right;
-			//		gl0.glTranslatef(m_fscrw * 1f / 4f, GlStripe.CRECTF_VTXNUM.bottom * fscale0 * -1f + -0.2f, 0f);
+			fscale0 = m_fscrw / (GlStripe.CRECTF_VTXNUM.right * 4f + GlStripe.CRECTF_VTXSIG.right * (2 + 1));
 			gl0.glScalef(fscale0, fscale0, 1.0f);
 			gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right, GlStripe.CRECTF_VTXNUM.bottom * -1f + -0.1f, 0f);
-			m_glstripe.drawNumberString(gl0, andt[4] * 100 + andt[5], 4);	// hour+min.
+			m_glstripe.drawNumberString(gl0, andt[5], 2);	// min.
+			gl0.glTranslatef((GlStripe.CRECTF_VTXNUM.right - GlStripe.CRECTF_VTXSIG.right) * 1f, 0f, 0f);
+			m_glstripe.drawSign(gl0, 0);					// :
+			gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right * -1f, 0f, 0f);
+			m_glstripe.drawNumberString(gl0, andt[4], 2);	// hour
 
 			gl0.glDisable(GL10.GL_TEXTURE_2D);
 		}

@@ -7,7 +7,6 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.RectF;
-import android.util.Log;
 
 public class GlStripe
 {
@@ -19,6 +18,8 @@ public class GlStripe
 	private FloatBuffer	m_fbTexMons; 
 	private FloatBuffer	m_fbVtxAbcs;
 	private FloatBuffer	m_fbTexAbcs; 
+	private FloatBuffer	m_fbVtxSigs;
+	private FloatBuffer	m_fbTexSigs; 
 //	private FloatBuffer	m_buffColor;
 
 	private static final float	CFTEXCX = 1024f;	// texture width in px
@@ -38,7 +39,11 @@ public class GlStripe
 	// alphabets
 	public static final RectF	CRECTF_VTXABC = new RectF(0.0f, 0.0f, 0.1f, 0.1f);
 	public static final float	CF_VTXABC_Z = 1.2f;
-	private static final RectF	CRECTF_TEXABC = new RectF(288f / CFTEXCX, 0.0f, (288f + 32f) / CFTEXCX, 32f / CFTEXCY);
+	private static final RectF	CRECTF_TEXABC = new RectF(96f * 3f / CFTEXCX, 0.0f, (96f * 3f + 32f) / CFTEXCX, 32f / CFTEXCY);
+	// signs
+	public static final RectF	CRECTF_VTXSIG = new RectF(0.0f, 0.0f, 0.06f, 0.15f);
+	public static final float	CF_VTXSIG_Z = 1.2f;
+	private static final RectF	CRECTF_TEXSIG = new RectF(192f / CFTEXCX, 576f / CFTEXCY, (192f + 32f) / CFTEXCX, 96f / CFTEXCY);
 
 	public GlStripe() {
 	}
@@ -63,6 +68,9 @@ public class GlStripe
 		// Alphabets
 		fb0 = makeVertBuffs(26 + 6, CRECTF_VTXABC, false, CF_VTXABC_Z, CRECTF_TEXABC);
 		m_fbVtxAbcs = fb0[0];	m_fbTexAbcs = fb0[1];
+		// Signs
+		fb0 = makeVertBuffs(3, CRECTF_VTXSIG, false, CF_VTXSIG_Z, CRECTF_TEXSIG);
+		m_fbVtxSigs = fb0[0];	m_fbTexSigs = fb0[1];
 	}
 
 	/** Makes coords for vertically arranged tile textures
@@ -105,11 +113,11 @@ public class GlStripe
 		for(int i = 0; i < nelems; i++) {
 			float	ftop, fbottom;
 			if(bstacktiledvtx) {
-				ftop = (((float)(nelems - i - 1)) * ftex.bottom);
-				fbottom = (((float)(nelems - i)) * ftex.bottom);
+				ftop = (((float)(nelems - i - 1)) * ftex.bottom) + ftex.top;
+				fbottom = (((float)(nelems - i)) * ftex.bottom) + ftex.top;
 			} else {
-				ftop = (((float)(i + 0)) * ftex.bottom);
-				fbottom = (((float)(i + 1)) * ftex.bottom);
+				ftop = (((float)(i + 0)) * ftex.bottom) + ftex.top;
+				fbottom = (((float)(i + 1)) * ftex.bottom) + ftex.top;
 			}
 			aftemp[nidx++] = ftex.left;		aftemp[nidx++] = fbottom;
 			aftemp[nidx++] = ftex.right;	aftemp[nidx++] = fbottom;
@@ -208,6 +216,17 @@ public class GlStripe
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, m_fbVtxMons);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glTexCoordPointer(2 ,GL10.GL_FLOAT, 0, m_fbTexMons);
+		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		gl.glNormal3f(0, 0, 1.0f);
+		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, narg * 4, 4);
+		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+	}
+
+	public void drawSign(GL10 gl, int narg) {
+		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, m_fbVtxSigs);
+		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glTexCoordPointer(2 ,GL10.GL_FLOAT, 0, m_fbTexSigs);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		gl.glNormal3f(0, 0, 1.0f);
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, narg * 4, 4);

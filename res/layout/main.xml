@@ -12,17 +12,17 @@
 		>
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/iv_tb_fastfw" android:contentDescription="@string/hello"
-			android:layout_marginTop="10dp" android:layout_marginBottom="10dp"
+			android:layout_marginTop="15dp" android:layout_marginBottom="15dp"
 			android:layout_marginRight="2dp"
 			android:src="@drawable/ic_menu_ffwd" />
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/iv_tb_thewld" android:contentDescription="@string/hello"
-			android:layout_marginTop="10dp" android:layout_marginBottom="10dp"
+			android:layout_marginTop="15dp" android:layout_marginBottom="15dp"
 			android:layout_marginRight="2dp"
 			android:src="@drawable/ic_menu_stwm" />
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/iv_tb_rewind" android:contentDescription="@string/hello"
-			android:layout_marginTop="10dp" android:layout_marginBottom="10dp"
+			android:layout_marginTop="15dp" android:layout_marginBottom="15dp"
 			android:layout_marginRight="2dp"
 			android:src="@drawable/ic_menu_rewd" />
 	</LinearLayout>
@@ -35,21 +35,23 @@
 		>
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/iv_main_menu" android:contentDescription="@string/hello"
-			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+			android:layout_marginLeft="15dp" android:layout_marginRight="15dp"
 			android:layout_marginBottom="2dp"
 			android:src="@drawable/icon" />
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/iv_tb_zoomin" android:contentDescription="@string/hello"
-			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+			android:layout_marginLeft="15dp" android:layout_marginRight="15dp"
 			android:layout_marginBottom="2dp"
 			android:src="@drawable/ic_menu_zoin" />
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/iv_tb_zoomou" android:contentDescription="@string/hello"
-			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+			android:layout_marginLeft="15dp" android:layout_marginRight="15dp"
 			android:layout_marginBottom="2dp"
 			android:src="@drawable/ic_menu_zout" />
+		<!-- 
 		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:text="@string/hello" />
+		 -->
 	</LinearLayout>
 
 </RelativeLayout>

@@ -18,8 +18,6 @@ public class DefRenderer implements Renderer
 {
 	private int			m_nWidth;
 	private int			m_nHeight;
-	private float		m_fscrw;						// screen width in opengl unit
-	private float		m_fscrh;						// screen height in opengl unit
 	private float		m_frmgn;						// right margin in opengl unit
 
 	private int[]		m_nTextures = new int[1];
@@ -49,7 +47,8 @@ public class DefRenderer implements Renderer
 	public static final float	CF_PERS_FAR_ = 6.0f;	// distance from eye point to far plane
 	public static final float	CF_LOOK_EYZ = 4.0f;		// eye point
 
-	private static final long	CL_FRAMPERD = 16L;		// constant frame period
+	private static final long	CL_FRMPRDAC = 16L;		// constant frame period (when active)
+	private static final long	CL_FRMPRDST = 250L;		// constant frame period (when stalled)
 	public static final long	CL_HORZRELD = 800L;		// time to released horizontal shift go back
 	private static final float	CF_RIGHMRGN = 0.1f;		// right margin where stripes not being drawn
 
@@ -100,9 +99,9 @@ public class DefRenderer implements Renderer
 
 	@Override
 	public void onDrawFrame(GL10 gl0) {
-		m_fscrh = calcClipHeight(GlStripe.CF_VTXHUR_Z);
-		m_fscrw = calcClipWidth(GlStripe.CF_VTXHUR_Z);
-		m_frmgn = (m_fscrw * CF_RIGHMRGN);
+		float	fscrh = calcClipHeight(GlStripe.CF_VTXHUR_Z);	// screen width in opengl unit
+		float	fscrw = calcClipWidth(GlStripe.CF_VTXHUR_Z);	// screen height in opengl unit
+		m_frmgn = (fscrw * CF_RIGHMRGN);
 		if(m_bNeedPersSet) {
 			gl0.glMatrixMode(GL10.GL_PROJECTION);
 			gl0.glLoadIdentity();
@@ -172,9 +171,9 @@ public class DefRenderer implements Renderer
 		gl0.glScalef(1.0f, m_fStripeScaleH, 1.0f);
 		// stripes
 		Iterator<GloneTz>	it0 = altz.iterator();
-		float				fm0 = calcStripesShiftWidth();
+		float				fm0 = calcStripesShiftWidth(fscrw);
 		final int			ncharstz = 8;
-		float				frabc = (m_fscrh / 2f) / (GlStripe.CRECTF_VTXABC.bottom * (float)ncharstz);
+		float				frabc = (fscrh / 2f) / (GlStripe.CRECTF_VTXABC.bottom * (float)ncharstz);
 		float				fhorz = 0f;
 		if(m_lHorzReld == 0) {
 			// dragging
@@ -189,19 +188,19 @@ public class DefRenderer implements Renderer
 			m_fHorzShift = 0f;
 			m_lHorzReld = 0L;
 		}
-		gl0.glTranslatef(m_fscrw / 2f - (m_frmgn + GlStripe.CRECTF_VTXHUR.right)
+		gl0.glTranslatef(fscrw / 2f - (m_frmgn + GlStripe.CRECTF_VTXHUR.right)
 				+ fhorz, 0.0f, 0.0f);	// draw from right toward left edge 
 		int		i = 0;
 		while(it0.hasNext()) {
 			GloneTz	gtz0 = it0.next();
 			gl0.glPushMatrix();
-			m_glstripe.drawStripe(gl0, gtz0, m_doc.getTime(), m_fscrh, (i++ == 0));
+			m_glstripe.drawStripe(gl0, gtz0, m_doc.getTime(), fscrh, (i++ == 0));
 			gl0.glPopMatrix();
 			// timezone names
 			String	s0 = gtz0.getTimeZoneId();
 			gl0.glPushMatrix();
 			gl0.glTranslatef(GlStripe.CRECTF_VTXHUR.right - (frabc / (float)ncharstz / 2f),
-					m_fscrh / 2 - frabc / (float)ncharstz, 0f);
+					fscrh / 2 - frabc / (float)ncharstz, 0f);
 			gl0.glScalef(frabc, frabc, 1f);
 			m_glstripe.drawAbcString(gl0, s0, ncharstz);
 			gl0.glPopMatrix();
@@ -214,7 +213,7 @@ public class DefRenderer implements Renderer
 		gl0.glLoadIdentity();
 		// org
 		gl0.glPushMatrix();
-		drawOrg(gl0);
+		drawOrg(gl0, fscrw, fscrh);
 		gl0.glPopMatrix();
 
 		// date string
@@ -227,7 +226,7 @@ public class DefRenderer implements Renderer
 			gl0.glEnable(GL10.GL_TEXTURE_2D);
 
 			float	flocmgn = 0.2f;
-			float	fscale0 = m_fscrw / ((GlStripe.CRECTF_VTXNUM.right * (2 + 4)) + GlStripe.CRECTF_VTXMON.right + flocmgn * 2f);
+			float	fscale0 = fscrw / ((GlStripe.CRECTF_VTXNUM.right * (2 + 4)) + GlStripe.CRECTF_VTXMON.right + flocmgn * 2f);
 			gl0.glPushMatrix();
 			gl0.glScalef(fscale0, fscale0, 1.0f);
 			gl0.glTranslatef((GlStripe.CRECTF_VTXNUM.right + GlStripe.CRECTF_VTXMON.right) * -1f, -0.20f, 0f);
@@ -239,7 +238,7 @@ public class DefRenderer implements Renderer
 			gl0.glPopMatrix();
 			// hour + min
 			gl0.glLoadIdentity();
-			fscale0 = m_fscrw / (GlStripe.CRECTF_VTXNUM.right * 4f + GlStripe.CRECTF_VTXSIG.right * (2 + 1));
+			fscale0 = fscrw / (GlStripe.CRECTF_VTXNUM.right * 4f + GlStripe.CRECTF_VTXSIG.right * (2 + 1));
 			gl0.glScalef(fscale0, fscale0, 1.0f);
 			gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right, GlStripe.CRECTF_VTXNUM.bottom * -1f + -0.1f, 0f);
 			m_glstripe.drawNumberString(gl0, andt[5], 2);	// min.
@@ -252,27 +251,32 @@ public class DefRenderer implements Renderer
 		}
 
 		if(GloneApp.getDoc().isDebug()) {
-			m_glstr.setColor(0xFF0000FF);
 			// fps
 			countFramesPerSecond();
 			gl0.glLoadIdentity();
-			gl0.glScalef(0.7f, 0.7f, 1.0f);
-			gl0.glTranslatef(0f, -0.9f, 1.2f);
-			m_glstr.setTextString(gl0, "fps:" + m_nframesprev);
-			m_glstr.draw(gl0);
-			// date time string of each tz
-			gl0.glLoadIdentity();
-			gl0.glScalef(0.7f, 0.7f, 1.0f);
-			gl0.glTranslatef(0.4f, 0.1f, 1.2f);
-			altz = m_doc.getTzList();
-			it0 = altz.iterator();
-			while(it0.hasNext()) {
-				GloneTz	tz0 = it0.next();
-				String	s0 = Float.toString(tz0.getDSTOffsetInTheDay(GloneApp.getDoc().getTime()));
-				m_glstr.setTextString(gl0, s0 + "*" + tz0.getDebugString(m_doc.getTime()));
-				m_glstr.draw(gl0);
-				gl0.glTranslatef(-0.1f, 0.2f, 0.0f);
-			}
+			gl0.glEnable(GL10.GL_TEXTURE_2D);
+			float	fscale0 = fscrw / (GlStripe.CRECTF_VTXNUM.right * 16f);
+			gl0.glScalef(fscale0, fscale0, 1.0f);
+			gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right * -7f,
+					GlStripe.CRECTF_VTXNUM.bottom * -1f, 0f);
+//					fscrh / 2f - GlStripe.CRECTF_VTXNUM.bottom * +1f, 0f);
+			m_glstripe.drawNumberString(gl0, m_nframesprev, 2);	// fps
+			gl0.glDisable(GL10.GL_TEXTURE_2D);
+
+//			m_glstr.setColor(0xFF0000FF);
+//			// date time string of each tz
+//			gl0.glLoadIdentity();
+//			gl0.glScalef(0.7f, 0.7f, 1.0f);
+//			gl0.glTranslatef(0.4f, 0.1f, 1.2f);
+//			altz = m_doc.getTzList();
+//			it0 = altz.iterator();
+//			while(it0.hasNext()) {
+//				GloneTz	tz0 = it0.next();
+//				String	s0 = Float.toString(tz0.getDSTOffsetInTheDay(GloneApp.getDoc().getTime()));
+//				m_glstr.setTextString(gl0, s0 + "*" + tz0.getDebugString(m_doc.getTime()));
+//				m_glstr.draw(gl0);
+//				gl0.glTranslatef(-0.1f, 0.2f, 0.0f);
+//			}
 		}
 
 		//
@@ -281,8 +285,8 @@ public class DefRenderer implements Renderer
 		gl0.glDisable(GL10.GL_BLEND);
 	}
 
-	private float calcStripesShiftWidth() {
-		float	fm0 = (m_fscrw - m_frmgn) / GloneApp.getDoc().getTzList().size();
+	private float calcStripesShiftWidth(float fScreenWidth) {
+		float	fm0 = (fScreenWidth - m_frmgn) / GloneApp.getDoc().getTzList().size();
 		if(fm0 > GlStripe.CRECTF_VTXHUR.right) {
 			fm0 = GlStripe.CRECTF_VTXHUR.right;
 		}
@@ -315,7 +319,7 @@ public class DefRenderer implements Renderer
 		long	lnow = System.currentTimeMillis();
 		if(CL_ZOOMPERD > lnow - m_lTimeZoomStart) {
 			float	frate = (float)(lnow - m_lTimeZoomStart) / (float)CL_ZOOMPERD;
-			Log.d("XXXX", m_fFovySrc + "->" + m_fFovyDst + " * " + frate + " =(" + lnow + "-" + m_lTimeZoomStart + ")/" + (float)CL_ZOOMPERD);
+//			Log.d("XXXX", m_fFovySrc + "->" + m_fFovyDst + " * " + frate + " =(" + lnow + "-" + m_lTimeZoomStart + ")/" + (float)CL_ZOOMPERD);
 			fret = m_fFovySrc + (m_fFovyDst - m_fFovySrc) * frate;
 		} else {
 			m_lTimeZoomStart = 0L;
@@ -329,7 +333,7 @@ public class DefRenderer implements Renderer
 		m_lHorzReld = 0L;
 
 		// change order when distance go over a threshold
-		float		fm0 = calcStripesShiftWidth();
+		float		fm0 = calcStripesShiftWidth(calcClipWidth(GlStripe.CF_VTXHUR_Z));
 //		Log.d("XXXX", "add (" + m_fHorzShift + ", " + f0);
 		if(m_fHorzShift > fm0) {
 			m_fHorzShift -= fm0;
@@ -386,9 +390,11 @@ public class DefRenderer implements Renderer
 	 * stall fps and conserve battery consumptions.
 	 */
 	private void waitConstant() {
-		long	lwait = CL_FRAMPERD;
-//		if(m_fHorzShift == 0)			// drawing is active?
-//			lwait = (1000L / 2L);		// stalled
+		long	lwait = CL_FRMPRDAC;
+		// drawing is active?
+		if(m_fHorzShift == 0 && m_lTimeZoomStart == 0
+				&& GloneApp.getDoc().isOnAnimation() == false)
+			lwait = CL_FRMPRDST;		// stalled
 
 		// make constant fps
 		// http://stackoverflow.com/questions/4772693/
@@ -426,13 +432,13 @@ public class DefRenderer implements Renderer
 	/** 
 	 * @param gl
 	 */
-	private void drawOrg(GL10 gl) {
+	private void drawOrg(GL10 gl, float fScreenWidth, float fScreenHeight) {
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, m_buffOrgVerts);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glColorPointer(4, GL10.GL_FLOAT, 0, m_buffOrgColrs);
 		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
-		gl.glScalef(m_fscrw, m_fscrh, 1f);
+		gl.glScalef(fScreenWidth, fScreenHeight, 1f);
 		gl.glNormal3f(0, 0, 1.0f);
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);

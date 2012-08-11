@@ -5,29 +5,47 @@
 	>
 
 	<!-- right toolbar -->
-	<LinearLayout
-		android:id="@+id/lo_main_right"
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/lo_main_vert"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
 		android:orientation="vertical" android:gravity="right|center_vertical"
 		>
-		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+		<ImageView android:layout_width="wrap_content" android:layout_height="0dp"
 			android:id="@+id/iv_tb_fastfw" android:contentDescription="@string/hello"
-			android:layout_marginTop="15dp" android:layout_marginBottom="15dp"
+			android:height="0dp" android:layout_weight="1"
 			android:layout_marginRight="2dp"
 			android:src="@drawable/ic_menu_ffwd" />
-		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+		<ImageView android:layout_width="wrap_content" android:layout_height="0dp"
 			android:id="@+id/iv_tb_thewld" android:contentDescription="@string/hello"
-			android:layout_marginTop="15dp" android:layout_marginBottom="15dp"
+			android:height="0dp" android:layout_weight="1"
 			android:layout_marginRight="2dp"
 			android:src="@drawable/ic_menu_stwm" />
-		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+		<ImageView android:layout_width="wrap_content" android:layout_height="0dp"
 			android:id="@+id/iv_tb_rewind" android:contentDescription="@string/hello"
-			android:layout_marginTop="15dp" android:layout_marginBottom="15dp"
+			android:height="0dp" android:layout_weight="1"
 			android:layout_marginRight="2dp"
 			android:src="@drawable/ic_menu_rewd" />
+
+		<ImageView android:layout_width="wrap_content" android:layout_height="0dp"
+			android:id="@+id/iv_main_menu" android:contentDescription="@string/hello"
+			android:height="0dp" android:layout_weight="1"
+			android:layout_marginRight="2dp"
+			android:src="@drawable/icon" />
+		
+		<ImageView android:layout_width="wrap_content" android:layout_height="0dp"
+			android:id="@+id/iv_tb_zoomin" android:contentDescription="@string/hello"
+			android:height="0dp" android:layout_weight="1"
+			android:layout_marginRight="2dp"
+			android:src="@drawable/ic_menu_zoin" />
+		<ImageView android:layout_width="wrap_content" android:layout_height="0dp"
+			android:id="@+id/iv_tb_zoomou" android:contentDescription="@string/hello"
+			android:height="0dp" android:layout_weight="1"
+			android:layout_marginRight="2dp"
+			android:src="@drawable/ic_menu_zout" />
 	</LinearLayout>
 
 	<!-- bottom toolbar -->
+	<!-- 
 	<LinearLayout
 		android:id="@+id/lo_main_bottom"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
@@ -48,10 +66,7 @@
 			android:layout_marginLeft="15dp" android:layout_marginRight="15dp"
 			android:layout_marginBottom="2dp"
 			android:src="@drawable/ic_menu_zout" />
-		<!-- 
-		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:text="@string/hello" />
-		 -->
 	</LinearLayout>
+	 -->
 
 </RelativeLayout>

@@ -11,7 +11,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
@@ -38,6 +37,7 @@ public class AyTop extends Activity
 		// main layout
 		setContentView(R.layout.main);
 		RelativeLayout	rl0 = (RelativeLayout)findViewById(R.id.lo_main_rl0);
+//		LinearLayout	rl0 = (LinearLayout)findViewById(R.id.lo_main_vert);
 		// insert GL view into the main layout
 		m_gv = new DefSurfaceView(this);
 		rl0.addView(m_gv, 0);

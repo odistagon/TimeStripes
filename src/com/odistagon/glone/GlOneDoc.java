@@ -188,6 +188,10 @@ public class GlOneDoc
 		m_lTimeOffset += ltime;
 	}
 
+	public boolean isOnAnimation() {
+		return	(m_lTimeAnimStart != 0);
+	}
+
 	public long getTime() {
 		long	ldiff = System.currentTimeMillis() - m_lTimeAnimStart;
 		long	lret = m_lTimeOffset;
@@ -197,6 +201,8 @@ public class GlOneDoc
 				f0 = FloatMath.cos((f0 + 2) * 0.5f * (float)Math.PI) + 1f;	// use a part of sin curve for smooth flick stop
 			long	l0 = (long)((float)(m_lTimeOffset - m_lTimePrev) * f0);
 			lret -= l0;
+		} else {
+			m_lTimeAnimStart = 0L;	// reset
 		}
 		return	(m_lTimePreserved > 0 ? 
 				lret + m_lTimePreserved :

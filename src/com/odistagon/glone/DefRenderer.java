@@ -202,7 +202,7 @@ public class DefRenderer implements Renderer
 			gl0.glTranslatef(GlStripe.CRECTF_VTXHUR.right - (frabc / (float)ncharstz / 2f),
 					fscrh / 2 - frabc / (float)ncharstz, 0f);
 			gl0.glScalef(frabc, frabc, 1f);
-			m_glstripe.drawAbcString(gl0, s0, ncharstz);
+			m_glstripe.drawAbcString(gl0, s0, ncharstz, true);
 			gl0.glPopMatrix();
 			gl0.glTranslatef(fm0 * -1f, 0.0f, 0.0f);	// -> left
 		}

@@ -49,7 +49,9 @@ public class AyTop extends Activity
 		v0.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//TODO
+				Intent	i0 = new Intent(GloneApp.getContext(), (new AyPrefMain()).getClass());
+				i0.setAction(Intent.ACTION_VIEW);
+				startActivityForResult(i0, 0);
 			}
 		});
 		v0 = findViewById(R.id.iv_tb_zoomin);
@@ -207,11 +209,11 @@ public class AyTop extends Activity
 //		mi0 = menu.add(0, GloneUtils.CMID_GLONE_ZOOMOU, 0, R.string.mi_zoomou);
 //		mi0.setIcon(R.drawable.ic_menu_zout);
 		mi0 = menu.add(0, GloneUtils.CMID_GLONE_FDSTNE, 0, R.string.mi_fdstne);
-		mi0.setIcon(R.drawable.ic_menu_zoin);
+		mi0.setIcon(R.drawable.ic_menu_ffwd);
 		mi0 = menu.add(0, GloneUtils.CMID_GLONE_FDSTPR, 0, R.string.mi_fdstpr);
-		mi0.setIcon(R.drawable.ic_menu_zout);
+		mi0.setIcon(R.drawable.ic_menu_rewd);
 		mi0 = menu.add(0, GloneUtils.CMID_GLONE_PRFMAI, 0, R.string.mi_prefes);
-		mi0.setIcon(android.R.drawable.stat_notify_sync);
+		mi0.setIcon(R.drawable.ic_menu_sett);
 //		mi0 = menu.add(0, GloneUtils.CMID_GLONE_TGSEDI, 0, "Edit timezones");
 //		mi0.setIcon(android.R.drawable.stat_notify_sync);
 //		mi0 = menu.add(0, GloneUtils.CMID_GLONE_ABOUT_, 0, "About this app");

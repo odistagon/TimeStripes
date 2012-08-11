@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/lo_main_rl0"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
-	>
+	><!-- this Layout is needed for placeholder of GlSurfaceView -->
 
 	<!-- right toolbar -->
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -30,7 +30,7 @@
 			android:id="@+id/iv_main_menu" android:contentDescription="@string/hello"
 			android:height="0dp" android:layout_weight="1"
 			android:layout_marginRight="2dp"
-			android:src="@drawable/icon" />
+			android:src="@drawable/ic_menu_sett" />
 		
 		<ImageView android:layout_width="wrap_content" android:layout_height="0dp"
 			android:id="@+id/iv_tb_zoomin" android:contentDescription="@string/hello"
@@ -55,7 +55,7 @@
 			android:id="@+id/iv_main_menu" android:contentDescription="@string/hello"
 			android:layout_marginLeft="15dp" android:layout_marginRight="15dp"
 			android:layout_marginBottom="2dp"
-			android:src="@drawable/icon" />
+			android:src="@drawable/ic_menu_sett" />
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/iv_tb_zoomin" android:contentDescription="@string/hello"
 			android:layout_marginLeft="15dp" android:layout_marginRight="15dp"

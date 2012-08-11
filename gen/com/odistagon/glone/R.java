@@ -18,14 +18,15 @@ public final class R {
         public static final int ic_launcher_timestr=0x7f020000;
         public static final int ic_menu_ffwd=0x7f020001;
         public static final int ic_menu_rewd=0x7f020002;
-        public static final int ic_menu_stwm=0x7f020003;
-        public static final int ic_menu_stwp=0x7f020004;
-        public static final int ic_menu_zoin=0x7f020005;
-        public static final int ic_menu_zout=0x7f020006;
-        public static final int icon=0x7f020007;
-        public static final int ot_cc_by_nd=0x7f020008;
-        public static final int ot_font_neuropol=0x7f020009;
-        public static final int timestr_tex=0x7f02000a;
+        public static final int ic_menu_sett=0x7f020003;
+        public static final int ic_menu_stwm=0x7f020004;
+        public static final int ic_menu_stwp=0x7f020005;
+        public static final int ic_menu_zoin=0x7f020006;
+        public static final int ic_menu_zout=0x7f020007;
+        public static final int icon=0x7f020008;
+        public static final int ot_cc_by_nd=0x7f020009;
+        public static final int ot_font_neuropol=0x7f02000a;
+        public static final int timestr_tex=0x7f02000b;
     }
     public static final class id {
         public static final int bt_seltz_find=0x7f070009;

@@ -12,6 +12,7 @@ public class GlStripe
 {
 	private FloatBuffer	m_fbVtxStrp;
 	private FloatBuffer	m_fbTexStrp; 
+	private FloatBuffer	m_fbTexStr0; 
 	private FloatBuffer	m_fbVtxNums;
 	private FloatBuffer	m_fbTexNums; 
 	private FloatBuffer	m_fbVtxMons;
@@ -28,22 +29,23 @@ public class GlStripe
 	public static final RectF	CRECTF_VTXHUR = new RectF(0.0f, 0.0f, 0.5f, 0.2f);
 	public static final float	CF_VTXHUR_Z = 1.2f;
 	private static final RectF	CRECTF_TEXHUR = new RectF(0.0f / CFTEXCX, 0.0f, 96f / CFTEXCX, 40f / CFTEXCY);
+	private static final RectF	CRECTF_TEXHR0 = new RectF(96f * 1f / CFTEXCX, 0.0f, (96f * 1f + 96f) / CFTEXCX, 40f / CFTEXCY);
 	// numbers
 	public static final RectF	CRECTF_VTXNUM = new RectF(0.0f, 0.0f, 0.2f, 0.15f);
 	public static final float	CF_VTXNUM_Z = 1.2f;
-	private static final RectF	CRECTF_TEXNUM = new RectF(96f / CFTEXCX, 0.0f, (96f + 96f) / CFTEXCX, 96f / CFTEXCY);
+	private static final RectF	CRECTF_TEXNUM = new RectF(96f * 2f / CFTEXCX, 0.0f, (96f * 2f + 96f) / CFTEXCX, 96f / CFTEXCY);
 	// name of months
 	public static final RectF	CRECTF_VTXMON = new RectF(0.0f, 0.0f, 0.3f, 0.15f);
 	public static final float	CF_VTXMON_Z = 1.2f;
-	private static final RectF	CRECTF_TEXMON = new RectF(96f * 2f / CFTEXCX, 0.0f, (96f * 2f + 96f) / CFTEXCX, 48f / CFTEXCY);
+	private static final RectF	CRECTF_TEXMON = new RectF(96f * 3f / CFTEXCX, 0.0f, (96f * 3f + 96f) / CFTEXCX, 48f / CFTEXCY);
 	// alphabets
 	public static final RectF	CRECTF_VTXABC = new RectF(0.0f, 0.0f, 0.1f, 0.1f);
 	public static final float	CF_VTXABC_Z = 1.2f;
-	private static final RectF	CRECTF_TEXABC = new RectF(96f * 3f / CFTEXCX, 0.0f, (96f * 3f + 32f) / CFTEXCX, 32f / CFTEXCY);
+	private static final RectF	CRECTF_TEXABC = new RectF(96f * 4f / CFTEXCX, 0.0f, (96f * 4f + 32f) / CFTEXCX, 32f / CFTEXCY);
 	// signs
 	public static final RectF	CRECTF_VTXSIG = new RectF(0.0f, 0.0f, 0.06f, 0.15f);
 	public static final float	CF_VTXSIG_Z = 1.2f;
-	private static final RectF	CRECTF_TEXSIG = new RectF(192f / CFTEXCX, 576f / CFTEXCY, (192f + 32f) / CFTEXCX, 96f / CFTEXCY);
+	private static final RectF	CRECTF_TEXSIG = new RectF(96f * 3f / CFTEXCX, 576f / CFTEXCY, (96f * 3f + 32f) / CFTEXCX, 96f / CFTEXCY);
 
 	public GlStripe() {
 	}
@@ -55,22 +57,22 @@ public class GlStripe
 	/** call this in Renderer#onSurfaceCreated()
 	 */
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-		FloatBuffer	fb0[] = null;
 		// Stripe
-		fb0 = makeVertBuffs(24, CRECTF_VTXHUR, true, CF_VTXHUR_Z, CRECTF_TEXHUR);
-		m_fbVtxStrp = fb0[0];	m_fbTexStrp = fb0[1];
+		m_fbVtxStrp = makeVertBuffs(24, CRECTF_VTXHUR, true, CF_VTXHUR_Z);
+		m_fbTexStrp = makeTexBuffs(24, CRECTF_TEXHUR, true);
+		m_fbTexStr0 = makeTexBuffs(24, CRECTF_TEXHR0, true);
 		// Numbers
-		fb0 = makeVertBuffs(10, CRECTF_VTXNUM, false, CF_VTXNUM_Z, CRECTF_TEXNUM);
-		m_fbVtxNums = fb0[0];	m_fbTexNums = fb0[1];
+		m_fbVtxNums = makeVertBuffs(10, CRECTF_VTXNUM, false, CF_VTXNUM_Z);
+		m_fbTexNums = makeTexBuffs(10, CRECTF_TEXNUM, false);
 		// Name of months
-		fb0 = makeVertBuffs(12, CRECTF_VTXMON, false, CF_VTXMON_Z, CRECTF_TEXMON);
-		m_fbVtxMons = fb0[0];	m_fbTexMons = fb0[1];
+		m_fbVtxMons = makeVertBuffs(12, CRECTF_VTXMON, false, CF_VTXMON_Z);
+		m_fbTexMons = makeTexBuffs(12, CRECTF_TEXMON, false);
 		// Alphabets
-		fb0 = makeVertBuffs(26 + 6, CRECTF_VTXABC, false, CF_VTXABC_Z, CRECTF_TEXABC);
-		m_fbVtxAbcs = fb0[0];	m_fbTexAbcs = fb0[1];
+		m_fbVtxAbcs = makeVertBuffs(26 + 6, CRECTF_VTXABC, false, CF_VTXABC_Z);
+		m_fbTexAbcs = makeTexBuffs(26 + 6, CRECTF_TEXABC, false);
 		// Signs
-		fb0 = makeVertBuffs(3, CRECTF_VTXSIG, false, CF_VTXSIG_Z, CRECTF_TEXSIG);
-		m_fbVtxSigs = fb0[0];	m_fbTexSigs = fb0[1];
+		m_fbVtxSigs = makeVertBuffs(3, CRECTF_VTXSIG, false, CF_VTXSIG_Z);
+		m_fbTexSigs = makeTexBuffs(3, CRECTF_TEXSIG, false);
 	}
 
 	/** Makes coords for vertically arranged tile textures
@@ -79,14 +81,9 @@ public class GlStripe
 	 * @param ftex stores texture left, top, width of a element, height of a element
 	 * @return
 	 */
-	private static FloatBuffer[] makeVertBuffs(int nelems, RectF fvert, boolean bstacktiledvtx, float fzarg, RectF ftex) {
+	private static FloatBuffer makeVertBuffs(int nelems, RectF fvert, boolean bstacktiledvtx, float fzarg) {
 		int			nidx = 0;
-		float[]		aftemp = null;
-		FloatBuffer	afbret[] = new FloatBuffer[2];
-
-		// vertex buffer
-		nidx = 0;
-		aftemp = new float[nelems * 4 * 3];	// nelems * 4(rectangle) * 3(xyz)
+		float[]		aftemp = new float[nelems * 4 * 3];	// nelems * 4(rectangle) * 3(xyz)
 		for(int i = 0; i < nelems; i++) {
 			float	ftop, fbottom;
 			if(bstacktiledvtx) {	// make vertically tiled vertices?
@@ -102,14 +99,15 @@ public class GlStripe
 			aftemp[nidx++] = fvert.left;	aftemp[nidx++] = fbottom;	aftemp[nidx++] = fzarg;
 			aftemp[nidx++] = fvert.right;	aftemp[nidx++] = fbottom;	aftemp[nidx++] = fzarg;
 		}
-		afbret[0] = GloneUtils.makeFloatBuffer(aftemp);
 //		for(int i = 0; i < 24; i++) {
 //			Log.d("dump: ", ": [" + i + "](" + aftemp[i * 3 + 0] + ", " + aftemp[i * 3 + 1] + ", " + aftemp[i * 3 + 2]);
 //		}
+		return	GloneUtils.makeFloatBuffer(aftemp);
+	}
 
-		// texture coods buffer
-		nidx = 0;
-		aftemp = new float[nelems * 4 * 2];	// nelems * 4 (rectangle) + (x, y)
+	private static FloatBuffer makeTexBuffs(int nelems, RectF ftex, boolean bstacktiledvtx) {
+		int			nidx = 0;
+		float[]		aftemp = new float[nelems * 4 * 2];	// nelems * 4 (rectangle) + (x, y)
 		for(int i = 0; i < nelems; i++) {
 			float	ftop, fbottom;
 			if(bstacktiledvtx) {
@@ -124,9 +122,7 @@ public class GlStripe
 			aftemp[nidx++] = ftex.left;		aftemp[nidx++] = ftop;
 			aftemp[nidx++] = ftex.right;	aftemp[nidx++] = ftop;
 		}
-		afbret[1] = GloneUtils.makeFloatBuffer(aftemp);
-
-		return	afbret;
+		return	GloneUtils.makeFloatBuffer(aftemp);
 	}
 
 	/**
@@ -134,23 +130,20 @@ public class GlStripe
 	 * @param ltime
 	 * @param fscrhgt logical height of screen
 	 */
-	public void drawStripe(GL10 gl, GloneTz gtz, long ltime, float fscrhgt) {
+	public void drawStripe(GL10 gl, GloneTz gtz, long ltime, float fscrhgt, boolean bfirst) {
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, m_fbVtxStrp);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 //		gl.glColorPointer(4, GL10.GL_FLOAT, 0, m_buffColor);
 //		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
-		gl.glTexCoordPointer(2 ,GL10.GL_FLOAT, 0, m_fbTexStrp);
+		gl.glTexCoordPointer(2 ,GL10.GL_FLOAT, 0, (bfirst ? m_fbTexStr0 : m_fbTexStrp));
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 
 		// draw
 		float	fhrsfrommn = gtz.getHoursFromMidNight(ltime);				// hour number is useless because sometimes 1 a.m. comes twice
 		gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour()
 				* (fhrsfrommn * -1f), 0.0f);								// apply hour, minute offset
-		Calendar	c0 = Calendar.getInstance(gtz.getTimeZone());
-		c0.setTimeInMillis(ltime);
 		// start from a day before
-		c0.roll(Calendar.DAY_OF_MONTH, false);
-		float	fdstoffset = gtz.getDSTOffsetInTheDay(c0.getTimeInMillis());
+		float	fdstoffset = gtz.getDSTOffsetInTheDay(gtz.getTimeNextDay(ltime, -1));
 		float	fhrs = (24f + fdstoffset);
 		gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * (fhrs * -1f), 0.0f);
 		// loop 3 days
@@ -158,8 +151,7 @@ public class GlStripe
 			drawAStripe(gl, gtz, fdstoffset);
 			gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * 24f, 0.0f);
 			// go to the next day
-			c0.roll(Calendar.DAY_OF_MONTH, true);
-			fdstoffset = gtz.getDSTOffsetInTheDay(c0.getTimeInMillis());
+			fdstoffset = gtz.getDSTOffsetInTheDay(gtz.getTimeNextDay(ltime, i));
 		}
 
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);

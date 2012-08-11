@@ -191,10 +191,11 @@ public class DefRenderer implements Renderer
 		}
 		gl0.glTranslatef(m_fscrw / 2f - (m_frmgn + GlStripe.CRECTF_VTXHUR.right)
 				+ fhorz, 0.0f, 0.0f);	// draw from right toward left edge 
+		int		i = 0;
 		while(it0.hasNext()) {
 			GloneTz	gtz0 = it0.next();
 			gl0.glPushMatrix();
-			m_glstripe.drawStripe(gl0, gtz0, m_doc.getTime(), m_fscrh);
+			m_glstripe.drawStripe(gl0, gtz0, m_doc.getTime(), m_fscrh, (i++ == 0));
 			gl0.glPopMatrix();
 			// timezone names
 			String	s0 = gtz0.getTimeZoneId();

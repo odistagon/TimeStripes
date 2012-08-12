@@ -76,18 +76,6 @@ public class GloneTz
 		return	m_andate;
 	}
 
-	/**
-	 * @param ltime
-	 * @return DST offset at the moment in milliseconds.
-	 */
-	public long getDSTOffsetToNextDay(long ltime) {
-		Calendar	c0 = recycleCalendarInstance();
-		c0.setTimeInMillis(ltime);
-		long		l0 = c0.get(Calendar.DST_OFFSET);
-		c0.setTimeInMillis(ltime + (24 * 60 * 60 * 1000));
-		return	(l0 - c0.get(Calendar.DST_OFFSET));
-	}
-
 	public float getHoursFromMidNight(long ltime) {
 		Calendar	c0 = recycleCalendarInstance();
 		c0.setTimeInMillis(ltime);
@@ -100,15 +88,15 @@ public class GloneTz
 	 * @param ltime
 	 * @return
 	 */
-	public float getDSTOffsetInTheDay(long ltime) {
+	public float getDSTOffsetInTheDay(long ltime, int noffset) {
 		Calendar	c0 = recycleCalendarInstance();
 		c0.setTimeInMillis(ltime);
-		long		lhr0 = ltime - (c0.get(Calendar.HOUR_OF_DAY) * (60 * 60 * 1000));	// 0 or 1 a.m.
-		c0.setTimeInMillis(lhr0);
+		c0.add(Calendar.DATE, noffset);
+		c0.set(Calendar.HOUR_OF_DAY, 0);
 		int			n0 = c0.get(Calendar.DST_OFFSET);
-		long		lhr3 = lhr0 + (3 * (60 * 60 * 1000));	// 3 hrs later from 0 a.m. (2, 3 or 4 a.m.)
-		c0.setTimeInMillis(lhr3);
-		return	(float)(n0 - c0.get(Calendar.DST_OFFSET)) / (60 * 60 * 1000);
+		c0.set(Calendar.HOUR_OF_DAY, 3);
+		float	fret = (float)(n0 - c0.get(Calendar.DST_OFFSET)) / (float)(60 * 60 * 1000);
+		return	fret;
 	}
 
 	public String getDebugString(long ltime) {
@@ -121,16 +109,6 @@ public class GloneTz
 	public void update(GloneTz gtz) {
 		m_sTzId = gtz.m_sTzId;
 		m_tz = gtz.m_tz;
-	}
-
-	public long getTimeNextDay(long ltime, int noffset) {
-		Calendar	c0 = recycleCalendarInstance();
-		c0.setTimeInMillis(ltime);
-		return	c0.getTimeInMillis()
-			+ (24L * 60L * 60L * 1000L) * noffset;
-//		for(int i = 0; i < Math.abs(i); i++)
-//			c0.roll(Calendar.DAY_OF_MONTH, (noffset > 0));
-//		return	c0.getTimeInMillis();
 	}
 
 	/**
@@ -153,8 +131,7 @@ public class GloneTz
 			if(lcurr != l0)
 				break;
 //			c0.roll(Calendar.DAY_OF_MONTH, bnext);	// never rolls month. completely useless.
-			c0.setTimeInMillis(c0.getTimeInMillis()
-					+ (24L * 60L * 60L * 1000L) * (bnext ? +1L : -1L));
+			c0.add(Calendar.DATE, (bnext ? +1 : -1));
 		}
 		c0.set(Calendar.HOUR_OF_DAY, 1);
 		return	c0.getTimeInMillis();

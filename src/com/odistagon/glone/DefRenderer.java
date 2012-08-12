@@ -2,6 +2,8 @@ package com.odistagon.glone;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -200,7 +202,7 @@ public class DefRenderer implements Renderer
 			String	s0 = gtz0.getTimeZoneId();
 			gl0.glPushMatrix();
 			gl0.glTranslatef(GlStripe.CRECTF_VTXHUR.right - (frabc / (float)ncharstz / 2f),
-					fscrh / 2 - frabc / (float)ncharstz, 0f);
+					fscrh / 2f, 0f);
 			gl0.glScalef(frabc, frabc, 1f);
 			m_glstripe.drawAbcString(gl0, s0, ncharstz, true);
 			gl0.glPopMatrix();

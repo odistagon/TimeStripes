@@ -159,7 +159,7 @@ public class GlStripe
 		gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour()
 				* (fhrsfrommn * -1f), 0.0f);								// apply hour, minute offset
 		// start from a day before
-		float	fdstoffset = gtz.getDSTOffsetInTheDay(gtz.getTimeNextDay(ltime, -1));
+		float	fdstoffset = gtz.getDSTOffsetInTheDay(ltime, -1);
 		float	fhrs = (24f + fdstoffset);
 		gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * (fhrs * -1f), 0.0f);
 		// loop 3 days
@@ -167,7 +167,7 @@ public class GlStripe
 			drawAStripe(gl, gtz, fdstoffset);
 			gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * 24f, 0.0f);
 			// go to the next day
-			fdstoffset = gtz.getDSTOffsetInTheDay(gtz.getTimeNextDay(ltime, i));
+			fdstoffset = gtz.getDSTOffsetInTheDay(ltime, i);
 		}
 
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);

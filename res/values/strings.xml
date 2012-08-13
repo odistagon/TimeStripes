@@ -18,6 +18,9 @@
 	<string name="dlg_tzset_desc">Configure a set of timezones. You can add, alter and remove each item as you like.</string>
 	<string name="dlg_datpic_t">Pick a goal date</string>
 	<string name="dlg_shwtxt_t">Date times</string>
+	<string name="dlg_discla_t">Disclaimer</string>
+	<string name="dlg_discla_m">This software is provided on an &quot;AS IS&quot; basis without warranty of any kind. This software is intended to be accurate but may include errors. Please Refer to other sources as well for important appointments.</string>
+	<string name="dlg_discla_agre">Agree</string>
 	<string name="icdesc_font_neuropol">Neuropol font by Larabie fonts</string>
 	<string name="icdesc_cc">Creative Commons Attribution-NoDerivs</string>
 	<string name="icdesc_cc_url">http://creativecommons.org/licenses/by-nd/3.0/deed</string>

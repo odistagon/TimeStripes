@@ -11,6 +11,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
@@ -33,6 +34,12 @@ public class AyTop extends Activity
 		super.onCreate(savedInstanceState);
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+		// show DISCLAIMER once
+		SharedPreferences	pref = PreferenceManager.getDefaultSharedPreferences(GloneApp.getContext());
+		int					nDscAgLv = pref.getInt(GloneUtils.PK_DSCLALV, 0);
+		if(nDscAgLv < GloneUtils.NC_DISCLAIMER_VER)
+			showDialog(GloneUtils.NC_DLGID_DISCLA);
 
 		// main layout
 		setContentView(R.layout.main);
@@ -143,6 +150,21 @@ public class AyTop extends Activity
 	protected Dialog onCreateDialog(int id) {
 		Dialog	dret = null;
 		switch(id) {
+		case GloneUtils.NC_DLGID_DISCLA: {
+			AlertDialog.Builder	dlgbldr = new AlertDialog.Builder(this);
+			dlgbldr.setTitle(R.string.dlg_discla_t);
+			dlgbldr.setMessage(R.string.dlg_discla_m);
+			dlgbldr.setPositiveButton(R.string.dlg_discla_agre, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					SharedPreferences	pref = PreferenceManager.getDefaultSharedPreferences(GloneApp.getContext());
+					Editor	e0 = pref.edit();
+					e0.putInt(GloneUtils.PK_DSCLALV, GloneUtils.NC_DISCLAIMER_VER);
+					e0.commit();
+				}
+			});
+			dret = dlgbldr.create();
+		}	break;
 		case GloneUtils.NC_DLGID_DATPIC:
 			DatePickerDialog	dlg0 = new DatePickerDialog(this,
 				new DatePickerDialog.OnDateSetListener() {

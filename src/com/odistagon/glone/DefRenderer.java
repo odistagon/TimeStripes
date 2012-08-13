@@ -167,7 +167,7 @@ public class DefRenderer implements Renderer
 
 		gl0.glBlendFunc(GL10.GL_SRC_ALPHA,GL10.GL_ONE_MINUS_SRC_ALPHA);
 		gl0.glEnable(GL10.GL_TEXTURE_2D);
-		gl0.glBindTexture(GL10.GL_TEXTURE_2D, m_nTextureId);
+//		gl0.glBindTexture(GL10.GL_TEXTURE_2D, m_nTextureId);
 
 		gl0.glPushMatrix();
 		gl0.glScalef(1.0f, m_fStripeScaleH, 1.0f);

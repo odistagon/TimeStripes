@@ -49,6 +49,11 @@ public final class R {
         public static final int lo_main_vert=0x7f07000f;
         public static final int lo_seltz_main=0x7f070007;
         public static final int lv_seltz_main=0x7f07000a;
+        public static final int opme_aytop_fdstne=0x7f070018;
+        public static final int opme_aytop_fdstpr=0x7f070019;
+        public static final int opme_aytop_jmpabs=0x7f070016;
+        public static final int opme_aytop_prefes=0x7f07001a;
+        public static final int opme_aytop_shwtxt=0x7f070017;
         public static final int tv_ligtz_id=0x7f07000d;
         public static final int tv_ligtz_name=0x7f07000c;
     }
@@ -113,6 +118,7 @@ public final class R {
         public static final int rs_seltzdlg_filt=0x7f060009;
     }
     public static final class xml {
-        public static final int prefmain=0x7f040000;
+        public static final int opme_aytop=0x7f040000;
+        public static final int prefmain=0x7f040001;
     }
 }

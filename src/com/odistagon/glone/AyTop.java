@@ -17,6 +17,7 @@ import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -27,6 +28,7 @@ import android.widget.RelativeLayout;
 public class AyTop extends Activity
 {
 	private DefSurfaceView	m_gv;
+	private long			m_lprevdatepick;		// last time date picked (bug workaround)
 
 	/** Called when the activity is first created. */
 	@Override
@@ -50,6 +52,14 @@ public class AyTop extends Activity
 		rl0.addView(m_gv, 0);
 
 //		final Activity	atop = this;
+
+//		m_gv.setOnLongClickListener(new View.OnLongClickListener() {
+//			@Override
+//			public boolean onLongClick(View v) {
+//				atop.openOptionsMenu();
+//				return false;
+//			}
+//		});
 
 		//bottom toolbar buttons
 		View	v0 = findViewById(R.id.iv_main_menu);
@@ -170,11 +180,16 @@ public class AyTop extends Activity
 				new DatePickerDialog.OnDateSetListener() {
 					@Override
 					public void onDateSet(DatePicker view, int nyer, int nmnt, int nday) {
+						// called twice by framework bug ?
+						// http://stackoverflow.com/questions/11383592/android-android-4-1-emulator-invoking-ondateset-twice-from-datepicker-dialog
+						if(m_lprevdatepick + 1000L > System.currentTimeMillis())
+							return;
 						// Jump absolute
 						final GloneTz	gtz1 = GloneApp.getDoc().getTzList().get(0);
 						Calendar		c0 = Calendar.getInstance(gtz1.getTimeZone());
 						c0.set(nyer, nmnt, nday);
 						GloneApp.getDoc().setTimeAbsolute(c0.getTimeInMillis(), true);
+						m_lprevdatepick = System.currentTimeMillis();
 					}
 				}, 2000, 1, 1);	// date will be set onPrepareDialog()
 								// but 0,0,0 or 1970,1,1 are not acceptable for some android versions even a tiny moment...
@@ -221,69 +236,34 @@ public class AyTop extends Activity
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuItem	mi0 = null;
-		mi0 = menu.add(0, GloneUtils.CMID_GLONE_SHWTXT, 0, R.string.mi_shwtxt);
-		mi0.setIcon(android.R.drawable.stat_notify_sync);
-		mi0 = menu.add(0, GloneUtils.CMID_GLONE_JMPABS, 0, R.string.mi_jmpabs);
-		mi0.setIcon(android.R.drawable.stat_notify_sync);
-//		mi0 = menu.add(0, GloneUtils.CMID_GLONE_ZOOMIN, 0, R.string.mi_zoomin);
-//		mi0.setIcon(R.drawable.ic_menu_zoin);
-//		mi0 = menu.add(0, GloneUtils.CMID_GLONE_ZOOMOU, 0, R.string.mi_zoomou);
-//		mi0.setIcon(R.drawable.ic_menu_zout);
-		mi0 = menu.add(0, GloneUtils.CMID_GLONE_FDSTNE, 0, R.string.mi_fdstne);
-		mi0.setIcon(R.drawable.ic_menu_ffwd);
-		mi0 = menu.add(0, GloneUtils.CMID_GLONE_FDSTPR, 0, R.string.mi_fdstpr);
-		mi0.setIcon(R.drawable.ic_menu_rewd);
-		mi0 = menu.add(0, GloneUtils.CMID_GLONE_PRFMAI, 0, R.string.mi_prefes);
-		mi0.setIcon(R.drawable.ic_menu_sett);
-//		mi0 = menu.add(0, GloneUtils.CMID_GLONE_TGSEDI, 0, "Edit timezones");
-//		mi0.setIcon(android.R.drawable.stat_notify_sync);
-//		mi0 = menu.add(0, GloneUtils.CMID_GLONE_ABOUT_, 0, "About this app");
-//		mi0.setIcon(android.R.drawable.stat_notify_sync);
-//		mi0 = menu.add(0, GloneUtils.CMID_GLONE_SYSDAT, 0, "System Date Setting");
-//		mi0.setIcon(android.R.drawable.stat_notify_sync);
-
-		return super.onCreateOptionsMenu(menu);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.xml.opme_aytop, menu);
+		return	true;
+//		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
-		case GloneUtils.CMID_GLONE_SHWTXT:
+		case R.id.opme_aytop_shwtxt:
 			showDialog(GloneUtils.NC_DLGID_SHWTXT);
 			break;
-		case GloneUtils.CMID_GLONE_JMPABS:
+		case R.id.opme_aytop_jmpabs:
 			showDialog(GloneUtils.NC_DLGID_DATPIC);
 			break;
-//		case GloneUtils.CMID_GLONE_ZOOMIN:
-//			m_gv.zoomIn(+1.0f);
-//			break;
-//		case GloneUtils.CMID_GLONE_ZOOMOU:
-//			m_gv.zoomIn(-1.0f);
-//			break;
-		case GloneUtils.CMID_GLONE_FDSTNE:
-		case GloneUtils.CMID_GLONE_FDSTPR:	{
+		case R.id.opme_aytop_fdstne:
+		case R.id.opme_aytop_fdstpr:	{
 			GloneTz	gtz0 = GloneApp.getDoc().getTzList().get(0);
 			long	lgoto = gtz0.findNextDstChange(GloneApp.getDoc().getTime(),
-				item.getItemId() == GloneUtils.CMID_GLONE_FDSTNE);
+				item.getItemId() == R.id.opme_aytop_fdstne);
 			if(lgoto > 0)
 				GloneApp.getDoc().setTimeAbsolute(lgoto, true);
 		}	break;
-		case GloneUtils.CMID_GLONE_PRFMAI:	{
+		case R.id.opme_aytop_prefes:	{
 			Intent	i0 = new Intent(GloneApp.getContext(), (new AyPrefMain()).getClass());
 			i0.setAction(Intent.ACTION_VIEW);
 			startActivityForResult(i0, 0);
 		}	break;
-//		case GloneUtils.CMID_GLONE_TGSEDI:	{
-//			Intent	i0 = new Intent(GloneApp.getContext(), (new AyTzSet()).getClass());
-//			i0.setAction(Intent.ACTION_VIEW);
-//			startActivityForResult(i0, 0);
-//		}	break;
-//		case GloneUtils.CMID_GLONE_ABOUT_:	{
-//			Intent	i0 = new Intent(GloneApp.getContext(), (new AyAbout()).getClass());
-//			i0.setAction(Intent.ACTION_VIEW);
-//			startActivityForResult(i0, 0);
-//		}	break;
 //		case GloneUtils.CMID_GLONE_SYSDAT:
 //			startActivity(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS));
 //			break;

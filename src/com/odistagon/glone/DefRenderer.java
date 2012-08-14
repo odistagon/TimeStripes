@@ -330,6 +330,27 @@ public class DefRenderer implements Renderer
 		return	fret;
 	}
 
+	/** convert px -> opengl unit.
+	 * @param fcx
+	 * @return
+	 */
+	public float pixToLogicalWidth(float fcx) {
+		float	fscrw = calcClipWidth(GlStripe.CF_VTXHUR_Z);
+		return	(fcx / (float)getWidth() * fscrw); 
+	}
+
+	/** convert px -> opengl unit.
+	 * @param fcy
+	 * @return
+	 */
+	public float pixToLogicalHeight(float fcy) {
+		float	fscrh = calcClipHeight(GlStripe.CF_VTXHUR_Z);
+		return	(fcy / (float)getHeight() * fscrh); 
+	}
+
+	/**
+	 * @param farg distance in opengl unit.
+	 */
 	public void addHorizontalShift(float farg) {
 		m_fHorzShift += farg;
 		m_lHorzReld = 0L;

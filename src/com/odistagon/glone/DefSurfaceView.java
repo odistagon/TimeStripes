@@ -36,15 +36,14 @@ public class DefSurfaceView extends GLSurfaceView
 			@Override
 			public boolean onScroll(MotionEvent e1, MotionEvent e2, float fcx, float fcy) {
 				// reverse calc pixels -> time
-				float	fmoved = (fcy / (float)m_renderer.getHeight()); 
+				float	fmoved = m_renderer.pixToLogicalHeight(fcy);
 				long	ltimemoved = (long)(fmoved * (60f * 60f * 1000f) / GlStripe.getVtxHeightOfOneHour());
 //				Log.d(getClass().getName(), "moved (" + fmoved + " / " + m_renderer.getHeight() + ")");
 //				Log.d(getClass().getName(), "scroll(" + fcy + " -> " + ltimemoved + ")");
 				GloneApp.getDoc().addTimeOffset(ltimemoved * -1L, false);
 
-				float	fhorz = (fcx / (float)m_renderer.getWidth());
-				m_renderer.addHorizontalShift(fhorz * -1f);
-//				Log.d("(X)", "onScroll() action: " + e2.getAction());
+				m_renderer.addHorizontalShift(m_renderer.pixToLogicalWidth(fcx) * -1f);
+//				Log.d("(X)", "onScroll() action: " + fcx + ", " + m_renderer.getWidth());
 
 				return	false;
 			}

@@ -31,8 +31,6 @@ public class GloneUtils
 	public static final int		NC_DLGID_DATPIC = 12;		// date picker dlg
 	public static final int		NC_DLGID_SHWTXT = 13;		// show date times by text
 	// prefs
-	public static final String	PK_CLOCKTZ = "PK_CLOKTZ";	// show date times by text
-	public static final String	PK_DSCLALV = "PK_DSCALV";	// disclaimer agree lv
 	public static final int		NC_PREF_CLOCKTZ_NONE = 0;	// don't show clock
 	public static final int		NC_PREF_CLOCKTZ_FIRT = 1;	// first timezone
 	public static final int		NC_PREF_CLOCKTZ_SYST = 2;	// system timezone

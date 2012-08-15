@@ -18,6 +18,9 @@
 	<string name="dlg_tzset_desc">リストアイテムの追加や変更、削除によってタイムゾーンセットを編集できます。</string>
 	<string name="dlg_datpic_t">日付を選択</string>
 	<string name="dlg_shwtxt_t">日時テキスト</string>
+	<string name="dlg_discla_t">注意</string>
+	<string name="dlg_discla_m">このソフトウェアは善意に基づいてつくられていますが、正確であることを保証するものではありません。特に重要な事案の際には、他の情報もあわせてご利用ください。</string>
+	<string name="dlg_discla_agre">同意</string>
 	<string name="icdesc_font_neuropol">Neuropol font by Larabie fonts</string>
 	<string name="icdesc_cc">Creative Commons Attribution-NoDerivs</string>
 	<string name="icdesc_cc_url">http://creativecommons.org/licenses/by-nd/3.0/deed</string>
@@ -25,16 +28,18 @@
 	<string name="prefcat_disp">表示設定</string>
 	<string name="pref_cloktz_t">時計のタイムゾーン</string>
 	<string name="pref_cloktz_dlgt">時計のタイムゾーンを選択</string>
-	<string name="pref_cloktz_s">中心に表示している時計のタイムゾーンを選択します。</string>
+	<string name="pref_cloktz_s">画面の中心に表示する時計のタイムゾーンを選択します。</string>
 	<string name="pref_cloktz_opt1">表示しない</string>
-	<string name="pref_cloktz_opt2">最初の (右端の) タイムゾーン</string>
+	<string name="pref_cloktz_opt2">画面右端のタイムゾーン</string>
 	<string name="pref_cloktz_opt3">システムタイムゾーン</string>
+	<string name="pref_usehdr_t">ヘッダーを表示</string>
+	<string name="pref_usehdr_s">画面先頭にヘッダーまたは (Android 3.0 以降の場合) アクションバーを表示します。アプリの再起動が必要です。</string>
 	<string name="prefcat_tzns">タイムゾーン設定</string>
 	<string name="pref_edittz_t">タイムゾーンセット変更</string>
-	<string name="pref_edittz_s">タイムゾーンセットの組み合わせを変更します。</string>
+	<string name="pref_edittz_s">表示するタイムゾーンセットの組み合わせを変更します。</string>
 	<string name="prefcat_oths">その他</string>
 	<string name="pref_debug__t">デバッグ表示を有効にする</string>
-	<string name="pref_debug__s">fps などの情報を画面に表示します。</string>
+	<string name="pref_debug__s">fps などの情報を画面に表示します。(開発デバッグ用)</string>
 	<string name="pref_lauabt_t">このアプリについて</string>
 	<string name="pref_lauabt_s">作成者やライセンスについての情報を表示します。</string>
 

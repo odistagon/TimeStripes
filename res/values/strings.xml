@@ -28,10 +28,12 @@
 	<string name="prefcat_disp">Display settings</string>
 	<string name="pref_cloktz_t">Clock timezone</string>
 	<string name="pref_cloktz_dlgt">Pick a clock timezone</string>
-	<string name="pref_cloktz_s">Which TZ do you like in the main clock</string>
+	<string name="pref_cloktz_s">You can select which TZ do you like in the main clock on the center of the screen.</string>
 	<string name="pref_cloktz_opt1">None</string>
-	<string name="pref_cloktz_opt2">First (right-most) TZ</string>
+	<string name="pref_cloktz_opt2">Right-most TZ</string>
 	<string name="pref_cloktz_opt3">System TZ</string>
+	<string name="pref_usehdr_t">Show app header</string>
+	<string name="pref_usehdr_s">Use app header or Action Bar (Android 3.0 or lator), requires app restart.</string>
 	<string name="prefcat_tzns">Timezone Settings</string>
 	<string name="pref_edittz_t">Edit timezone</string>
 	<string name="pref_edittz_s">Edit current combination of timezones</string>
@@ -56,5 +58,10 @@
 	<string name="mi_mdntz_">Move down</string>
 
 	<string name="li_addnew">+ Add new</string>
+
+	<!-- pref keys, no need to localize -->
+	<string name="prefkey_usehdr">PK_USEHDR</string>
+	<string name="prefkey_dscllv">PK_DSCLLV</string>
+	<string name="prefkey_clcktz">PK_CLCKTZ</string>
 
 </resources>

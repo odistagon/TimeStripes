@@ -4,6 +4,10 @@
 	<PreferenceCategory
 		android:title="@string/prefcat_disp">
 
+	<CheckBoxPreference android:key="@string/prefkey_usehdr"
+		android:title="@string/pref_usehdr_t" android:summary="@string/pref_usehdr_s"
+		android:defaultValue="false" />
+	    
 	<ListPreference android:key="PK_CLOKTZ"
 		android:title="@string/pref_cloktz_t" android:dialogTitle="@string/pref_cloktz_dlgt"
 		android:summary="@string/pref_cloktz_s"

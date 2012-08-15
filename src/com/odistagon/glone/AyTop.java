@@ -35,13 +35,11 @@ public class AyTop extends Activity
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-		// show DISCLAIMER once
 		SharedPreferences	pref = PreferenceManager.getDefaultSharedPreferences(GloneApp.getContext());
-		int					nDscAgLv = pref.getInt(GloneUtils.PK_DSCLALV, 0);
-		if(nDscAgLv < GloneUtils.NC_DISCLAIMER_VER)
-			showDialog(GloneUtils.NC_DLGID_DISCLA);
+		boolean				bShowHdr = pref.getBoolean(
+				getResources().getString(R.string.prefkey_usehdr), false);
+		if(!bShowHdr)
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		// main layout
 		setContentView(R.layout.main);
@@ -122,9 +120,17 @@ public class AyTop extends Activity
 	protected void onPostResume() {
 		GloneApp.getDoc().syncPreference(this);
 
-		SharedPreferences	pref = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences	pref = PreferenceManager.getDefaultSharedPreferences(GloneApp.getContext());
+
+		// show DISCLAIMER once
+		int					nDscAgLv = pref.getInt(
+				getResources().getString(R.string.prefkey_dscllv), 0);
+		if(nDscAgLv < GloneUtils.NC_DISCLAIMER_VER)
+			showDialog(GloneUtils.NC_DLGID_DISCLA);
+
 		String				s0 = pref.getString(
-				GloneUtils.PK_CLOCKTZ, Integer.toString(GloneUtils.NC_PREF_CLOCKTZ_FIRT));
+				getResources().getString(R.string.prefkey_clcktz),
+				Integer.toString(GloneUtils.NC_PREF_CLOCKTZ_FIRT));
 		int					nClockTz = Integer.parseInt(s0);
 		m_gv.setClockTz(nClockTz);
 
@@ -169,7 +175,7 @@ public class AyTop extends Activity
 				public void onClick(DialogInterface dialog, int which) {
 					SharedPreferences	pref = PreferenceManager.getDefaultSharedPreferences(GloneApp.getContext());
 					Editor	e0 = pref.edit();
-					e0.putInt(GloneUtils.PK_DSCLALV, GloneUtils.NC_DISCLAIMER_VER);
+					e0.putInt(getResources().getString(R.string.prefkey_dscllv), GloneUtils.NC_DISCLAIMER_VER);
 					e0.commit();
 				}
 			});

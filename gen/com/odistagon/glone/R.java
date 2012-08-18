@@ -29,40 +29,43 @@ public final class R {
         public static final int timestr_tex=0x7f02000b;
     }
     public static final class id {
-        public static final int bt_seltz_find=0x7f070009;
-        public static final int et_seltz_find=0x7f070008;
-        public static final int iv_main_menu=0x7f070013;
+        public static final int bt_seltz_find=0x7f07000a;
+        public static final int et_seltz_find=0x7f070009;
+        public static final int fg_aymain_body=0x7f070007;
+        public static final int iv_main_menu=0x7f070014;
         public static final int iv_ot_cc_by_nd=0x7f070006;
         public static final int iv_ot_font_neuropol=0x7f070005;
-        public static final int iv_tb_fastfw=0x7f070010;
+        public static final int iv_tb_fastfw=0x7f070011;
         public static final int iv_tb_icon=0x7f070002;
-        public static final int iv_tb_rewind=0x7f070012;
-        public static final int iv_tb_thewld=0x7f070011;
-        public static final int iv_tb_zoomin=0x7f070014;
-        public static final int iv_tb_zoomou=0x7f070015;
+        public static final int iv_tb_rewind=0x7f070013;
+        public static final int iv_tb_thewld=0x7f070012;
+        public static final int iv_tb_zoomin=0x7f070015;
+        public static final int iv_tb_zoomou=0x7f070016;
         public static final int lo_about_main=0x7f070000;
         public static final int lo_about_p1=0x7f070001;
         public static final int lo_about_p1r=0x7f070003;
         public static final int lo_about_p2=0x7f070004;
-        public static final int lo_ligtz_main=0x7f07000b;
-        public static final int lo_main_rl0=0x7f07000e;
-        public static final int lo_main_vert=0x7f07000f;
-        public static final int lo_seltz_main=0x7f070007;
-        public static final int lv_seltz_main=0x7f07000a;
-        public static final int opme_aytop_fdstne=0x7f070018;
-        public static final int opme_aytop_fdstpr=0x7f070019;
-        public static final int opme_aytop_jmpabs=0x7f070016;
-        public static final int opme_aytop_prefes=0x7f07001a;
-        public static final int opme_aytop_shwtxt=0x7f070017;
-        public static final int tv_ligtz_id=0x7f07000d;
-        public static final int tv_ligtz_name=0x7f07000c;
+        public static final int lo_ligtz_main=0x7f07000c;
+        public static final int lo_main_rl0=0x7f07000f;
+        public static final int lo_main_vert=0x7f070010;
+        public static final int lo_seltz_main=0x7f070008;
+        public static final int lv_seltz_main=0x7f07000b;
+        public static final int opme_aytop_about_=0x7f07001c;
+        public static final int opme_aytop_fdstne=0x7f070019;
+        public static final int opme_aytop_fdstpr=0x7f07001a;
+        public static final int opme_aytop_jmpabs=0x7f070017;
+        public static final int opme_aytop_prefes=0x7f07001b;
+        public static final int opme_aytop_shwtxt=0x7f070018;
+        public static final int tv_ligtz_id=0x7f07000e;
+        public static final int tv_ligtz_name=0x7f07000d;
     }
     public static final class layout {
         public static final int about=0x7f030000;
-        public static final int dlgseltz=0x7f030001;
-        public static final int dlgtzset=0x7f030002;
-        public static final int liglonetz=0x7f030003;
-        public static final int main=0x7f030004;
+        public static final int aymain=0x7f030001;
+        public static final int dlgseltz=0x7f030002;
+        public static final int dlgtzset=0x7f030003;
+        public static final int liglonetz=0x7f030004;
+        public static final int main=0x7f030005;
     }
     public static final class string {
         public static final int app_desc_long_1=0x7f060003;
@@ -85,19 +88,20 @@ public final class R {
         public static final int icdesc_cc=0x7f060015;
         public static final int icdesc_cc_url=0x7f060016;
         public static final int icdesc_font_neuropol=0x7f060014;
-        public static final int li_addnew=0x7f060034;
+        public static final int li_addnew=0x7f060035;
+        public static final int mi_about_=0x7f06002f;
         public static final int mi_fdstne=0x7f06002d;
         public static final int mi_fdstpr=0x7f06002e;
         public static final int mi_jmpabs=0x7f06002a;
-        public static final int mi_mdntz_=0x7f060033;
-        public static final int mi_muptz_=0x7f060032;
-        public static final int mi_pictz_=0x7f060030;
+        public static final int mi_mdntz_=0x7f060034;
+        public static final int mi_muptz_=0x7f060033;
+        public static final int mi_pictz_=0x7f060031;
         public static final int mi_prefes=0x7f060029;
-        public static final int mi_remtz_=0x7f060031;
+        public static final int mi_remtz_=0x7f060032;
         public static final int mi_shwtxt=0x7f060028;
         public static final int mi_zoomin=0x7f06002b;
         public static final int mi_zoomou=0x7f06002c;
-        public static final int mt_editz_=0x7f06002f;
+        public static final int mt_editz_=0x7f060030;
         public static final int pref_cloktz_dlgt=0x7f060019;
         public static final int pref_cloktz_opt1=0x7f06001b;
         public static final int pref_cloktz_opt2=0x7f06001c;
@@ -115,9 +119,14 @@ public final class R {
         public static final int prefcat_disp=0x7f060017;
         public static final int prefcat_oths=0x7f060023;
         public static final int prefcat_tzns=0x7f060020;
-        public static final int prefkey_clcktz=0x7f060037;
-        public static final int prefkey_dscllv=0x7f060036;
-        public static final int prefkey_usehdr=0x7f060035;
+        public static final int prefkey_clcktz=0x7f060038;
+        public static final int prefkey_debug_=0x7f06003a;
+        public static final int prefkey_dscllv=0x7f060037;
+        public static final int prefkey_edittz=0x7f060039;
+        public static final int prefkey_lauabt=0x7f06003b;
+        /**  pref keys, no need to localize 
+         */
+        public static final int prefkey_usehdr=0x7f060036;
         public static final int rs_dlg_neg=0x7f06000b;
         public static final int rs_dlg_pos=0x7f06000a;
         public static final int rs_seltzdlg_filt=0x7f060009;

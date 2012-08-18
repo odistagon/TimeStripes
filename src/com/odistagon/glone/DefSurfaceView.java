@@ -1,7 +1,6 @@
 package com.odistagon.glone;
 
 import android.opengl.GLSurfaceView;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -12,8 +11,8 @@ public class DefSurfaceView extends GLSurfaceView
 	private DefRenderer		m_renderer;
 	private GestureDetector	m_gdtctr;
 
-	public DefSurfaceView(AyTop aytop) {
-		super(aytop);
+	public DefSurfaceView() {
+		super(GloneApp.getContext());
 //		final AyTop		aytop0 = aytop;
 //		WindowManager	wm0 = (WindowManager)aytop0.getSystemService(android.content.Context.WINDOW_SERVICE);
 //		final Display	disp0 = wm0.getDefaultDisplay();
@@ -95,10 +94,6 @@ public class DefSurfaceView extends GLSurfaceView
 				return	false;
 			}
 		});
-	}
-
-	public void setClockTz(int nClockTz) {
-		m_renderer.setClockTz(nClockTz);
 	}
 
 	public void zoomIn(float frelative) {

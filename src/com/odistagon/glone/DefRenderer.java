@@ -2,8 +2,6 @@ package com.odistagon.glone;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Iterator;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -42,7 +40,6 @@ public class DefRenderer implements Renderer
 	private int			m_nframes;						// fps counter
 	private int			m_nframesprev;					// fps of previous second
 	private long		m_lfpsprev;						// the last time fps counted
-	private int			m_nClockTz;						// which clock kind to be shown?
 
 //	public static float			CF_PERS_FOVY = 45f;
 	public static final float	CF_PERS_NEAR = 2.0f;	// distance from eye point to near plane
@@ -220,8 +217,9 @@ public class DefRenderer implements Renderer
 
 		// date string
 		// day month year
-		if(m_nClockTz != GloneUtils.NC_PREF_CLOCKTZ_NONE) {
-			if(andt == null || m_nClockTz == GloneUtils.NC_PREF_CLOCKTZ_SYST) {
+		int	nClockTz = GloneApp.getDoc().getClockTz();
+		if(nClockTz != GloneUtils.NC_PREF_CLOCKTZ_NONE) {
+			if(andt == null || nClockTz == GloneUtils.NC_PREF_CLOCKTZ_SYST) {
 				andt = m_doc.getSystemTz().getTimeNumbers(m_doc.getTime());
 			}
 
@@ -307,10 +305,6 @@ public class DefRenderer implements Renderer
 			m_fFovyDst = 120f;
 		m_lTimeZoomStart = System.currentTimeMillis();
 		m_bNeedPersSet = true;
-	}
-
-	public void setClockTz(int nClockTz) {
-		m_nClockTz = nClockTz;
 	}
 
 	private float getCurrentFovy() {

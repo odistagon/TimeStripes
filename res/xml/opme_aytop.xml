@@ -20,6 +20,8 @@
 
 	<item android:id="@+id/opme_aytop_prefes" android:title="@string/mi_prefes"
 		android:icon="@android:drawable/ic_menu_manage" />
+	<item android:id="@+id/opme_aytop_about_" android:title="@string/mi_about_"
+		android:icon="@android:drawable/ic_menu_manage" />
 	<!-- 
 		android:showAsAction="ifRoom|withText" />
 	 -->

@@ -21,6 +21,7 @@ public class GlOneDoc
 	private long				m_lTimeAnimStart;
 	private GloneTz				m_tzSystem;
 	private ArrayList<GloneTz>	m_artzs;
+	private int					m_nClockTz;					// which clock kind to be shown?
 	private boolean				m_bdebug;
 
 	public static final long	CL_ANIMPERD = 2500L;		// ms. until fling anim stops
@@ -285,6 +286,14 @@ public class GlOneDoc
 //	public void setDebug(boolean bdebug) {
 //		m_bdebug = bdebug;
 //	}
+
+	public void setClockTz(int nClockTz) {
+		m_nClockTz = nClockTz;
+	}
+
+	public int getClockTz() {
+		return	m_nClockTz;
+	}
 
 	public boolean isDebug() {
 		return	m_bdebug;

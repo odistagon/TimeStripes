@@ -50,7 +50,7 @@
 	<string name="mi_zoomou">Zoom out</string>
 	<string name="mi_fdstne">Find next DST change</string>
 	<string name="mi_fdstpr">Find prev DST change</string>
-	
+	<string name="mi_about_">About this app</string>
 	<string name="mt_editz_">Edit a timezone</string>
 	<string name="mi_pictz_">Pick a timezone</string>
 	<string name="mi_remtz_">Remove</string>
@@ -63,5 +63,8 @@
 	<string name="prefkey_usehdr">PK_USEHDR</string>
 	<string name="prefkey_dscllv">PK_DSCLLV</string>
 	<string name="prefkey_clcktz">PK_CLCKTZ</string>
+	<string name="prefkey_edittz">PK_EDITTZ</string>
+	<string name="prefkey_debug_">PK_DEBUG_</string>
+	<string name="prefkey_lauabt">PK_LAUABT</string>
 
 </resources>

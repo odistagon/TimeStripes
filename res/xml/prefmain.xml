@@ -7,8 +7,8 @@
 	<CheckBoxPreference android:key="@string/prefkey_usehdr"
 		android:title="@string/pref_usehdr_t" android:summary="@string/pref_usehdr_s"
 		android:defaultValue="false" />
-	    
-	<ListPreference android:key="PK_CLOKTZ"
+
+	<ListPreference android:key="@string/prefkey_clcktz"
 		android:title="@string/pref_cloktz_t" android:dialogTitle="@string/pref_cloktz_dlgt"
 		android:summary="@string/pref_cloktz_s"
 		android:defaultValue="1"
@@ -19,7 +19,7 @@
 	<PreferenceCategory
 		android:title="@string/prefcat_tzns">
 
-	<Preference android:key="PK_EDITTZ"
+	<Preference android:key="@string/prefkey_edittz"
 		android:title="@string/pref_edittz_t" android:summary="@string/pref_edittz_s">
 		<intent
 			android:targetPackage="com.odistagon.glone"
@@ -31,16 +31,9 @@
 	<PreferenceCategory
 		android:title="@string/prefcat_oths">
 
-	<CheckBoxPreference android:key="PK_DEBUG_"
+	<CheckBoxPreference android:key="@string/prefkey_debug_"
 		android:title="@string/pref_debug__t" android:summary="@string/pref_debug__s"
 		android:defaultValue="false" />
-	
-	<Preference android:key="PK_LAUABT"
-		android:title="@string/pref_lauabt_t" android:summary="@string/pref_lauabt_s">
-		<intent
-			android:targetPackage="com.odistagon.glone"
-			android:targetClass="com.odistagon.glone.AyAbout" />
-	</Preference>	
 
 	</PreferenceCategory>
 <!-- 
@@ -53,5 +46,15 @@
 		android:dialogTitle="Welcome Message"
 		android:dialogMessage="Provide a message"    
 		android:defaultValue="Default welcome message" />
+
+	<PreferenceScreen android:key="@string/prefkey_lauabt"
+		android:title="@string/pref_lauabt_t" android:summary="@string/pref_lauabt_s" />
+
+	<Preference android:key="@string/prefkey_lauabt"
+		android:title="@string/pref_lauabt_t" android:summary="@string/pref_lauabt_s">
+		<intent
+			android:targetPackage="com.odistagon.glone"
+			android:targetClass="com.odistagon.glone.AyAbout" />
+	</Preference>	
  -->
 </PreferenceScreen>

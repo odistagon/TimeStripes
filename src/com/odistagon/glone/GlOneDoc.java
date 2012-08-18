@@ -22,6 +22,7 @@ public class GlOneDoc
 	private GloneTz				m_tzSystem;
 	private ArrayList<GloneTz>	m_artzs;
 	private int					m_nClockTz;					// which clock kind to be shown?
+	private String				m_sBgKind;
 	private boolean				m_bdebug;
 
 	public static final long	CL_ANIMPERD = 2500L;		// ms. until fling anim stops
@@ -280,7 +281,12 @@ public class GlOneDoc
 
 	public void syncPreference(Context ctxa) {
 		SharedPreferences	pref = PreferenceManager.getDefaultSharedPreferences(ctxa);
-		m_bdebug = pref.getBoolean("PK_DEBUG_", false);
+		m_bdebug = pref.getBoolean(ctxa.getResources().getString(R.string.prefkey_debug_), false);
+		m_sBgKind = pref.getString(ctxa.getResources().getString(R.string.prefkey_bg_sel),
+				ctxa.getResources().getString(R.string.pfval_bg_sel_1));
+		// if wp img cache does not exist, fallback to flat background
+		if(!GloneUtils.existsWallpaperCache(ctxa))
+			m_sBgKind = ctxa.getResources().getString(R.string.pfval_bg_sel_1);
 	}
 
 //	public void setDebug(boolean bdebug) {
@@ -293,6 +299,10 @@ public class GlOneDoc
 
 	public int getClockTz() {
 		return	m_nClockTz;
+	}
+
+	public boolean bgKind(String sarg) {
+		return	m_sBgKind.equals(sarg);
 	}
 
 	public boolean isDebug() {

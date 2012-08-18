@@ -20,6 +20,11 @@ public class DefSurfaceView extends GLSurfaceView
 		m_renderer = new DefRenderer(GloneApp.getDoc());
 		setRenderer(m_renderer);
 
+// these seems to be necessary to make a drawable to be background of GLSurfaceView, but not works for me.
+//		setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+//		getHolder().setFormat(PixelFormat.TRANSLUCENT);
+//		setZOrderOnTop(true);
+
 		OnGestureListener ogl0 = new OnGestureListener() {
 			@Override
 			public boolean onSingleTapUp(MotionEvent e) {

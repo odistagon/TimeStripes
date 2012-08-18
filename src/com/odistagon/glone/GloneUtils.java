@@ -1,10 +1,21 @@
 package com.odistagon.glone;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.TimeZone;
 
+import javax.microedition.khronos.opengles.GL10;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.opengl.GLUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -63,6 +74,69 @@ public class GloneUtils
 			tvName.setText(R.string.li_addnew);
 			tvId.setText("");
 			vliarg.setTag(null);
+		}
+	}
+
+	public static void saveWallpaperCache(Context ctxarg, Bitmap bmarg)
+	throws IOException {
+		FileOutputStream	fout = null;
+		try {
+			new FileOutputStream(getWallpaperCachePath(ctxarg));
+			bmarg.compress(Bitmap.CompressFormat.JPEG, 85, fout);
+		} finally {
+			if(fout != null) {
+				fout.flush();
+				fout.close();
+			}
+//			if(bmarg != null)
+//				bmarg.recycle();
+		}
+	}
+
+	private static String getWallpaperCachePath(Context ctxarg) {
+		return	(ctxarg.getCacheDir().getPath() + File.pathSeparator + "wallpa2.jpg");
+	}
+
+	public static boolean existsWallpaperCache(Context ctxarg) {
+		File	f0 = new File(getWallpaperCachePath(ctxarg));
+		return	f0.exists();
+	}
+
+	public static void loadTextures(GL10 gl0, int[] antexids, Context ctxarg) {
+		Bitmap	bm0 = null;
+		// Main texture
+		try {
+			gl0.glBindTexture(GL10.GL_TEXTURE_2D, antexids[0]);
+			// NOTE if image is read from another dpi resource, that will be resized automatically. 
+			bm0 = BitmapFactory.decodeResource(GloneApp.getContext().getResources(), R.drawable.timestr_tex);
+//			Log.d(getClass().getName(), "texture size: (u, v each must be x^2) (" + bm0.getWidth() + ", " + bm0.getHeight() + ")");
+			GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bm0, 0);
+			gl0.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
+			gl0.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+		} finally {
+			if(bm0 != null)
+				bm0.recycle();
+		}
+		// Background texture
+		gl0.glBindTexture(GL10.GL_TEXTURE_2D, antexids[1]);
+		FileInputStream	fin = null;
+		try {
+			fin = new FileInputStream(getWallpaperCachePath(ctxarg));
+			bm0 = BitmapFactory.decodeStream(fin);
+			GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bm0, 0);
+			gl0.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
+			gl0.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+			bm0.recycle();
+		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+		} finally {
+			try {
+				if(fin != null)
+					fin.close();
+			} catch (IOException e) {
+			}
+			if(bm0 != null)
+				bm0.recycle();
 		}
 	}
 }

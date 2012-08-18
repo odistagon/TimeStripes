@@ -11,5 +11,14 @@
 		<item>1</item>
 		<item>2</item>
 	</string-array>
-	
+
+	<string-array name="stra_bg_sel_key">
+		<item>@string/pref_bg_sel_opt1</item>
+		<item>@string/pref_bg_sel_opt2</item>
+	</string-array>
+	<string-array name="stra_bg_sel_val">
+		<item>@string/pfval_bg_sel_1</item>
+		<item>@string/pfval_bg_sel_2</item>
+	</string-array>
+
 </resources>

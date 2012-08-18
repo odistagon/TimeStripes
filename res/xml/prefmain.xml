@@ -9,10 +9,19 @@
 		android:defaultValue="false" />
 
 	<ListPreference android:key="@string/prefkey_clcktz"
-		android:title="@string/pref_cloktz_t" android:dialogTitle="@string/pref_cloktz_dlgt"
-		android:summary="@string/pref_cloktz_s"
+		android:title="@string/pref_cloktz_t" android:summary="@string/pref_cloktz_s"
+		android:dialogTitle="@string/pref_cloktz_dlgt"
 		android:defaultValue="1"
 		android:entries="@array/stra_shwclk_key" android:entryValues="@array/stra_shwclk_val" />
+
+	<PreferenceScreen android:key="@string/prefkey_wallpa"
+		android:title="@string/pref_wallpa_t" android:summary="@string/pref_wallpa_s" />
+
+	<ListPreference android:key="@string/prefkey_bg_sel"
+		android:title="@string/pref_bg_sel_t" android:summary="@string/pref_bg_sel_s"
+		android:dialogTitle="@string/pref_bg_sel_dlgt"
+		android:defaultValue="1"
+		android:entries="@array/stra_bg_sel_key" android:entryValues="@array/stra_bg_sel_val" />
 
 	</PreferenceCategory>
 

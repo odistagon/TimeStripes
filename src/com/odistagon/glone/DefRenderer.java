@@ -7,12 +7,8 @@ import java.util.Iterator;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.GLU;
-import android.opengl.GLUtils;
-import android.util.Log;
 
 public class DefRenderer implements Renderer
 {
@@ -20,8 +16,7 @@ public class DefRenderer implements Renderer
 	private int			m_nHeight;
 	private float		m_frmgn;						// right margin in opengl unit
 
-	private int[]		m_nTextures = new int[1];
-	private int			m_nTextureId = 0;
+	private int[]		m_anTexIds = new int[2];
 
 	private TestCube	m_testcube = null;//new TestCube();
 	private long		m_lLastRendered;
@@ -69,21 +64,15 @@ public class DefRenderer implements Renderer
 		m_glstripe.onSurfaceCreated(gl0, arg1);
 
 		makeOrgBuffs();
+		makeWpBuffs();
 
 		// generate texture buffer
-		if (m_nTextureId != 0){
-			gl0.glDeleteTextures(1, m_nTextures, 0);
+		if (m_anTexIds != null && m_anTexIds[0] != 0){
+			gl0.glDeleteTextures(2, m_anTexIds, 0);
 		}
-		gl0.glGenTextures(1, m_nTextures, 0);
-		m_nTextureId = m_nTextures[0];
-		gl0.glBindTexture(GL10.GL_TEXTURE_2D, m_nTextureId);
-		// NOTE if image is read from another dpi resource, that will be resized automatically. 
-		Bitmap	bm0 = BitmapFactory.decodeResource(GloneApp.getContext().getResources(), R.drawable.timestr_tex);
-		Log.d(getClass().getName(), "texture size: (u, v each must be x^2) (" + bm0.getWidth() + ", " + bm0.getHeight() + ")");
-		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bm0, 0);
-		gl0.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
-		gl0.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
-		bm0.recycle();
+		gl0.glGenTextures(2, m_anTexIds, 0);
+		// load texture images
+		GloneUtils.loadTextures(gl0, m_anTexIds, GloneApp.getContext());
 	}
 
 	@Override
@@ -91,7 +80,7 @@ public class DefRenderer implements Renderer
 		m_nWidth = width;
 		m_nHeight = height;
 		gl0.glViewport(0, 0, width, height);
-		gl0.glClearColor(0.85f, 0.85f, 0.85f, 1.0f);	// set background color (RGBA)
+		gl0.glClearColor(0f, 0f, 0f, 0f);	// set background color (RGBA)
 
 		m_bNeedPersSet = true;
 	}
@@ -165,6 +154,17 @@ public class DefRenderer implements Renderer
 		gl0.glBlendFunc(GL10.GL_SRC_ALPHA,GL10.GL_ONE_MINUS_SRC_ALPHA);
 		gl0.glEnable(GL10.GL_TEXTURE_2D);
 //		gl0.glBindTexture(GL10.GL_TEXTURE_2D, m_nTextureId);
+
+		gl0.glActiveTexture(GL10.GL_TEXTURE0);
+		// wallpaper
+		final String	sBgKind = GloneApp.getContext().getResources().getString(R.string.pfval_bg_sel_2);
+		if(GloneApp.getDoc().bgKind(sBgKind)) {
+			gl0.glBindTexture(GL10.GL_TEXTURE_2D, m_anTexIds[1]);
+			drawWp(gl0, fscrw, fscrh);
+		}
+
+		gl0.glLoadIdentity();
+		gl0.glBindTexture(GL10.GL_TEXTURE_2D, m_anTexIds[0]);
 
 		gl0.glPushMatrix();
 		gl0.glScalef(1.0f, m_fStripeScaleH, 1.0f);
@@ -488,5 +488,42 @@ public class DefRenderer implements Renderer
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
+	}
+
+	private FloatBuffer	m_buffWpVerts = null;
+	private FloatBuffer	m_buffWpTexts = null;
+
+	private void makeWpBuffs() {
+		// vertices
+		float[]	aftemp = new float[] {
+				-1f,  1f, CF_LOOK_EYZ - CF_PERS_FAR_,	// LT
+				+1f,  1f, CF_LOOK_EYZ - CF_PERS_FAR_,	// RT
+				-1f, -1f, CF_LOOK_EYZ - CF_PERS_FAR_,	// LB
+				+1f, -1f, CF_LOOK_EYZ - CF_PERS_FAR_,	// RB
+		};
+		m_buffWpVerts = GloneUtils.makeFloatBuffer(aftemp);
+		// colors RGBA
+		aftemp = new float[] {
+				+0.0f, 0.0f,	// LT
+				+1.0f, 0.0f,	// RT
+				+0.0f, 1.0f,	// LB
+				+1.0f, 1.0f,	// RB
+		};
+		m_buffWpTexts = GloneUtils.makeFloatBuffer(aftemp);
+	}
+
+	/** 
+	 * @param gl
+	 */
+	private void drawWp(GL10 gl, float fScreenWidth, float fScreenHeight) {
+		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, m_buffWpVerts);
+		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glTexCoordPointer(2 ,GL10.GL_FLOAT, 0, m_buffWpTexts);
+		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		gl.glScalef(fScreenWidth, fScreenHeight, 1f);
+		gl.glNormal3f(0, 0, 1.0f);
+		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 	}
 }

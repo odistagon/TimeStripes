@@ -171,8 +171,6 @@ public class DefRenderer implements Renderer
 		// stripes
 		Iterator<GloneTz>	it0 = altz.iterator();
 		float				fm0 = calcStripesShiftWidth(fscrw);
-		final int			ncharstz = 8;
-		float				frabc = (fscrh / 2f) / (GlStripe.CRECTF_VTXABC.bottom * (float)ncharstz);
 		float				fhorz = 0f;
 		if(m_lHorzReld == 0) {
 			// dragging
@@ -189,25 +187,38 @@ public class DefRenderer implements Renderer
 		}
 		gl0.glTranslatef(fscrw / 2f - (m_frmgn + GlStripe.CRECTF_VTXHUR.right)
 				+ fhorz, 0.0f, 0.0f);	// draw from right toward left edge 
+		// wrap scroll - right side
+		if(fhorz < 0f) {
+			gl0.glTranslatef(fm0 * +1f, 0.0f, 0.0f);	// 1 unit over right edge
+			float	falpha = ((Math.abs(fhorz) % fm0)) / fm0;
+			GloneTz	gtz0 = altz.get(altz.size() - 1);
+			drawASetOfStripe(gl0, gtz0, fscrh, falpha, true);
+			gl0.glTranslatef(fm0 * -1f, 0.0f, 0.0f);	// -> left
+		}
+		// center part
 		int		i = 0;
 		while(it0.hasNext()) {
+			// transition performance. (both ends stripes fade in/out)
+			float	falpha = 1f;
+			if(i == 0 && fhorz > 0f ||						// left end
+					i == altz.size() - 1 && fhorz < 0f) {	// right end
+				falpha = (fm0 - (Math.abs(fhorz) % fm0)) / fm0;
+			}
+
 			GloneTz	gtz0 = it0.next();
-			gl0.glPushMatrix();
-			m_glstripe.drawStripe(gl0, gtz0, m_doc.getTime(), fscrh, (i++ == 0));
-			gl0.glPopMatrix();
-			// timezone names
-			String	s0 = gtz0.getTimeZoneId();
-			gl0.glPushMatrix();
-			gl0.glTranslatef(GlStripe.CRECTF_VTXHUR.right - (frabc / (float)ncharstz / 2f),
-					fscrh / 2f, 0f);
-			gl0.glScalef(frabc, frabc, 1f);
-			m_glstripe.drawAbcString(gl0, s0, ncharstz, true);
-			gl0.glPopMatrix();
+			drawASetOfStripe(gl0, gtz0, fscrh, falpha, (i++ == 0));
 			gl0.glTranslatef(fm0 * -1f, 0.0f, 0.0f);	// -> left
+		}
+		// wrap scroll - left side
+		if(fhorz > 0f) {
+			float	falpha = ((Math.abs(fhorz) % fm0)) / fm0;
+			GloneTz	gtz0 = altz.get(0);
+			drawASetOfStripe(gl0, gtz0, fscrh, falpha, false);
 		}
 		gl0.glPopMatrix();
 
 		gl0.glDisable(GL10.GL_TEXTURE_2D);
+		gl0.glColor4f(1f, 1f, 1f, 1f);
 
 		gl0.glLoadIdentity();
 		// org
@@ -283,6 +294,23 @@ public class DefRenderer implements Renderer
 		m_lLastRendered = System.currentTimeMillis();
 
 		gl0.glDisable(GL10.GL_BLEND);
+	}
+
+	private void drawASetOfStripe(GL10 gl0, GloneTz gtz0, float fscrh, float falpha, boolean bfirst){
+		final int			ncharstz = 8;
+		float				frabc = (fscrh / 2f) / (GlStripe.CRECTF_VTXABC.bottom * (float)ncharstz);
+		gl0.glColor4f(1f, 1f, 1f, falpha);
+		gl0.glPushMatrix();
+		m_glstripe.drawStripe(gl0, gtz0, m_doc.getTime(), fscrh, bfirst);
+		gl0.glPopMatrix();
+		// timezone names
+		String	s0 = gtz0.getTimeZoneId();
+		gl0.glPushMatrix();
+		gl0.glTranslatef(GlStripe.CRECTF_VTXHUR.right - (frabc / (float)ncharstz / 2f),
+				fscrh / 2f, 0f);
+		gl0.glScalef(frabc, frabc, 1f);
+		m_glstripe.drawAbcString(gl0, s0, ncharstz, true);
+		gl0.glPopMatrix();
 	}
 
 	private float calcStripesShiftWidth(float fScreenWidth) {

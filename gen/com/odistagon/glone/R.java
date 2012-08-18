@@ -88,7 +88,7 @@ public final class R {
         public static final int icdesc_cc=0x7f060015;
         public static final int icdesc_cc_url=0x7f060016;
         public static final int icdesc_font_neuropol=0x7f060014;
-        public static final int li_addnew=0x7f060035;
+        public static final int li_addnew=0x7f060036;
         public static final int mi_about_=0x7f06002f;
         public static final int mi_fdstne=0x7f06002d;
         public static final int mi_fdstpr=0x7f06002e;
@@ -119,17 +119,18 @@ public final class R {
         public static final int prefcat_disp=0x7f060017;
         public static final int prefcat_oths=0x7f060023;
         public static final int prefcat_tzns=0x7f060020;
-        public static final int prefkey_clcktz=0x7f060038;
-        public static final int prefkey_debug_=0x7f06003a;
-        public static final int prefkey_dscllv=0x7f060037;
-        public static final int prefkey_edittz=0x7f060039;
-        public static final int prefkey_lauabt=0x7f06003b;
+        public static final int prefkey_clcktz=0x7f060039;
+        public static final int prefkey_debug_=0x7f06003b;
+        public static final int prefkey_dscllv=0x7f060038;
+        public static final int prefkey_edittz=0x7f06003a;
+        public static final int prefkey_lauabt=0x7f06003c;
         /**  pref keys, no need to localize 
          */
-        public static final int prefkey_usehdr=0x7f060036;
+        public static final int prefkey_usehdr=0x7f060037;
         public static final int rs_dlg_neg=0x7f06000b;
         public static final int rs_dlg_pos=0x7f06000a;
         public static final int rs_seltzdlg_filt=0x7f060009;
+        public static final int toas_nodst_=0x7f060035;
     }
     public static final class xml {
         public static final int opme_aytop=0x7f040000;

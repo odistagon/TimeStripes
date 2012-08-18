@@ -57,6 +57,8 @@
 	<string name="mi_muptz_">Move up</string>
 	<string name="mi_mdntz_">Move down</string>
 
+	<string name="toas_nodst_">No DST change for the timezone. Change right-most (re-order) and try again.</string>
+
 	<string name="li_addnew">+ Add new</string>
 
 	<!-- pref keys, no need to localize -->

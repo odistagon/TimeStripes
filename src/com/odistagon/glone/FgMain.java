@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 public class FgMain extends Fragment
 {
@@ -124,6 +125,9 @@ public class FgMain extends Fragment
 				item.getItemId() == R.id.opme_aytop_fdstne);
 			if(lgoto > 0)
 				GloneApp.getDoc().setTimeAbsolute(lgoto, true);
+			else
+				Toast.makeText(getActivity(),
+						getResources().getString(R.string.toas_nodst_), Toast.LENGTH_LONG).show();
 		}	break;
 		case R.id.opme_aytop_prefes:	{
 			Intent	i0 = new Intent(GloneApp.getContext(), (new AyPrefMain()).getClass());

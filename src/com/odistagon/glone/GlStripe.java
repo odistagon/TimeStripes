@@ -175,17 +175,31 @@ public class GlStripe
 	}
 
 	private static void drawAStripe(GL10 gl, GloneTz gtz, float fdstoffset) {
-		int	n0 = 0;
+		int		n0 = 0;
+		float	frem = Math.abs(fdstoffset) % 1f;	// for the case offset < 1h (Australia/LHI)
 		// draw 0, 1
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 4 * 0, 4 * 2);
 		// draw from 2
-		if(fdstoffset > 0) {
+		if(fdstoffset > 0f) {
 			gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * 1f, 0.0f);
+			gl.glPushMatrix();
+			if(frem > 0f) {
+				gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * fdstoffset, 0.0f);
+				gl.glScalef(1f, fdstoffset, 1f);
+			}
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 4 * 1, 4 * 1);	// duplicate 1
+			gl.glPopMatrix();
 			gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * -1f, 0.0f);
 		} else
-		if(fdstoffset < 0) {
+		if(fdstoffset < 0f) {
 			// don't cover 1 and restart with 3.
+			if(frem > 0f) {
+				gl.glPushMatrix();
+				gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * 1f, 0.0f);
+				gl.glScalef(1f, fdstoffset * -1f, 1f);
+				gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 4 * 2, 4 * 1);	// 2 am
+				gl.glPopMatrix();
+			}
 			n0 = 1;
 		}
 		gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * (fdstoffset), 0.0f);

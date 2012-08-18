@@ -57,6 +57,8 @@
 	<string name="mi_muptz_">上へ移動</string>
 	<string name="mi_mdntz_">下へ移動</string>
 
+	<string name="toas_nodst_">夏時間の変更が無いタイムゾーンです。右端のタイムゾーンを変更して試してみてください。</string>
+
 	<string name="li_addnew">+ 追加</string>
 
 </resources>

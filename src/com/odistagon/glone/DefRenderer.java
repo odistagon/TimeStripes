@@ -12,31 +12,28 @@ import android.opengl.GLU;
 
 public class DefRenderer implements Renderer
 {
-	private int			m_nWidth;
-	private int			m_nHeight;
-	private float		m_frmgn;						// right margin in opengl unit
+	private int					m_nWidth;
+	private int					m_nHeight;
+	private float				m_frmgn;				// right margin in opengl unit
 
-	private int[]		m_anTexIds = new int[2];
-
-	private TestCube	m_testcube = null;//new TestCube();
-	private long		m_lLastRendered;
-	private float		m_fStripeScaleH;
-	private GlOneDoc	m_doc;
-	private Gl2DString	m_glstr;
-	private GlStripe	m_glstripe;
-	private boolean		m_bNeedPersSet = true;			// perspective set.
-	private float		m_fHorzShift = 0f;
-	private long		m_lHorzReld = 0L;				// time when horizontal shift touch released
-	private float		m_fFovySrc;						// zoom src
-	private float		m_fFovyDst = 45f;				// FoVY (zoom dst)
-	private long		m_lTimeZoomStart;				// time when zoom started
+	private int[]				m_anTexIds = new int[2];
+	private long				m_lLastRendered;
+	private float				m_fStripeScaleH;
+	private GlOneDoc			m_doc;
+	private Gl2DString			m_glstr;
+	private GlStripe			m_glstripe;
+	private boolean				m_bNeedPersSet = true;	// perspective set.
+	private float				m_fHorzShift = 0f;
+	private long				m_lHorzReld = 0L;		// time when horizontal shift touch released
+	private float				m_fFovySrc;				// zoom src
+	private float				m_fFovyDst = 45f;		// FoVY (zoom dst)
+	private long				m_lTimeZoomStart;		// time when zoom started
 	private static final long	CL_ZOOMPERD = 1000L;
 
-	private int			m_nframes;						// fps counter
-	private int			m_nframesprev;					// fps of previous second
-	private long		m_lfpsprev;						// the last time fps counted
+	private int					m_nframes;				// fps counter
+	private int					m_nframesprev;			// fps of previous second
+	private long				m_lfpsprev;				// the last time fps counted
 
-//	public static float			CF_PERS_FOVY = 45f;
 	public static final float	CF_PERS_NEAR = 2.0f;	// distance from eye point to near plane
 	public static final float	CF_PERS_FAR_ = 6.0f;	// distance from eye point to far plane
 	public static final float	CF_LOOK_EYZ = 4.0f;		// eye point
@@ -56,6 +53,8 @@ public class DefRenderer implements Renderer
 	public void onSurfaceCreated(GL10 gl0, EGLConfig arg1) {
 		gl0.glEnable(GL10.GL_DEPTH_TEST);
 		gl0.glDepthFunc(GL10.GL_LEQUAL);
+		gl0.glDisable(GL10.GL_LIGHTING);
+		gl0.glDisable(GL10.GL_LIGHT0);
 
 		m_glstr = new Gl2DString();
 		m_glstr.onSurfaceCreated(gl0, arg1);
@@ -80,7 +79,7 @@ public class DefRenderer implements Renderer
 		m_nWidth = width;
 		m_nHeight = height;
 		gl0.glViewport(0, 0, width, height);
-		gl0.glClearColor(0f, 0f, 0f, 0f);	// set background color (RGBA)
+		gl0.glClearColor(0.8f, 0.8f, 0.8f, 1f);	// set background color (RGBA)
 
 		m_bNeedPersSet = true;
 	}
@@ -107,27 +106,6 @@ public class DefRenderer implements Renderer
 		// make constant fps
 		waitConstant();
 
-		gl0.glEnable(GL10.GL_BLEND);
-		gl0.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
-//		gl0.glShadeModel(GL10.GL_SMOOTH);	// GL_FLAT
-
-		// Lighting
-//		final float[] afLightAmbient = { 1.0f, 1.0f, 1.0f, 0.6f };
-//		final float[] afLightDiffuse = { 1.0f, 1.0f, 0.3f, 0.6f };
-//		final float[] afLightPosition = { 0.0f, 0.0f, 3.0f, 0.6f };
-//		gl0.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, afLightAmbient, 0);
-//		gl0.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, afLightDiffuse, 0);
-//		gl0.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, afLightPosition, 0);
-		gl0.glEnable(GL10.GL_LIGHTING);
-		gl0.glEnable(GL10.GL_LIGHT0);
-//		final float[] matAmbient = { 0.3f, 0.3f, 0.3f, 0.6f };
-//		final float[] matDiffuse = { 0.6f, 0.6f, 0.6f, 0.6f };
-//		gl0.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, matAmbient, 0);
-//		gl0.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, matDiffuse, 0);
-//		gl0.glEnable(GL10.GL_COLOR_MATERIAL);
-//		gl0.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-
-		// draw objects
 		ArrayList<GloneTz>	altz = m_doc.getTzList();
 		GloneTz				gtz1 = null;
 		int[]				andt = null;
@@ -136,24 +114,9 @@ public class DefRenderer implements Renderer
 			andt = gtz1.getTimeNumbers(m_doc.getTime());
 		}
 
-		// calc rotation
-		if(m_testcube != null) {
-			gl0.glPushMatrix();
-			gl0.glScalef(0.3f, 0.3f, 0.3f);
-			gl0.glRotatef((((float)andt[4]) / 24f) * 360f, 1f, 0f, 0f);
-			gl0.glTranslatef(-2.0f, -1.5f, -0.5f);
-			// cube
-			m_testcube.draw(gl0);
-			gl0.glPopMatrix();
-		}
-
-		gl0.glDisable(GL10.GL_LIGHTING);
-		gl0.glDisable(GL10.GL_LIGHT0);
 		gl0.glEnable(GL10.GL_BLEND);
-
 		gl0.glBlendFunc(GL10.GL_SRC_ALPHA,GL10.GL_ONE_MINUS_SRC_ALPHA);
 		gl0.glEnable(GL10.GL_TEXTURE_2D);
-//		gl0.glBindTexture(GL10.GL_TEXTURE_2D, m_nTextureId);
 
 		gl0.glActiveTexture(GL10.GL_TEXTURE0);
 		// wallpaper

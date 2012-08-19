@@ -81,7 +81,7 @@ public class GloneUtils
 	throws IOException {
 		FileOutputStream	fout = null;
 		try {
-			new FileOutputStream(getWallpaperCachePath(ctxarg));
+			fout = new FileOutputStream(getWallpaperCachePath(ctxarg));
 			bmarg.compress(Bitmap.CompressFormat.JPEG, 85, fout);
 		} finally {
 			if(fout != null) {
@@ -94,7 +94,7 @@ public class GloneUtils
 	}
 
 	private static String getWallpaperCachePath(Context ctxarg) {
-		return	(ctxarg.getCacheDir().getPath() + File.pathSeparator + "wallpa2.jpg");
+		return	(ctxarg.getCacheDir().getPath() + File.pathSeparator + "wallpa.jpg");
 	}
 
 	public static boolean existsWallpaperCache(Context ctxarg) {
@@ -123,10 +123,12 @@ public class GloneUtils
 		try {
 			fin = new FileInputStream(getWallpaperCachePath(ctxarg));
 			bm0 = BitmapFactory.decodeStream(fin);
-			GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bm0, 0);
-			gl0.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
-			gl0.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
-			bm0.recycle();
+			if(bm0 != null) {
+				GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bm0, 0);
+				gl0.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
+				gl0.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+				bm0.recycle();
+			}
 		} catch (FileNotFoundException e) {
 //			e.printStackTrace();
 		} finally {

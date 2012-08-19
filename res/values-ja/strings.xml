@@ -32,6 +32,15 @@
 	<string name="pref_cloktz_opt1">表示しない</string>
 	<string name="pref_cloktz_opt2">画面右端のタイムゾーン</string>
 	<string name="pref_cloktz_opt3">システムタイムゾーン</string>
+	<string name="pref_wallpa_t">背景画像</string>
+	<string name="pref_wallpa_s">背景画像を設定します。背景に表示するには、「背景の種類」で「背景画像」を選択してください。</string>
+	<string name="pref_bg_sel_t">背景の種類</string>
+	<string name="pref_bg_sel_dlgt">背景の選択</string>
+	<string name="pref_bg_sel_s">背景に何を表示するかを選択します。</string>
+	<string name="pref_bg_sel_opt1">単色</string>
+	<string name="pref_bg_sel_opt2">背景画像</string>
+	<string name="pref_fgtrns_t">時刻表示の透明度</string>
+	<string name="pref_fgtrns_s">0 - 透明, 100 - 不透明</string>
 	<string name="pref_usehdr_t">ヘッダーを表示</string>
 	<string name="pref_usehdr_s">画面先頭にヘッダーまたは (Android 3.0 以降の場合) アクションバーを表示します。アプリの再起動が必要です。</string>
 	<string name="prefcat_tzns">タイムゾーン設定</string>
@@ -58,6 +67,8 @@
 	<string name="mi_mdntz_">下へ移動</string>
 
 	<string name="toas_nodst_">夏時間の変更が無いタイムゾーンです。右端のタイムゾーンを変更して試してみてください。</string>
+	<string name="toas_savcri">エラー: 切り取った画像の保存に失敗しました。</string>
+	<string name="toas_nofcra">エラー: 画像切り取りの機能が見つかりませんでした。</string>
 
 	<string name="li_addnew">+ 追加</string>
 

@@ -22,6 +22,7 @@ public class GlOneDoc
 	private GloneTz				m_tzSystem;
 	private ArrayList<GloneTz>	m_artzs;
 	private int					m_nClockTz;					// which clock kind to be shown?
+	private int					m_nFgTrans;					// Stripes transparency
 	private String				m_sBgKind;
 	private boolean				m_bdebug;
 
@@ -287,6 +288,7 @@ public class GlOneDoc
 		// if wp img cache does not exist, fallback to flat background
 		if(!GloneUtils.existsWallpaperCache(ctxa))
 			m_sBgKind = ctxa.getResources().getString(R.string.pfval_bg_sel_1);
+		m_nFgTrans = pref.getInt(ctxa.getResources().getString(R.string.prefkey_fgtrns), 100);
 	}
 
 //	public void setDebug(boolean bdebug) {
@@ -299,6 +301,10 @@ public class GlOneDoc
 
 	public int getClockTz() {
 		return	m_nClockTz;
+	}
+
+	public int getFgTrans() {
+		return	m_nFgTrans;
 	}
 
 	public boolean bgKind(String sarg) {

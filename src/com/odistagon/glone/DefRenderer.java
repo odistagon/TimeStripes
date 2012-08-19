@@ -186,13 +186,14 @@ public class DefRenderer implements Renderer
 			m_lHorzReld = 0L;
 		}
 		gl0.glTranslatef(fscrw / 2f - (m_frmgn + GlStripe.CRECTF_VTXHUR.right)
-				+ fhorz, 0.0f, 0.0f);	// draw from right toward left edge 
+				+ fhorz, 0.0f, 0.0f);	// draw from right toward left edge
+		float	fgloba = ((float)GloneApp.getDoc().getFgTrans() / 100f);
 		// wrap scroll - right side
 		if(fhorz < 0f) {
 			gl0.glTranslatef(fm0 * +1f, 0.0f, 0.0f);	// 1 unit over right edge
 			float	falpha = ((Math.abs(fhorz) % fm0)) / fm0;
 			GloneTz	gtz0 = altz.get(altz.size() - 1);
-			drawASetOfStripe(gl0, gtz0, fscrh, falpha, true);
+			drawASetOfStripe(gl0, gtz0, fscrh, falpha * fgloba, true);
 			gl0.glTranslatef(fm0 * -1f, 0.0f, 0.0f);	// -> left
 		}
 		// center part
@@ -204,16 +205,15 @@ public class DefRenderer implements Renderer
 					i == altz.size() - 1 && fhorz < 0f) {	// right end
 				falpha = (fm0 - (Math.abs(fhorz) % fm0)) / fm0;
 			}
-
 			GloneTz	gtz0 = it0.next();
-			drawASetOfStripe(gl0, gtz0, fscrh, falpha, (i++ == 0));
+			drawASetOfStripe(gl0, gtz0, fscrh, falpha * fgloba, (i++ == 0));
 			gl0.glTranslatef(fm0 * -1f, 0.0f, 0.0f);	// -> left
 		}
 		// wrap scroll - left side
 		if(fhorz > 0f) {
 			float	falpha = ((Math.abs(fhorz) % fm0)) / fm0;
 			GloneTz	gtz0 = altz.get(0);
-			drawASetOfStripe(gl0, gtz0, fscrh, falpha, false);
+			drawASetOfStripe(gl0, gtz0, fscrh, falpha * fgloba, false);
 		}
 		gl0.glPopMatrix();
 
@@ -520,7 +520,9 @@ public class DefRenderer implements Renderer
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glTexCoordPointer(2 ,GL10.GL_FLOAT, 0, m_buffWpTexts);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-		gl.glScalef(fScreenWidth, fScreenHeight, 1f);
+		float	f0 = (fScreenWidth > fScreenHeight ? fScreenWidth : fScreenHeight);
+		f0 *= 1.2f;	// TODO should be the scale at correct depth(z)
+		gl.glScalef(f0, f0, 1f);
 		gl.glNormal3f(0, 0, 1.0f);
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);

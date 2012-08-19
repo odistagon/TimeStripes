@@ -8,12 +8,6 @@
 		android:title="@string/pref_usehdr_t" android:summary="@string/pref_usehdr_s"
 		android:defaultValue="false" />
 
-	<ListPreference android:key="@string/prefkey_clcktz"
-		android:title="@string/pref_cloktz_t" android:summary="@string/pref_cloktz_s"
-		android:dialogTitle="@string/pref_cloktz_dlgt"
-		android:defaultValue="1"
-		android:entries="@array/stra_shwclk_key" android:entryValues="@array/stra_shwclk_val" />
-
 	<PreferenceScreen android:key="@string/prefkey_wallpa"
 		android:title="@string/pref_wallpa_t" android:summary="@string/pref_wallpa_s" />
 
@@ -23,6 +17,11 @@
 		android:defaultValue="1"
 		android:entries="@array/stra_bg_sel_key" android:entryValues="@array/stra_bg_sel_val" />
 
+	<com.odistagon.glone.SeekBarPref android:key="@string/prefkey_fgtrns"
+		android:title="@string/pref_fgtrns_t" android:summary="@string/pref_fgtrns_s"
+		android:text="0,100,1" android:defaultValue="100"
+		/>
+	
 	</PreferenceCategory>
 
 	<PreferenceCategory
@@ -34,6 +33,12 @@
 			android:targetPackage="com.odistagon.glone"
 			android:targetClass="com.odistagon.glone.AyTzSet" />
 	</Preference>	
+
+	<ListPreference android:key="@string/prefkey_clcktz"
+		android:title="@string/pref_cloktz_t" android:summary="@string/pref_cloktz_s"
+		android:dialogTitle="@string/pref_cloktz_dlgt"
+		android:defaultValue="1"
+		android:entries="@array/stra_shwclk_key" android:entryValues="@array/stra_shwclk_val" />
 
 	</PreferenceCategory>
 

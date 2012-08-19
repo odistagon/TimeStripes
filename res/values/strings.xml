@@ -33,12 +33,14 @@
 	<string name="pref_cloktz_opt2">Right-most TZ</string>
 	<string name="pref_cloktz_opt3">System TZ</string>
 	<string name="pref_wallpa_t">Wall paper</string>
-	<string name="pref_wallpa_s">Select wall paper image.</string>
+	<string name="pref_wallpa_s">Select wall paper image. To show as background, select &quot;Wallpaper&quot; on &quot;Background&quot;.</string>
 	<string name="pref_bg_sel_t">Background</string>
 	<string name="pref_bg_sel_dlgt">Select background</string>
 	<string name="pref_bg_sel_s">What will you use on screen background?</string>
 	<string name="pref_bg_sel_opt1">Flat</string>
 	<string name="pref_bg_sel_opt2">Wallpaper</string>
+	<string name="pref_fgtrns_t">Stripes transparency</string>
+	<string name="pref_fgtrns_s">0 - transparent, 100 - opaque</string>
 	<string name="pref_usehdr_t">Show app header</string>
 	<string name="pref_usehdr_s">Use app header or Action Bar (Android 3.0 or lator), requires app restart.</string>
 	<string name="prefcat_tzns">Timezone Settings</string>
@@ -76,6 +78,7 @@
 	<string name="prefkey_clcktz">PK_CLCKTZ</string>
 	<string name="prefkey_wallpa">PK_WALLPA</string>
 	<string name="prefkey_bg_sel">PK_BG_SEL</string>
+	<string name="prefkey_fgtrns">PK_FGTRNS</string>
 	<string name="prefkey_edittz">PK_EDITTZ</string>
 	<string name="prefkey_debug_">PK_DEBUG_</string>
 	<string name="prefkey_lauabt">PK_LAUABT</string>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent" 
+	android:id="@+id/pref_seekbar_lo0"
+	android:orientation="vertical">
+
+<!-- 
+	<TextView android:id="@+id/pref_seekbar_tv1"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:text="@string/pref_fgtrns_t" />
+
+	<FrameLayout android:id="@+id/pref_seekbar_lo1"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:minWidth="100dip"
+		/>
+ -->
+
+	<SeekBar android:id="@+id/pref_seekbar_sb1"
+		android:layout_width="100dip" android:layout_height="wrap_content"
+		android:minWidth="300dip"
+		/>
+
+	<TextView android:id="@+id/pref_seekbar_tv2"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_gravity="right"
+		/>
+
+</LinearLayout>

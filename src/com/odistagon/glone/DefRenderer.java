@@ -151,12 +151,13 @@ public class DefRenderer implements Renderer
 		gl0.glTranslatef(fscrw / 2f - (m_frmgn + GlStripe.CRECTF_VTXHUR.right)
 				+ fhorz, 0.0f, 0.0f);	// draw from right toward left edge
 		float	fgloba = ((float)GloneApp.getDoc().getFgTrans() / 100f);
+		int		nDayLvl = (andt != null ? andt[2] : -1);
 		// wrap scroll - right side
 		if(fhorz < 0f) {
 			gl0.glTranslatef(fm0 * +1f, 0.0f, 0.0f);	// 1 unit over right edge
 			float	falpha = ((Math.abs(fhorz) % fm0)) / fm0;
 			GloneTz	gtz0 = altz.get(altz.size() - 1);
-			drawASetOfStripe(gl0, gtz0, fscrh, falpha * fgloba, true);
+			drawASetOfStripe(gl0, gtz0, fscrh, falpha * fgloba, true, nDayLvl);
 			gl0.glTranslatef(fm0 * -1f, 0.0f, 0.0f);	// -> left
 		}
 		// center part
@@ -169,14 +170,14 @@ public class DefRenderer implements Renderer
 				falpha = (fm0 - (Math.abs(fhorz) % fm0)) / fm0;
 			}
 			GloneTz	gtz0 = it0.next();
-			drawASetOfStripe(gl0, gtz0, fscrh, falpha * fgloba, (i++ == 0));
+			drawASetOfStripe(gl0, gtz0, fscrh, falpha * fgloba, (i++ == 0), nDayLvl);
 			gl0.glTranslatef(fm0 * -1f, 0.0f, 0.0f);	// -> left
 		}
 		// wrap scroll - left side
 		if(fhorz > 0f) {
 			float	falpha = ((Math.abs(fhorz) % fm0)) / fm0;
 			GloneTz	gtz0 = altz.get(0);
-			drawASetOfStripe(gl0, gtz0, fscrh, falpha * fgloba, false);
+			drawASetOfStripe(gl0, gtz0, fscrh, falpha * fgloba, false, nDayLvl);
 		}
 		gl0.glPopMatrix();
 
@@ -259,12 +260,13 @@ public class DefRenderer implements Renderer
 		gl0.glDisable(GL10.GL_BLEND);
 	}
 
-	private void drawASetOfStripe(GL10 gl0, GloneTz gtz0, float fscrh, float falpha, boolean bfirst){
+	private void drawASetOfStripe(GL10 gl0, GloneTz gtz0, float fscrh, float falpha, boolean bfirst, int nDay){
 		final int			ncharstz = 8;
 		float				frabc = (fscrh / 2f) / (GlStripe.CRECTF_VTXABC.bottom * (float)ncharstz);
-		gl0.glColor4f(1f, 1f, 1f, falpha);
+		int[]				andt = (nDay > 0 ? gtz0.getTimeNumbers(m_doc.getTime()) : null);
 		gl0.glPushMatrix();
-		m_glstripe.drawStripe(gl0, gtz0, m_doc.getTime(), fscrh, bfirst);
+		m_glstripe.drawStripe(gl0, gtz0, m_doc.getTime(), fscrh, falpha, bfirst,
+				(andt != null ? andt[2] - nDay : -100));	// is on same day?
 		gl0.glPopMatrix();
 		// timezone names
 		String	s0 = gtz0.getTimeZoneId();
@@ -272,6 +274,7 @@ public class DefRenderer implements Renderer
 		gl0.glTranslatef(GlStripe.CRECTF_VTXHUR.right - (frabc / (float)ncharstz / 2f),
 				fscrh / 2f, 0f);
 		gl0.glScalef(frabc, frabc, 1f);
+		gl0.glColor4f(1f, 1f, 1f, falpha);
 		m_glstripe.drawAbcString(gl0, s0, ncharstz, true);
 		gl0.glPopMatrix();
 	}
@@ -421,10 +424,10 @@ public class DefRenderer implements Renderer
 	private void makeOrgBuffs() {
 		// vertices
 		float[]	aftemp = new float[] {
-				-0.9f,  0.0f, GlStripe.CF_VTXHUR_Z,	// LT
-				+0.9f,  0.0f, GlStripe.CF_VTXHUR_Z,	// RT
-				-0.9f, -0.9f, GlStripe.CF_VTXHUR_Z,	// LB
-				+0.9f, -0.9f, GlStripe.CF_VTXHUR_Z,	// RB
+				-1.0f,  0.0f, GlStripe.CF_VTXNUM_Z,	// LT
+				+1.0f,  0.0f, GlStripe.CF_VTXNUM_Z,	// RT
+				-1.0f, -1.0f, GlStripe.CF_VTXNUM_Z,	// LB
+				+1.0f, -1.0f, GlStripe.CF_VTXNUM_Z,	// RB
 		};
 		m_buffOrgVerts = GloneUtils.makeFloatBuffer(aftemp);
 		// colors RGBA

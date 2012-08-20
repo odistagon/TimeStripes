@@ -1,7 +1,6 @@
 package com.odistagon.glone;
 
 import java.nio.FloatBuffer;
-import java.util.Calendar;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -146,7 +145,7 @@ public class GlStripe
 	 * @param ltime
 	 * @param fscrhgt logical height of screen
 	 */
-	public void drawStripe(GL10 gl, GloneTz gtz, long ltime, float fscrhgt, boolean bfirst) {
+	public void drawStripe(GL10 gl, GloneTz gtz, long ltime, float fscrhgt, float falpha, boolean bfirst, int nDayOffset) {
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, m_fbVtxStrp);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 //		gl.glColorPointer(4, GL10.GL_FLOAT, 0, m_buffColor);
@@ -164,6 +163,10 @@ public class GlStripe
 		gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * (fhrs * -1f), 0.0f);
 		// loop 3 days
 		for(int i = 0; i < 3; i++) {
+			if(nDayOffset > -100 && (nDayOffset + i == 1))
+				gl.glColor4f(1.0f, 1.0f, 1.0f, falpha);
+			else
+				gl.glColor4f(0.7f, 0.7f, 0.7f, falpha);
 			drawAStripe(gl, gtz, fdstoffset);
 			gl.glTranslatef(0.0f, GlStripe.getVtxHeightOfOneHour() * 24f, 0.0f);
 			// go to the next day

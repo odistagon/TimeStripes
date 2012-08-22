@@ -261,21 +261,19 @@ public class DefRenderer implements Renderer
 	}
 
 	private void drawASetOfStripe(GL10 gl0, GloneTz gtz0, float fscrh, float falpha, boolean bfirst, int nDay){
-		final int			ncharstz = 8;
-		float				frabc = (fscrh / 2f) / (GlStripe.CRECTF_VTXABC.bottom * (float)ncharstz);
+		final int			ncharstz = 10;
+		float				frabc = (fscrh / 2f) / (GlStripe.CRECTF_VTXPRO.right * (float)ncharstz);
 		int[]				andt = (nDay > 0 ? gtz0.getTimeNumbers(m_doc.getTime()) : null);
 		gl0.glPushMatrix();
 		m_glstripe.drawStripe(gl0, gtz0, m_doc.getTime(), fscrh, falpha, bfirst,
 				(andt != null ? andt[2] - nDay : -100));	// is on same day?
 		gl0.glPopMatrix();
 		// timezone names
-		String	s0 = gtz0.getTimeZoneId();
 		gl0.glPushMatrix();
-		gl0.glTranslatef(GlStripe.CRECTF_VTXHUR.right - (frabc / (float)ncharstz / 2f),
-				fscrh / 2f, 0f);
+		gl0.glTranslatef(GlStripe.CRECTF_VTXHUR.right - (GlStripe.CRECTF_VTXPRO.right * 0.9f), 0f, 0f);
 		gl0.glScalef(frabc, frabc, 1f);
 		gl0.glColor4f(1f, 1f, 1f, falpha);
-		m_glstripe.drawAbcString(gl0, s0, ncharstz, true);
+		GlStripe.drawTimezoneIdStr(gl0, gtz0);
 		gl0.glPopMatrix();
 	}
 

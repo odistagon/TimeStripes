@@ -1,5 +1,6 @@
 package com.odistagon.glone;
 
+import java.nio.FloatBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -10,6 +11,9 @@ public class GloneTz
 	private TimeZone		m_tz;
 	private Calendar		m_cal;			// cache: recycle this instance and don't use Calendar.getInstance()
 	private int[]			m_andate;		// cache:
+//	private static final String	CS_TZSTRTEST = "America/Los Angeles";
+	private FloatBuffer		m_fbvtx;
+	private FloatBuffer		m_fbtex;
 
 	private static SimpleDateFormat	sdf0 = new SimpleDateFormat("MMM/dd HH:mm:ss Z");
 
@@ -17,6 +21,9 @@ public class GloneTz
 		GloneTz	tz0 = new GloneTz();
 		tz0.m_sTzId = sTz;
 		tz0.m_tz = TimeZone.getTimeZone(sTz);
+
+		GlStripe.makeTzNameBuffs(tz0);
+
 		return	tz0;
 	}
 
@@ -135,5 +142,21 @@ public class GloneTz
 		}
 		c0.set(Calendar.HOUR_OF_DAY, 1);
 		return	c0.getTimeInMillis();
+	}
+
+	public FloatBuffer getFbVtx() {
+		return	m_fbvtx;
+	}
+
+	public FloatBuffer getFbTex() {
+		return	m_fbtex;
+	}
+
+	public void setFbVtx(FloatBuffer fbvtx) {
+		m_fbvtx = fbvtx;
+	}
+
+	public void setFbTex(FloatBuffer fbtex) {
+		m_fbtex = fbtex;
 	}
 }

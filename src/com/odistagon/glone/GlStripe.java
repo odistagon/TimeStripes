@@ -16,13 +16,8 @@ public class GlStripe
 	private FloatBuffer	m_fbTexNums; 
 	private FloatBuffer	m_fbVtxMons;
 	private FloatBuffer	m_fbTexMons; 
-	private FloatBuffer	m_fbVtxAbcs;
-	private FloatBuffer	m_fbTexAbcs; 
-	private FloatBuffer	m_fbVtxPros;
-	private FloatBuffer	m_fbTexPros; 
 	private FloatBuffer	m_fbVtxSigs;
 	private FloatBuffer	m_fbTexSigs; 
-//	private FloatBuffer	m_buffColor;
 
 	private static final float	CFTEXCX = 1024f;	// texture width in px
 	private static final float	CFTEXCY = 1024f;	// texture height in px
@@ -39,10 +34,6 @@ public class GlStripe
 	public static final RectF	CRECTF_VTXMON = new RectF(0.0f, 0.0f, 0.3f, 0.15f);
 	public static final float	CF_VTXMON_Z = 1.2f;
 	private static final RectF	CRECTF_TEXMON = new RectF(96f * 3f / CFTEXCX, 0.0f, (96f * 3f + 96f) / CFTEXCX, 48f / CFTEXCY);
-	// alphabets
-	public static final RectF	CRECTF_VTXABC = new RectF(0.0f, 0.0f, 0.1f, 0.1f);
-	public static final float	CF_VTXABC_Z = 1.2f;
-	private static final RectF	CRECTF_TEXABC = new RectF(96f * 4f / CFTEXCX, 0.0f, (96f * 4f + 32f) / CFTEXCX, 32f / CFTEXCY);
 	// alphabets (proportional)
 	public static final RectF	CRECTF_VTXPRO = new RectF(0.0f, 0.0f, 0.12f, 0.12f);
 	public static final float	CF_VTXPRO_Z = 1.2f;
@@ -78,12 +69,6 @@ public class GlStripe
 		// Name of months
 		m_fbVtxMons = makeVertBuffs(12, CRECTF_VTXMON, false, CF_VTXMON_Z, null);
 		m_fbTexMons = makeTexBuffs(12, CRECTF_TEXMON, false, null);
-		// Alphabets
-		m_fbVtxAbcs = makeVertBuffs(26 + 6, CRECTF_VTXABC, false, CF_VTXABC_Z, null);
-		m_fbTexAbcs = makeTexBuffs(26 + 6, CRECTF_TEXABC, false, null);
-		// Alphabets (proportional)
-		m_fbVtxPros = makeVertBuffs(26 + 1, CRECTF_VTXPRO, false, CF_VTXABC_Z, CAF_PROPCY);
-		m_fbTexPros = makeTexBuffs(26 + 1, CRECTF_TEXPRO, false, CAF_PROPCY);
 		// Signs
 		m_fbVtxSigs = makeVertBuffs(3, CRECTF_VTXSIG, false, CF_VTXSIG_Z, null);
 		m_fbTexSigs = makeTexBuffs(3, CRECTF_TEXSIG, false, null);
@@ -93,6 +78,7 @@ public class GlStripe
 	 * @param nelems
 	 * @param fvert stores vert LT, RT, LB, RB
 	 * @param ftex stores texture left, top, width of a element, height of a element
+	 * @param afprophs array of proportional heights
 	 * @return
 	 */
 	private static FloatBuffer makeVertBuffs(int nelems, RectF fvert, boolean bstacktiledvtx, float fzarg, float[] afprophs) {
@@ -259,28 +245,57 @@ public class GlStripe
 		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 	}
 
-	/**
-	 * @param gl
+	/** Make FloatBuffer for string that can be drawn by single glDrawArrays() call.
 	 * @param sarg
-	 * @param nmax maximum number of characters drawing
-	 * @param bprop be proportional
+	 * @param afprophs
+	 * @return
 	 */
-	public void drawAbcString(GL10 gl, String sarg, int nmax, boolean bprop) {
-		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, (bprop ? m_fbVtxPros : m_fbVtxAbcs));
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glTexCoordPointer(2 ,GL10.GL_FLOAT, 0, (bprop ? m_fbTexPros : m_fbTexAbcs));
-		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-		for(int i = 0; i < sarg.length(); i++) {
-			char	c0 = sarg.charAt(i);
+	public static void makeTzNameBuffs(GloneTz gtz) {
+		String		sdraw = gtz.getTimeZoneId();
+		int			nlen = sdraw.length();
+		float[]		afvtxtemp = new float[nlen * 4 * 3];
+		float[]		aftextemp = new float[nlen * 4 * 2];
+		float		fovx = 0f, fovy = 0f;	// offset vtx
+		float[]		afh0 = new float[CAF_PROPCY.length];	// array of cumulative heights of each char
+		float		ftemp = 0f;
+		for(int i = 0; i < afh0.length; i++) {
+			afh0[i] = ftemp;
+			ftemp += CAF_PROPCY[i];
+		}
+		for(int i = 0; i < nlen; i++) {
+			char	c0 = sdraw.charAt(i);
 			if(c0 >= 'A' && c0 <= 'Z')
 				c0 = (char)('a' + (c0 - 'A'));	// de-capitalize
 			else if(c0 < 'a' || c0 > 'z')
 				c0 = 'z' + 1;
-			gl.glTranslatef(0.0f, (bprop ? CRECTF_VTXPRO.bottom * ((CAF_PROPCY[c0 - 'a'] / CFTEXCY) / CRECTF_TEXPRO.bottom * -1f) : CRECTF_VTXABC.bottom * -1f), 0.0f);
-			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, (c0 - 'a') * 4, 4);
-			if(i > nmax)	// maximum number of chars
-				break;
+			int		nidxa = c0 - 'a';
+			float	fw = CRECTF_VTXPRO.right;
+			float	fh = CRECTF_VTXPRO.bottom * (CAF_PROPCY[nidxa] / CAF_PROPCY['w' - 'a']);
+			// vtx TL TR BL BR
+			afvtxtemp[i * 12 + 0] = fovx + 0f;	afvtxtemp[i * 12 + 1] = fovy + 0f;	afvtxtemp[i * 12 + 2] = CF_VTXPRO_Z;
+			afvtxtemp[i * 12 + 3] = fovx + fw;	afvtxtemp[i * 12 + 4] = fovy + 0f;	afvtxtemp[i * 12 + 5] = CF_VTXPRO_Z;
+			afvtxtemp[i * 12 + 6] = fovx + 0f;	afvtxtemp[i * 12 + 7] = fovy + fh;	afvtxtemp[i * 12 + 8] = CF_VTXPRO_Z;
+			afvtxtemp[i * 12 + 9] = fovx + fw;	afvtxtemp[i * 12 + 10] = fovy + fh;	afvtxtemp[i * 12 + 11] = CF_VTXPRO_Z;
+			// tex
+			aftextemp[i * 8 + 0] = CRECTF_TEXPRO.right;	aftextemp[i * 8 + 1] = (afh0[nidxa] + 0f) / CFTEXCY;
+			aftextemp[i * 8 + 2] = CRECTF_TEXPRO.left;	aftextemp[i * 8 + 3] = (afh0[nidxa] + 0f) / CFTEXCY;
+			aftextemp[i * 8 + 4] = CRECTF_TEXPRO.right;	aftextemp[i * 8 + 5] = (afh0[nidxa] + CAF_PROPCY[nidxa]) / CFTEXCY;
+			aftextemp[i * 8 + 6] = CRECTF_TEXPRO.left;	aftextemp[i * 8 + 7] = (afh0[nidxa] + CAF_PROPCY[nidxa]) / CFTEXCY;
+
+			fovx += 0f;
+			fovy += fh;
 		}
+		gtz.setFbVtx(GloneUtils.makeFloatBuffer(afvtxtemp));
+		gtz.setFbTex(GloneUtils.makeFloatBuffer(aftextemp));
+	}
+
+	public static void drawTimezoneIdStr(GL10 gl, GloneTz gtz) {
+		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, gtz.getFbVtx());
+		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glTexCoordPointer(2 ,GL10.GL_FLOAT, 0, gtz.getFbTex());
+		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		gl.glTranslatef(0.0f, 0.0f, 0.0f);
+		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4 * gtz.getTimeZoneId().length());
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 	}

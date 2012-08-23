@@ -21,22 +21,19 @@ public class GlStripe
 
 	private static final float	CFTEXCX = 1024f;	// texture width in px
 	private static final float	CFTEXCY = 1024f;	// texture height in px
+
 	// hour stripe
 	public static final RectF	CRECTF_VTXHUR = new RectF(0.0f, 0.0f, 0.5f, 0.2f);
-	public static final float	CF_VTXHUR_Z = 1.2f;
 	private static final RectF	CRECTF_TEXHUR = new RectF(0.0f / CFTEXCX, 0.0f, 96f / CFTEXCX, 40f / CFTEXCY);
 	private static final RectF	CRECTF_TEXHR0 = new RectF(96f * 1f / CFTEXCX, 0.0f, (96f * 1f + 96f) / CFTEXCX, 40f / CFTEXCY);
 	// numbers
 	public static final RectF	CRECTF_VTXNUM = new RectF(0.0f, 0.0f, 0.2f, 0.15f);
-	public static final float	CF_VTXNUM_Z = 1.2f;
 	private static final RectF	CRECTF_TEXNUM = new RectF(96f * 2f / CFTEXCX, 0.0f, (96f * 2f + 96f) / CFTEXCX, 96f / CFTEXCY);
 	// name of months
 	public static final RectF	CRECTF_VTXMON = new RectF(0.0f, 0.0f, 0.3f, 0.15f);
-	public static final float	CF_VTXMON_Z = 1.2f;
 	private static final RectF	CRECTF_TEXMON = new RectF(96f * 3f / CFTEXCX, 0.0f, (96f * 3f + 96f) / CFTEXCX, 48f / CFTEXCY);
 	// alphabets (proportional)
 	public static final RectF	CRECTF_VTXPRO = new RectF(0.0f, 0.0f, 0.12f, 0.12f);
-	public static final float	CF_VTXPRO_Z = 1.2f;
 	private static final RectF	CRECTF_TEXPRO = new RectF((96f * 4f + 64f) / CFTEXCX, 0.0f, (96f * 4f + 64f + 32f) / CFTEXCX, 32f / CFTEXCY);
 	private static final float	CAF_PROPCY[] = {
 		21f, 21f, 21f, 21f, 20f, 10f, 21f,		// a-g
@@ -46,7 +43,6 @@ public class GlStripe
 	};
 	// signs
 	public static final RectF	CRECTF_VTXSIG = new RectF(0.0f, 0.0f, 0.06f, 0.15f);
-	public static final float	CF_VTXSIG_Z = 1.2f;
 	private static final RectF	CRECTF_TEXSIG = new RectF((96f * 4f + 32f) / CFTEXCX, 0f / CFTEXCY, (96f * 4f + 32f + 32f) / CFTEXCX, 96f / CFTEXCY);
 
 	public GlStripe() {
@@ -60,18 +56,18 @@ public class GlStripe
 	 */
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		// Stripe
-		m_fbVtxStrp = makeVertBuffs(24, CRECTF_VTXHUR, true, CF_VTXHUR_Z, null);
+		m_fbVtxStrp = makeVertBuffs(24, CRECTF_VTXHUR, true, 0f, null);
 		m_fbTexStrp = makeTexBuffs(24, CRECTF_TEXHUR, true, null);
 		m_fbTexStr0 = makeTexBuffs(24, CRECTF_TEXHR0, true, null);
 		// Numbers
-		m_fbVtxNums = makeVertBuffs(10, CRECTF_VTXNUM, false, CF_VTXNUM_Z, null);
+		m_fbVtxNums = makeVertBuffs(10, CRECTF_VTXNUM, false, 0f, null);
 		m_fbTexNums = makeTexBuffs(10, CRECTF_TEXNUM, false, null);
 		// Name of months
-		m_fbVtxMons = makeVertBuffs(12, CRECTF_VTXMON, false, CF_VTXMON_Z, null);
+		m_fbVtxMons = makeVertBuffs(12, CRECTF_VTXMON, false, 0f, null);
 		m_fbTexMons = makeTexBuffs(12, CRECTF_TEXMON, false, null);
 		// Signs
-		m_fbVtxSigs = makeVertBuffs(3, CRECTF_VTXSIG, false, CF_VTXSIG_Z, null);
-		m_fbTexSigs = makeTexBuffs(3, CRECTF_TEXSIG, false, null);
+		m_fbVtxSigs = makeVertBuffs(4, CRECTF_VTXSIG, false, 0f, null);
+		m_fbTexSigs = makeTexBuffs(4, CRECTF_TEXSIG, false, null);
 	}
 
 	/** Makes coords for vertically arranged tile textures
@@ -234,6 +230,9 @@ public class GlStripe
 		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 	}
 
+	public static final int		CN_SIGNIDX_COLN = 0;
+	public static final int		CN_SIGNIDX_FPS_ = 3;
+
 	public void drawSign(GL10 gl, int narg) {
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, m_fbVtxSigs);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
@@ -272,10 +271,10 @@ public class GlStripe
 			float	fw = CRECTF_VTXPRO.right;
 			float	fh = CRECTF_VTXPRO.bottom * (CAF_PROPCY[nidxa] / CAF_PROPCY['w' - 'a']);
 			// vtx TL TR BL BR
-			afvtxtemp[i * 12 + 0] = fovx + 0f;	afvtxtemp[i * 12 + 1] = fovy + 0f;	afvtxtemp[i * 12 + 2] = CF_VTXPRO_Z;
-			afvtxtemp[i * 12 + 3] = fovx + fw;	afvtxtemp[i * 12 + 4] = fovy + 0f;	afvtxtemp[i * 12 + 5] = CF_VTXPRO_Z;
-			afvtxtemp[i * 12 + 6] = fovx + 0f;	afvtxtemp[i * 12 + 7] = fovy + fh;	afvtxtemp[i * 12 + 8] = CF_VTXPRO_Z;
-			afvtxtemp[i * 12 + 9] = fovx + fw;	afvtxtemp[i * 12 + 10] = fovy + fh;	afvtxtemp[i * 12 + 11] = CF_VTXPRO_Z;
+			afvtxtemp[i * 12 + 0] = fovx + 0f;	afvtxtemp[i * 12 + 1] = fovy + 0f;	afvtxtemp[i * 12 + 2] = 0f;
+			afvtxtemp[i * 12 + 3] = fovx + fw;	afvtxtemp[i * 12 + 4] = fovy + 0f;	afvtxtemp[i * 12 + 5] = 0f;
+			afvtxtemp[i * 12 + 6] = fovx + 0f;	afvtxtemp[i * 12 + 7] = fovy + fh;	afvtxtemp[i * 12 + 8] = 0f;
+			afvtxtemp[i * 12 + 9] = fovx + fw;	afvtxtemp[i * 12 + 10] = fovy + fh;	afvtxtemp[i * 12 + 11] = 0f;
 			// tex
 			aftextemp[i * 8 + 0] = CRECTF_TEXPRO.right;	aftextemp[i * 8 + 1] = (afh0[nidxa] + 0f) / CFTEXCY;
 			aftextemp[i * 8 + 2] = CRECTF_TEXPRO.left;	aftextemp[i * 8 + 3] = (afh0[nidxa] + 0f) / CFTEXCY;

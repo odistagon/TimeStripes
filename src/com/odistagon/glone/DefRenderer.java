@@ -18,7 +18,6 @@ public class DefRenderer implements Renderer
 
 	private int[]				m_anTexIds = new int[2];
 	private long				m_lLastRendered;
-	private float				m_fStripeScaleH;
 	private GlOneDoc			m_doc;
 	private Gl2DString			m_glstr;
 	private GlStripe			m_glstripe;
@@ -38,6 +37,12 @@ public class DefRenderer implements Renderer
 	public static final float	CF_PERS_FAR_ = 6.0f;	// distance from eye point to far plane
 	public static final float	CF_LOOK_EYZ = 4.0f;		// eye point
 
+	public static final float	CF_Z_GAPDIFF = 0.02f;	// small z gap that differentiate same z depth plains
+	private static final float	CF_Z_WALLPPR = -1f;		// z of wallpaper
+	private static final float	CF_Z_STRIPES = 0f;		// z of stripes
+	private static final float	CF_Z_ORG_PLN = 1f;		// z of org
+	private static final float	CF_Z_DEBUG__ = 1.8f;		// z of debug display
+
 	private static final long	CL_FRMPRDAC = 16L;		// constant frame period (when active)
 	private static final long	CL_FRMPRDST = 250L;		// constant frame period (when stalled)
 	public static final long	CL_HORZRELD = 800L;		// time to released horizontal shift go back
@@ -45,7 +50,6 @@ public class DefRenderer implements Renderer
 
 	public DefRenderer(GlOneDoc doc) {
 		m_lLastRendered = System.currentTimeMillis();
-		m_fStripeScaleH = 1.0f;
 		m_doc = doc;
 	}
 
@@ -79,21 +83,38 @@ public class DefRenderer implements Renderer
 		m_nWidth = width;
 		m_nHeight = height;
 		gl0.glViewport(0, 0, width, height);
-		gl0.glClearColor(0.8f, 0.8f, 0.8f, 1f);	// set background color (RGBA)
+		gl0.glClearColor(0f, 0f, 0f, 1f);	// set background color (RGBA)
 
 		m_bNeedPersSet = true;
 	}
 
 	@Override
 	public void onDrawFrame(GL10 gl0) {
-		float	fscrh = calcClipHeight(GlStripe.CF_VTXHUR_Z);	// screen width in opengl unit
-		float	fscrw = calcClipWidth(GlStripe.CF_VTXHUR_Z);	// screen height in opengl unit
+		float	fdepth = CF_Z_WALLPPR;
+		float	fscrh = calcClipHeight(fdepth);		// screen width in opengl unit
+		float	fscrw = calcClipWidth(fdepth);		// screen height in opengl unit
 		m_frmgn = (fscrw * CF_RIGHMRGN);
+		float				fhorz = 0f;
+		if(m_lHorzReld == 0) {
+			// dragging
+			fhorz = m_fHorzShift;
+		} else
+		if(m_lHorzReld + CL_HORZRELD > System.currentTimeMillis()) {
+			// released and moving
+			float	f1 = ((float)(CL_HORZRELD - (System.currentTimeMillis() - m_lHorzReld)));
+			fhorz = (m_fHorzShift * (f1 / CL_HORZRELD));
+		} else {
+			// released -> reset
+			m_fHorzShift = 0f;
+			m_lHorzReld = 0L;
+		}
+
 		if(m_bNeedPersSet) {
 			gl0.glMatrixMode(GL10.GL_PROJECTION);
 			gl0.glLoadIdentity();
 			GLU.gluPerspective(gl0, getCurrentFovy(), (float)m_nWidth / (float)m_nHeight, CF_PERS_NEAR, CF_PERS_FAR_);
 			GLU.gluLookAt(gl0, 0, 0, CF_LOOK_EYZ, 0, 0, 0, 0, 1.0f, 0);
+			gl0.glRotatef(-12f, 0f, 1f, 0f);
 			m_bNeedPersSet = false;
 		}
 
@@ -122,32 +143,23 @@ public class DefRenderer implements Renderer
 		// wallpaper
 		final String	sBgKind = GloneApp.getContext().getResources().getString(R.string.pfval_bg_sel_2);
 		if(GloneApp.getDoc().bgKind(sBgKind)) {
+			gl0.glTranslatef(0f, 0f, fdepth);
 			gl0.glBindTexture(GL10.GL_TEXTURE_2D, m_anTexIds[1]);
 			drawWp(gl0, fscrw, fscrh);
 		}
 
-		gl0.glLoadIdentity();
 		gl0.glBindTexture(GL10.GL_TEXTURE_2D, m_anTexIds[0]);
+		// z up
+		gl0.glLoadIdentity();
+		fdepth = CF_Z_STRIPES;
+		gl0.glTranslatef(0f, 0f, fdepth);
+		fscrh = calcClipHeight(fdepth);
+		fscrw = calcClipWidth(fdepth);
 
 		gl0.glPushMatrix();
-		gl0.glScalef(1.0f, m_fStripeScaleH, 1.0f);
 		// stripes
 		Iterator<GloneTz>	it0 = altz.iterator();
 		float				fm0 = calcStripesShiftWidth(fscrw);
-		float				fhorz = 0f;
-		if(m_lHorzReld == 0) {
-			// dragging
-			fhorz = m_fHorzShift;
-		} else
-		if(m_lHorzReld + CL_HORZRELD > System.currentTimeMillis()) {
-			// released and moving
-			float	f1 = ((float)(CL_HORZRELD - (System.currentTimeMillis() - m_lHorzReld)));
-			fhorz = (m_fHorzShift * (f1 / CL_HORZRELD));
-		} else {
-			// released -> reset
-			m_fHorzShift = 0f;
-			m_lHorzReld = 0L;
-		}
 		gl0.glTranslatef(fscrw / 2f - (m_frmgn + GlStripe.CRECTF_VTXHUR.right)
 				+ fhorz, 0.0f, 0.0f);	// draw from right toward left edge
 		float	fgloba = ((float)GloneApp.getDoc().getFgTrans() / 100f);
@@ -158,7 +170,7 @@ public class DefRenderer implements Renderer
 			float	falpha = ((Math.abs(fhorz) % fm0)) / fm0;
 			GloneTz	gtz0 = altz.get(altz.size() - 1);
 			drawASetOfStripe(gl0, gtz0, fscrh, falpha * fgloba, true, nDayLvl);
-			gl0.glTranslatef(fm0 * -1f, 0.0f, 0.0f);	// -> left
+			gl0.glTranslatef(fm0 * -1f, 0.0f, CF_Z_GAPDIFF);	// -> left
 		}
 		// center part
 		int		i = 0;
@@ -171,7 +183,7 @@ public class DefRenderer implements Renderer
 			}
 			GloneTz	gtz0 = it0.next();
 			drawASetOfStripe(gl0, gtz0, fscrh, falpha * fgloba, (i++ == 0), nDayLvl);
-			gl0.glTranslatef(fm0 * -1f, 0.0f, 0.0f);	// -> left
+			gl0.glTranslatef(fm0 * -1f, 0.0f, CF_Z_GAPDIFF);	// -> left
 		}
 		// wrap scroll - left side
 		if(fhorz > 0f) {
@@ -184,11 +196,18 @@ public class DefRenderer implements Renderer
 		gl0.glDisable(GL10.GL_TEXTURE_2D);
 		gl0.glColor4f(1f, 1f, 1f, 1f);
 
+		// z up
 		gl0.glLoadIdentity();
+		fdepth = CF_Z_ORG_PLN;
+		gl0.glTranslatef(0f, 0f, fdepth);
+		fscrh = calcClipHeight(fdepth);
+		fscrw = calcClipWidth(fdepth);
+
 		// org
 		gl0.glPushMatrix();
 		drawOrg(gl0, fscrw, fscrh);
 		gl0.glPopMatrix();
+		gl0.glTranslatef(0f, 0f, CF_Z_GAPDIFF);
 
 		// date string
 		// day month year
@@ -213,12 +232,13 @@ public class DefRenderer implements Renderer
 			gl0.glPopMatrix();
 			// hour + min
 			gl0.glLoadIdentity();
+			gl0.glTranslatef(0f, 0f, fdepth + CF_Z_GAPDIFF);
 			fscale0 = fscrw / (GlStripe.CRECTF_VTXNUM.right * 4f + GlStripe.CRECTF_VTXSIG.right * (2 + 1));
 			gl0.glScalef(fscale0, fscale0, 1.0f);
 			gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right, GlStripe.CRECTF_VTXNUM.bottom * -1f + -0.1f, 0f);
 			m_glstripe.drawNumberString(gl0, andt[5], 2);	// min.
 			gl0.glTranslatef((GlStripe.CRECTF_VTXNUM.right - GlStripe.CRECTF_VTXSIG.right) * 1f, 0f, 0f);
-			m_glstripe.drawSign(gl0, 0);					// :
+			m_glstripe.drawSign(gl0, GlStripe.CN_SIGNIDX_COLN);	// :
 			gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right * -1f, 0f, 0f);
 			m_glstripe.drawNumberString(gl0, andt[4], 2);	// hour
 
@@ -226,16 +246,23 @@ public class DefRenderer implements Renderer
 		}
 
 		if(GloneApp.getDoc().isDebug()) {
+			// z up
+			gl0.glLoadIdentity();
+			fdepth = CF_Z_DEBUG__;
+			gl0.glTranslatef(0f, 0f, fdepth);
+			fscrh = calcClipHeight(fdepth);
+			fscrw = calcClipWidth(fdepth);
+
 			// fps
 			countFramesPerSecond();
-			gl0.glLoadIdentity();
 			gl0.glEnable(GL10.GL_TEXTURE_2D);
 			float	fscale0 = fscrw / (GlStripe.CRECTF_VTXNUM.right * 16f);
 			gl0.glScalef(fscale0, fscale0, 1.0f);
-			gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right * -7f,
-					GlStripe.CRECTF_VTXNUM.bottom * -1f, 0f);
-//					fscrh / 2f - GlStripe.CRECTF_VTXNUM.bottom * +1f, 0f);
+			gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right * +2f,
+					GlStripe.CRECTF_VTXNUM.bottom * -6f, 0f);
 			m_glstripe.drawNumberString(gl0, m_nframesprev, 2);	// fps
+			gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right * +3f, 0f, 0f);
+			m_glstripe.drawSign(gl0, GlStripe.CN_SIGNIDX_FPS_);	// fps sign
 			gl0.glDisable(GL10.GL_TEXTURE_2D);
 
 //			m_glstr.setColor(0xFF0000FF);
@@ -270,7 +297,7 @@ public class DefRenderer implements Renderer
 		gl0.glPopMatrix();
 		// timezone names
 		gl0.glPushMatrix();
-		gl0.glTranslatef(GlStripe.CRECTF_VTXHUR.right - (GlStripe.CRECTF_VTXPRO.right * 0.9f), 0f, 0f);
+		gl0.glTranslatef(GlStripe.CRECTF_VTXHUR.right - (GlStripe.CRECTF_VTXPRO.right * 0.9f), 0f, CF_Z_GAPDIFF);
 		gl0.glScalef(frabc, frabc, 1f);
 		gl0.glColor4f(1f, 1f, 1f, falpha);
 		GlStripe.drawTimezoneIdStr(gl0, gtz0);
@@ -321,7 +348,7 @@ public class DefRenderer implements Renderer
 	 * @return
 	 */
 	public float pixToLogicalWidth(float fcx) {
-		float	fscrw = calcClipWidth(GlStripe.CF_VTXHUR_Z);
+		float	fscrw = calcClipWidth(CF_Z_STRIPES);
 		return	(fcx / (float)getWidth() * fscrw); 
 	}
 
@@ -330,7 +357,7 @@ public class DefRenderer implements Renderer
 	 * @return
 	 */
 	public float pixToLogicalHeight(float fcy) {
-		float	fscrh = calcClipHeight(GlStripe.CF_VTXHUR_Z);
+		float	fscrh = calcClipHeight(CF_Z_STRIPES);
 		return	(fcy / (float)getHeight() * fscrh); 
 	}
 
@@ -342,7 +369,7 @@ public class DefRenderer implements Renderer
 		m_lHorzReld = 0L;
 
 		// change order when distance go over a threshold
-		float		fm0 = calcStripesShiftWidth(calcClipWidth(GlStripe.CF_VTXHUR_Z));
+		float		fm0 = calcStripesShiftWidth(calcClipWidth(CF_Z_STRIPES));
 //		Log.d("XXXX", "add (" + m_fHorzShift + ", " + f0);
 		if(m_fHorzShift > fm0) {
 			m_fHorzShift -= fm0;
@@ -422,10 +449,10 @@ public class DefRenderer implements Renderer
 	private void makeOrgBuffs() {
 		// vertices
 		float[]	aftemp = new float[] {
-				-1.0f,  0.0f, GlStripe.CF_VTXNUM_Z,	// LT
-				+1.0f,  0.0f, GlStripe.CF_VTXNUM_Z,	// RT
-				-1.0f, -1.0f, GlStripe.CF_VTXNUM_Z,	// LB
-				+1.0f, -1.0f, GlStripe.CF_VTXNUM_Z,	// RB
+				-1.0f,  0.0f, 0f,	// LT
+				+1.0f,  0.0f, 0f,	// RT
+				-1.0f, -1.0f, 0f,	// LB
+				+1.0f, -1.0f, 0f,	// RB
 		};
 		m_buffOrgVerts = GloneUtils.makeFloatBuffer(aftemp);
 		// colors RGBA
@@ -460,10 +487,10 @@ public class DefRenderer implements Renderer
 	private void makeWpBuffs() {
 		// vertices
 		float[]	aftemp = new float[] {
-				-1f,  1f, CF_LOOK_EYZ - CF_PERS_FAR_,	// LT
-				+1f,  1f, CF_LOOK_EYZ - CF_PERS_FAR_,	// RT
-				-1f, -1f, CF_LOOK_EYZ - CF_PERS_FAR_,	// LB
-				+1f, -1f, CF_LOOK_EYZ - CF_PERS_FAR_,	// RB
+				-1f,  1f, 0f,	// LT
+				+1f,  1f, 0f,	// RT
+				-1f, -1f, 0f,	// LB
+				+1f, -1f, 0f,	// RB
 		};
 		m_buffWpVerts = GloneUtils.makeFloatBuffer(aftemp);
 		// colors RGBA
@@ -484,8 +511,7 @@ public class DefRenderer implements Renderer
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glTexCoordPointer(2 ,GL10.GL_FLOAT, 0, m_buffWpTexts);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-		float	f0 = (fScreenWidth > fScreenHeight ? fScreenWidth : fScreenHeight);
-		f0 *= 1.2f;	// TODO should be the scale at correct depth(z)
+		float	f0 = (fScreenWidth > fScreenHeight ? fScreenWidth : fScreenHeight) / 2f;
 		gl.glScalef(f0, f0, 1f);
 		gl.glNormal3f(0, 0, 1.0f);
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);

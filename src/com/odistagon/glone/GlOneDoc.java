@@ -23,6 +23,7 @@ public class GlOneDoc
 	private ArrayList<GloneTz>	m_artzs;
 	private int					m_nClockTz;					// which clock kind to be shown?
 	private int					m_nFgTrans;					// Stripes transparency
+	private int					m_nVwAngle;					// View angle
 	private String				m_sBgKind;
 	private boolean				m_bdebug;
 
@@ -289,6 +290,7 @@ public class GlOneDoc
 		if(!GloneUtils.existsWallpaperCache(ctxa))
 			m_sBgKind = ctxa.getResources().getString(R.string.pfval_bg_sel_1);
 		m_nFgTrans = pref.getInt(ctxa.getResources().getString(R.string.prefkey_fgtrns), 100);
+		m_nVwAngle = pref.getInt(ctxa.getResources().getString(R.string.prefkey_vwslnt), 3);
 	}
 
 //	public void setDebug(boolean bdebug) {
@@ -305,6 +307,10 @@ public class GlOneDoc
 
 	public int getFgTrans() {
 		return	m_nFgTrans;
+	}
+
+	public int getViewAngle() {
+		return	m_nVwAngle;
 	}
 
 	public boolean bgKind(String sarg) {

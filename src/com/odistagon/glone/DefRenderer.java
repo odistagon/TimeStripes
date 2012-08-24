@@ -114,7 +114,7 @@ public class DefRenderer implements Renderer
 			gl0.glLoadIdentity();
 			GLU.gluPerspective(gl0, getCurrentFovy(), (float)m_nWidth / (float)m_nHeight, CF_PERS_NEAR, CF_PERS_FAR_);
 			GLU.gluLookAt(gl0, 0, 0, CF_LOOK_EYZ, 0, 0, 0, 0, 1.0f, 0);
-			gl0.glRotatef(-12f, 0f, 1f, 0f);
+			gl0.glRotatef((float)m_doc.getViewAngle() * -1f, 0f, 1f, 0f);
 			m_bNeedPersSet = false;
 		}
 
@@ -142,7 +142,7 @@ public class DefRenderer implements Renderer
 		gl0.glActiveTexture(GL10.GL_TEXTURE0);
 		// wallpaper
 		final String	sBgKind = GloneApp.getContext().getResources().getString(R.string.pfval_bg_sel_2);
-		if(GloneApp.getDoc().bgKind(sBgKind)) {
+		if(m_doc.bgKind(sBgKind)) {
 			gl0.glTranslatef(0f, 0f, fdepth);
 			gl0.glBindTexture(GL10.GL_TEXTURE_2D, m_anTexIds[1]);
 			drawWp(gl0, fscrw, fscrh);
@@ -162,7 +162,7 @@ public class DefRenderer implements Renderer
 		float				fm0 = calcStripesShiftWidth(fscrw);
 		gl0.glTranslatef(fscrw / 2f - (m_frmgn + GlStripe.CRECTF_VTXHUR.right)
 				+ fhorz, 0.0f, 0.0f);	// draw from right toward left edge
-		float	fgloba = ((float)GloneApp.getDoc().getFgTrans() / 100f);
+		float	fgloba = ((float)m_doc.getFgTrans() / 100f);
 		int		nDayLvl = (andt != null ? andt[2] : -1);
 		// wrap scroll - right side
 		if(fhorz < 0f) {
@@ -211,7 +211,7 @@ public class DefRenderer implements Renderer
 
 		// date string
 		// day month year
-		int	nClockTz = GloneApp.getDoc().getClockTz();
+		int	nClockTz = m_doc.getClockTz();
 		if(nClockTz != GloneUtils.NC_PREF_CLOCKTZ_NONE) {
 			if(andt == null || nClockTz == GloneUtils.NC_PREF_CLOCKTZ_SYST) {
 				andt = m_doc.getSystemTz().getTimeNumbers(m_doc.getTime());
@@ -245,7 +245,7 @@ public class DefRenderer implements Renderer
 			gl0.glDisable(GL10.GL_TEXTURE_2D);
 		}
 
-		if(GloneApp.getDoc().isDebug()) {
+		if(m_doc.isDebug()) {
 			// z up
 			gl0.glLoadIdentity();
 			fdepth = CF_Z_DEBUG__;
@@ -274,7 +274,7 @@ public class DefRenderer implements Renderer
 //			it0 = altz.iterator();
 //			while(it0.hasNext()) {
 //				GloneTz	tz0 = it0.next();
-//				String	s0 = Float.toString(tz0.getDSTOffsetInTheDay(GloneApp.getDoc().getTime()));
+//				String	s0 = Float.toString(tz0.getDSTOffsetInTheDay(m_doc.getTime()));
 //				m_glstr.setTextString(gl0, s0 + "*" + tz0.getDebugString(m_doc.getTime()));
 //				m_glstr.draw(gl0);
 //				gl0.glTranslatef(-0.1f, 0.2f, 0.0f);
@@ -305,7 +305,7 @@ public class DefRenderer implements Renderer
 	}
 
 	private float calcStripesShiftWidth(float fScreenWidth) {
-		float	fm0 = (fScreenWidth - m_frmgn) / GloneApp.getDoc().getTzList().size();
+		float	fm0 = (fScreenWidth - m_frmgn) / m_doc.getTzList().size();
 		if(fm0 > GlStripe.CRECTF_VTXHUR.right) {
 			fm0 = GlStripe.CRECTF_VTXHUR.right;
 		}
@@ -429,7 +429,7 @@ public class DefRenderer implements Renderer
 		long	lwait = CL_FRMPRDAC;
 		// drawing is active?
 		if(m_fHorzShift == 0 && m_lTimeZoomStart == 0
-				&& GloneApp.getDoc().isOnAnimation() == false)
+				&& m_doc.isOnAnimation() == false)
 			lwait = CL_FRMPRDST;		// stalled
 
 		// make constant fps

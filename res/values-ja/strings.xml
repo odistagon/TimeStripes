@@ -43,6 +43,8 @@
 	<string name="pref_fgtrns_s">0 - 透明, 100 - 不透明</string>
 	<string name="pref_vwslnt_t">視点角度</string>
 	<string name="pref_vwslnt_s">視点をある程度左右に変更できます。0 が中心です。</string>
+	<string name="pref_cfgbtn_t">ツールバーボタン</string>
+	<string name="pref_cfgbtn_s">画面右側に表示するボタンを選択します。</string>
 	<string name="pref_usehdr_t">ヘッダーを表示</string>
 	<string name="pref_usehdr_s">画面先頭にヘッダーまたは (Android 3.0 以降の場合) アクションバーを表示します。アプリの再起動が必要です。</string>
 	<string name="prefcat_tzns">タイムゾーン設定</string>
@@ -53,6 +55,19 @@
 	<string name="pref_debug__s">fps などの情報を画面に表示します。(開発デバッグ用)</string>
 	<string name="pref_lauabt_t">このアプリについて</string>
 	<string name="pref_lauabt_s">作成者やライセンスについての情報を表示します。</string>
+	<string name="prefcat_btns">表示するボタンの選択</string>
+	<string name="pref_btns_ffwd_t">未来へ</string>
+	<string name="pref_btns_ffwd_s">次の日へ進みます。</string>
+	<string name="pref_btns_stwm_t">停止</string>
+	<string name="pref_btns_stwm_s">タップで時間の進行を止めます。長くタップすることで現実の時間に戻します。</string>
+	<string name="pref_btns_rewd_t">過去へ</string>
+	<string name="pref_btns_rewd_s">前へ日へ戻ります。</string>
+	<string name="pref_btns_sett_t">設定</string>
+	<string name="pref_btns_sett_s">設定画面を開きます。</string>
+	<string name="pref_btns_zoin_t">ズームイン</string>
+	<string name="pref_btns_zoin_s">表示を拡大します。</string>
+	<string name="pref_btns_zout_t">ズームアウト</string>
+	<string name="pref_btns_zout_s">表示を縮小します。</string>
 
 	<string name="mi_shwtxt">テキストで表示</string>
 	<string name="mi_prefes">設定</string>

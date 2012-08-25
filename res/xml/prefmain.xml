@@ -24,8 +24,11 @@
 
 	<com.odistagon.glone.SeekBarPref android:key="@string/prefkey_vwslnt"
 		android:title="@string/pref_vwslnt_t" android:summary="@string/pref_vwslnt_s"
-		android:text="-15,15,1" android:defaultValue="3"
+		android:text="-15,15,1" android:defaultValue="0"
 		/>
+
+	<PreferenceScreen android:key="@string/prefkey_cfgbtn"
+		android:title="@string/pref_cfgbtn_t" android:summary="@string/pref_cfgbtn_s" />
 
 	</PreferenceCategory>
 

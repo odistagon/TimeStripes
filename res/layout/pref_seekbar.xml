@@ -15,14 +15,21 @@
 		/>
  -->
 
+	<TextView android:id="@+id/pref_seekbar_tv2"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal"
+		/>
+
 	<SeekBar android:id="@+id/pref_seekbar_sb1"
 		android:layout_width="100dip" android:layout_height="wrap_content"
 		android:minWidth="300dip"
 		/>
 
-	<TextView android:id="@+id/pref_seekbar_tv2"
+<!-- 
+	<Button android:id="@+id/pref_seekbar_bt1"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:layout_gravity="right"
+		android:text="x"
 		/>
+ -->
 
 </LinearLayout>

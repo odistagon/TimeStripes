@@ -37,6 +37,18 @@ public class AyPrefMain extends PreferenceActivity
 				return false;
 			}
 		});
+
+		ps0 = (PreferenceScreen)findPreference(
+				getResources().getString(R.string.prefkey_cfgbtn));
+		ps0.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				Intent	i0 = new Intent(GloneApp.getContext(), (new AyPrefBtns()).getClass());
+				i0.setAction(Intent.ACTION_VIEW);
+				startActivityForResult(i0, 0);
+				return false;
+			}
+		});
 	}
 
 	private static final int		CN_AY_GALLRY = 2;

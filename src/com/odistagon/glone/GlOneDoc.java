@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.util.FloatMath;
 
@@ -26,6 +27,13 @@ public class GlOneDoc
 	private int					m_nVwAngle;					// View angle
 	private String				m_sBgKind;
 	private boolean				m_bdebug;
+
+	private boolean				m_bShowFfwd;
+	private boolean				m_bShowStwm;
+	private boolean				m_bShowRewd;
+	private boolean				m_bShowSett;
+	private boolean				m_bShowZoin;
+	private boolean				m_bShowZout;
 
 	public static final long	CL_ANIMPERD = 2500L;		// ms. until fling anim stops
 
@@ -283,14 +291,22 @@ public class GlOneDoc
 
 	public void syncPreference(Context ctxa) {
 		SharedPreferences	pref = PreferenceManager.getDefaultSharedPreferences(ctxa);
-		m_bdebug = pref.getBoolean(ctxa.getResources().getString(R.string.prefkey_debug_), false);
-		m_sBgKind = pref.getString(ctxa.getResources().getString(R.string.prefkey_bg_sel),
-				ctxa.getResources().getString(R.string.pfval_bg_sel_1));
+		Resources			res0 = ctxa.getResources();
+		m_bdebug = pref.getBoolean(res0.getString(R.string.prefkey_debug_), false);
+		m_sBgKind = pref.getString(res0.getString(R.string.prefkey_bg_sel),
+				res0.getString(R.string.pfval_bg_sel_1));
 		// if wp img cache does not exist, fallback to flat background
 		if(!GloneUtils.existsWallpaperCache(ctxa))
-			m_sBgKind = ctxa.getResources().getString(R.string.pfval_bg_sel_1);
-		m_nFgTrans = pref.getInt(ctxa.getResources().getString(R.string.prefkey_fgtrns), 100);
-		m_nVwAngle = pref.getInt(ctxa.getResources().getString(R.string.prefkey_vwslnt), 3);
+			m_sBgKind = res0.getString(R.string.pfval_bg_sel_1);
+		m_nFgTrans = pref.getInt(res0.getString(R.string.prefkey_fgtrns), 100);
+		m_nVwAngle = pref.getInt(res0.getString(R.string.prefkey_vwslnt), 0);
+		// toolbar buttons
+		m_bShowFfwd = pref.getBoolean(res0.getString(R.string.prefkey_btns_ffwd), true);
+		m_bShowStwm = pref.getBoolean(res0.getString(R.string.prefkey_btns_stwm), true);
+		m_bShowRewd = pref.getBoolean(res0.getString(R.string.prefkey_btns_rewd), true);
+		m_bShowSett = pref.getBoolean(res0.getString(R.string.prefkey_btns_sett), true);
+		m_bShowZoin = pref.getBoolean(res0.getString(R.string.prefkey_btns_zoin), true);
+		m_bShowZout = pref.getBoolean(res0.getString(R.string.prefkey_btns_zout), true);
 	}
 
 //	public void setDebug(boolean bdebug) {
@@ -319,5 +335,29 @@ public class GlOneDoc
 
 	public boolean isDebug() {
 		return	m_bdebug;
+	}
+
+	public boolean isShowFfwd() {
+		return	m_bShowFfwd;
+	}
+
+	public boolean isShowStwm() {
+		return	m_bShowStwm;
+	}
+
+	public boolean isShowRewd() {
+		return	m_bShowRewd;
+	}
+
+	public boolean isShowSett() {
+		return	m_bShowSett;
+	}
+
+	public boolean isShowZoin() {
+		return	m_bShowZoin;
+	}
+
+	public boolean isShowZout() {
+		return	m_bShowZout;
 	}
 }

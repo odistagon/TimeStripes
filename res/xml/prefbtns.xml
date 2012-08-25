@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<PreferenceCategory
+		android:title="@string/prefcat_btns">
+
+	<CheckBoxPreference android:key="@string/prefkey_btns_ffwd"
+		android:title="@string/pref_btns_ffwd_t" android:summary="@string/pref_btns_ffwd_s"
+		android:icon="@drawable/ic_menu_ffwd"
+		android:defaultValue="true" />
+	<CheckBoxPreference android:key="@string/prefkey_btns_stwm"
+		android:title="@string/pref_btns_stwm_t" android:summary="@string/pref_btns_stwm_s"
+		android:icon="@drawable/ic_menu_stwm"
+		android:defaultValue="true" />
+	<CheckBoxPreference android:key="@string/prefkey_btns_rewd"
+		android:title="@string/pref_btns_rewd_t" android:summary="@string/pref_btns_rewd_s"
+		android:icon="@drawable/ic_menu_rewd"
+		android:defaultValue="true" />
+	<CheckBoxPreference android:key="@string/prefkey_btns_sett"
+		android:title="@string/pref_btns_sett_t" android:summary="@string/pref_btns_sett_s"
+		android:icon="@drawable/ic_menu_sett"
+		android:defaultValue="true" />
+	<CheckBoxPreference android:key="@string/prefkey_btns_zoin"
+		android:title="@string/pref_btns_zoin_t" android:summary="@string/pref_btns_zoin_s"
+		android:icon="@drawable/ic_menu_zoin"
+		android:defaultValue="true" />
+	<CheckBoxPreference android:key="@string/prefkey_btns_zout"
+		android:title="@string/pref_btns_zout_t" android:summary="@string/pref_btns_zout_s"
+		android:icon="@drawable/ic_menu_zout"
+		android:defaultValue="true" />
+
+	</PreferenceCategory>
+
+	<!-- 
+	<com.odistagon.glone.IconCheckBoxPreference android:key="@string/prefkey_btns_ffwd"
+		android:title="@string/pref_debug__t" android:summary="@string/pref_debug__s"
+		android:icon="@drawable/ic_menu_ffwd"
+		android:defaultValue="false" />
+	 -->
+
+</PreferenceScreen>

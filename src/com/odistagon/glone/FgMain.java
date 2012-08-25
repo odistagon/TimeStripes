@@ -101,6 +101,18 @@ public class FgMain extends Fragment
 	public void onResume() {
 		super.onResume();
 		m_gv.onResume();
+
+		setBtnVisibility(getView(), R.id.iv_tb_fastfw, GloneApp.getDoc().isShowFfwd());
+		setBtnVisibility(getView(), R.id.iv_tb_thewld, GloneApp.getDoc().isShowStwm());
+		setBtnVisibility(getView(), R.id.iv_tb_rewind, GloneApp.getDoc().isShowRewd());
+		setBtnVisibility(getView(), R.id.iv_main_menu, GloneApp.getDoc().isShowSett());
+		setBtnVisibility(getView(), R.id.iv_tb_zoomin, GloneApp.getDoc().isShowZoin());
+		setBtnVisibility(getView(), R.id.iv_tb_zoomou, GloneApp.getDoc().isShowZout());
+	}
+
+	private static void setBtnVisibility(View vParent, int nBtnRes, boolean bShow) {
+		View	v0 = vParent.findViewById(nBtnRes);
+		v0.setVisibility(bShow ? View.VISIBLE : View.GONE);
 	}
 
 	@Override

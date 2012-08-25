@@ -21,6 +21,8 @@ import android.widget.TextView;
 
 public class GloneUtils
 {
+	public static final String	XMLNS_ANDROID = "http://schemas.android.com/apk/res/android";
+
 	// constants
 	public static final int		NC_DISCLAIMER_VER = 1;		// disclaimer version
 	// context menu id

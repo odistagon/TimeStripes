@@ -22,8 +22,6 @@ public class SeekBarPref extends Preference implements OnSeekBarChangeListener
 	private int			m_nDefault = 0;
 	private TextView	m_tvText;
 
-	public static final String	XMLNS_ANDROID = "http://schemas.android.com/apk/res/android";
-
 	public SeekBarPref(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		setWidgetLayoutResource(R.layout.pref_seekbar);
@@ -31,27 +29,40 @@ public class SeekBarPref extends Preference implements OnSeekBarChangeListener
 	}
 
 	private void getAttributes(AttributeSet attrs) {
-		String	stemp = attrs.getAttributeValue(XMLNS_ANDROID, "text");
+		String	stemp = attrs.getAttributeValue(GloneUtils.XMLNS_ANDROID, "text");
 		if(stemp != null) {
 			String[]	astemp = stemp.split(",");
 			m_nMinVal = Integer.parseInt(astemp[0]);
 			m_nMaxVal = Integer.parseInt(astemp[1]);
 			m_nInterval = Integer.parseInt(astemp[2]);
 		}
-		m_nDefault = attrs.getAttributeIntValue(XMLNS_ANDROID, "defaultValue", 0);
+		m_nDefault = attrs.getAttributeIntValue(GloneUtils.XMLNS_ANDROID, "defaultValue", 0);
 	}
 
 	@Override
 	protected void onBindView(View view) {
 		LinearLayout	l0 = (LinearLayout)view.findViewById(R.id.pref_seekbar_lo0);
 
-		SeekBar			sb0 = (SeekBar)l0.findViewById(R.id.pref_seekbar_sb1);
+		final SeekBar	sb0 = (SeekBar)l0.findViewById(R.id.pref_seekbar_sb1);
 		sb0.setMax(m_nMaxVal - m_nMinVal);
 		sb0.setProgress(m_nVal - m_nMinVal);
 		sb0.setOnSeekBarChangeListener(this);
+//		sb0.setOnLongClickListener(new View.OnLongClickListener() {	// this does not work for SeekBar...
+//			@Override
+//			public boolean onLongClick(View v) {
+//				sb0.setProgress(m_nDefault);
+//				return	true;
+//			}
+//		});
 
 		m_tvText = (TextView)l0.findViewById(R.id.pref_seekbar_tv2);
 		m_tvText.setText(Integer.toString(m_nVal));
+		m_tvText.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				sb0.setProgress(Math.abs(m_nMinVal) + m_nDefault);
+			}
+		});
 
 		super.onBindView(view);
 	}

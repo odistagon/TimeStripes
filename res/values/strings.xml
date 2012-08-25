@@ -43,6 +43,8 @@
 	<string name="pref_fgtrns_s">0 - transparent, 100 - opaque</string>
 	<string name="pref_vwslnt_t">View angle</string>
 	<string name="pref_vwslnt_s">Changes view point from left to right by degree. 0 is center.</string>
+	<string name="pref_cfgbtn_t">Config Buttons</string>
+	<string name="pref_cfgbtn_s">Select which buttons are in screen right.</string>
 	<string name="pref_usehdr_t">Show app header</string>
 	<string name="pref_usehdr_s">Use app header or Action Bar (Android 3.0 or lator), requires app restart.</string>
 	<string name="prefcat_tzns">Timezone Settings</string>
@@ -53,6 +55,19 @@
 	<string name="pref_debug__s">Enable debug output</string>
 	<string name="pref_lauabt_t">About</string>
 	<string name="pref_lauabt_s">Descriptions about this app</string>
+	<string name="prefcat_btns">Buttons</string>
+	<string name="pref_btns_ffwd_t">Go forward</string>
+	<string name="pref_btns_ffwd_s">Tap to go to next day</string>
+	<string name="pref_btns_stwm_t">Stop</string>
+	<string name="pref_btns_stwm_s">Tap to stop time advance, long tap to go back to real current time</string>
+	<string name="pref_btns_rewd_t">Go backward</string>
+	<string name="pref_btns_rewd_s">Tap to go to previous day</string>
+	<string name="pref_btns_sett_t">Preference</string>
+	<string name="pref_btns_sett_s">Tap to open preferences screen</string>
+	<string name="pref_btns_zoin_t">Zoom in</string>
+	<string name="pref_btns_zoin_s">Tap to zoom in</string>
+	<string name="pref_btns_zout_t">Zoom out</string>
+	<string name="pref_btns_zout_s">Tap to zoom out</string>
 
 	<string name="mi_shwtxt">Show as text</string>
 	<string name="mi_prefes">Preferences</string>
@@ -85,6 +100,13 @@
 	<string name="prefkey_edittz">PK_EDITTZ</string>
 	<string name="prefkey_debug_">PK_DEBUG_</string>
 	<string name="prefkey_lauabt">PK_LAUABT</string>
+	<string name="prefkey_cfgbtn">PK_CFGBTN</string>
+	<string name="prefkey_btns_ffwd">PK_BTNS_FFWD</string>
+	<string name="prefkey_btns_stwm">PK_BTNS_STWM</string>
+	<string name="prefkey_btns_rewd">PK_BTNS_REQD</string>
+	<string name="prefkey_btns_sett">PK_BTNS_SETT</string>
+	<string name="prefkey_btns_zoin">PK_BTNS_ZOIN</string>
+	<string name="prefkey_btns_zout">PK_BTNS_ZOUT</string>
 
 	<string name="pfval_bg_sel_1">1</string>
 	<string name="pfval_bg_sel_2">2</string>

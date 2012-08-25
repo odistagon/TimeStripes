@@ -17,6 +17,8 @@
 
 		<activity android:label="@string/app_name" android:name=".AyPrefMain">
 		</activity>
+		<activity android:label="@string/app_name" android:name=".AyPrefBtns">
+		</activity>
 
 		<activity android:label="@string/app_name" android:name=".AyTzSet">
 		</activity>

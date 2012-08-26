@@ -25,10 +25,9 @@ public final class R {
         public static final int ic_menu_stwp=0x7f020005;
         public static final int ic_menu_zoin=0x7f020006;
         public static final int ic_menu_zout=0x7f020007;
-        public static final int icon=0x7f020008;
-        public static final int ot_cc_by_nd=0x7f020009;
-        public static final int ot_font_neuropol=0x7f02000a;
-        public static final int timestr_tex=0x7f02000b;
+        public static final int ot_cc_by_nd=0x7f020008;
+        public static final int ot_font_neuropol=0x7f020009;
+        public static final int timestr_tex=0x7f02000a;
     }
     public static final class id {
         public static final int bt_seltz_find=0x7f07000a;

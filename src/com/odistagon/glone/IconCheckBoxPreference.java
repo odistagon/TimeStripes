@@ -13,6 +13,7 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 /** CheckBoxPreference with extra icon view.
  * CheckBoxPreference can have a one IconView on its head, so this is for you 
  * only when extra one icon is needed next to check box.
+ * (But that is not on 1.6 nor 2.3.1. They still need these fix ups)
  */
 public class IconCheckBoxPreference extends CheckBoxPreference implements OnCheckedChangeListener
 {
@@ -24,9 +25,9 @@ public class IconCheckBoxPreference extends CheckBoxPreference implements OnChec
 		super(context, attrs, defStyle);
 
 		setWidgetLayoutResource(R.layout.pref_iconcb);
-		int		nres = attrs.getAttributeResourceValue(GloneUtils.XMLNS_ANDROID, "icon", R.drawable.icon);
+//		int		nres = attrs.getAttributeResourceValue(GloneUtils.XMLNS_ANDROID, "icon", R.drawable.ic_launcher_timestr);
 //		m_dIcon = context.getResources().getDrawable(R.drawable.icon);
-		m_dIcon = context.getResources().getDrawable(nres);
+//		m_dIcon = context.getResources().getDrawable(nres);
 //		mIcon = context.obtainStyledAttributes(attrs, R.styleable.IconPreference, defStyle, 0).getDrawable(R.styleable.IconPreference_icon);
 		m_bDefault = attrs.getAttributeBooleanValue(GloneUtils.XMLNS_ANDROID, "defaultValue", true);
 	}

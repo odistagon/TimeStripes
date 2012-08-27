@@ -3,7 +3,7 @@
 
 	<string name="hello">Hello World, Main!</string>
 	<string name="app_name">Time Stripes Beta</string>
-	<string name="app_vers">b 1.0</string>
+	<string name="app_vers">2.0</string>
 	<string name="app_desc_long_1">&quot;Time Stripes&quot; is an app by that you can see how much is the time gap of between multiple timezones.\n\nPrograms, graphics and UI design:\n  openeddistagon@gmail.com</string>
 	<string name="app_desc_long_font">The font shown in the app is &lt;Neuropol&gt; from Larabie fonts, all rights reserved.</string>
 	<string name="app_desc_long_src">You can get all source files public on https://github.com/odistagon/TimeStripes, under the licence of:</string>

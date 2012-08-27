@@ -3,7 +3,6 @@
 
 	<string name="hello">Hello World, Main!</string>
 	<string name="app_name">Time Stripes Beta</string>
-	<string name="app_vers">2.0</string>
 	<string name="app_desc_long_1">&quot;Time Stripes&quot; is an app by that you can see how much is the time gap of between multiple timezones.\n\nPrograms, graphics and UI design:\n  openeddistagon@gmail.com</string>
 	<string name="app_desc_long_font">The font shown in the app is &lt;Neuropol&gt; from Larabie fonts, all rights reserved.</string>
 	<string name="app_desc_long_src">You can get all source files public on https://github.com/odistagon/TimeStripes, under the licence of:</string>
@@ -79,6 +78,7 @@
 	<string name="mi_about_">About this app</string>
 	<string name="mt_editz_">Edit a timezone</string>
 	<string name="mi_pictz_">Pick a timezone</string>
+	<string name="mi_addetz">Add system timezone</string>
 	<string name="mi_remtz_">Remove</string>
 	<string name="mi_muptz_">Move up</string>
 	<string name="mi_mdntz_">Move down</string>

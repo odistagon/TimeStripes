@@ -79,6 +79,7 @@
 	<string name="mi_about_">このアプリについて</string>
 	<string name="mt_editz_">タイムゾーン変更</string>
 	<string name="mi_pictz_">タイムゾーン選択</string>
+	<string name="mi_addetz">システムのタイムゾーンを追加</string>
 	<string name="mi_remtz_">削除</string>
 	<string name="mi_muptz_">上へ移動</string>
 	<string name="mi_mdntz_">下へ移動</string>

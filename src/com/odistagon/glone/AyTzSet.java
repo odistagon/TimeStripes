@@ -1,5 +1,7 @@
 package com.odistagon.glone;
 
+import java.util.TimeZone;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -51,6 +53,10 @@ public class AyTzSet extends Activity
 		}
 
 		menu.setHeaderTitle(R.string.mt_editz_);
+		if(o0 == null) {
+			menu.setHeaderIcon(android.R.drawable.ic_media_ff);
+			menu.add(0, GloneUtils.CMID_GLONE_ADDETZ, 0, R.string.mi_addetz);
+		}
 		menu.setHeaderIcon(android.R.drawable.ic_media_ff);
 		menu.add(0, GloneUtils.CMID_GLONE_GTZEDI, 0, R.string.mi_pictz_);
 		if(o0 != null) {	// not for "add new" item
@@ -68,6 +74,12 @@ public class AyTzSet extends Activity
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
+		case GloneUtils.CMID_GLONE_ADDETZ:	{
+			GloneTz	gtz0 = GloneTz.getInstance(TimeZone.getDefault().getID());
+			GloneApp.getDoc().addTzToList(gtz0);
+			m_laTzSetList.notifyDataSetChanged();
+			return	true;
+		}
 		case GloneUtils.CMID_GLONE_GTZEDI:	{
 			showDialog(GloneUtils.NC_DLGID_SELETZ);
 			return	true;

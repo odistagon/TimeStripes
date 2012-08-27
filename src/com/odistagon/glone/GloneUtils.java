@@ -33,6 +33,7 @@ public class GloneUtils
 	public static final int		CMID_GLONE_TEST05 = 905;
 	public static final int		CMID_GLONE_GTZEDI = 102;	// GloneTz edit
 	public static final int		CMID_GLONE_GTZDEL = 103;	// GloneTz delete
+	public static final int		CMID_GLONE_ADDETZ = 104;	// Add system default timezone
 	public static final int		CMID_GLONE_GTZUPR = 111;	// GloneTz move upper
 	public static final int		CMID_GLONE_GTZLWR = 112;	// GloneTz move lower
 	public static final int		CMID_GLONE_ABOUT_ = 199;	// About

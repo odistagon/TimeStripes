@@ -24,12 +24,21 @@ import android.widget.DatePicker;
 public class AyMain extends FragmentActivity
 {
 	private long			m_lprevdatepick;		// last time date picked (bug workaround)
+//	private ProgressDialog	m_dlgprog;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 
-		SharedPreferences	pref = PreferenceManager.getDefaultSharedPreferences(GloneApp.getContext());
+//		m_dlgprog = new ProgressDialog(this);
+//		m_dlgprog.setTitle("タイトル");
+//		m_dlgprog.setMessage("メッセージ");
+//		m_dlgprog.setIndeterminate(false);
+//		m_dlgprog.setProgressStyle(ProgressDialog.STYLE_SPINNER);//ProgressDialog.STYLE_HORIZONTAL);
+//		m_dlgprog.setCancelable(true);
+//		m_dlgprog.show();
+
+        SharedPreferences	pref = PreferenceManager.getDefaultSharedPreferences(GloneApp.getContext());
 		boolean				bShowHdr = pref.getBoolean(
 				getResources().getString(R.string.prefkey_usehdr), false);
 		if(!bShowHdr)
@@ -63,6 +72,8 @@ public class AyMain extends FragmentActivity
 				Integer.toString(GloneUtils.NC_PREF_CLOCKTZ_FIRT));
 		int					nClockTz = Integer.parseInt(s0);
 		GloneApp.getDoc().setClockTz(nClockTz);
+
+//		m_dlgprog.dismiss();
 
 		super.onPostResume();
 	}

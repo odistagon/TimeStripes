@@ -19,7 +19,7 @@ public class GlStripe
 	private FloatBuffer	m_fbVtxSigs;
 	private FloatBuffer	m_fbTexSigs; 
 
-	private static final float	CFTEXCX = 1024f;	// texture width in px
+	private static final float	CFTEXCX = 512f;	// texture width in px
 	private static final float	CFTEXCY = 1024f;	// texture height in px
 
 	// hour stripe

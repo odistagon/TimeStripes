@@ -3,6 +3,7 @@ package com.odistagon.glone;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.TimeZone;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -79,9 +80,21 @@ public class GlOneDoc
 
 	private void makeDefaultConfig() {
 		m_artzs = new ArrayList<GloneTz>();
-		addTzToList(GloneTz.getInstance("Japan"));
-		addTzToList(GloneTz.getInstance("GMT"));
-		addTzToList(GloneTz.getInstance("America/Los_Angeles"));
+		// system default tz
+		GloneTz	gtzdef = GloneTz.getInstance(TimeZone.getDefault().getID());
+		addTzToList(gtzdef);
+		long	lnow = System.currentTimeMillis();
+		long	ldefoffs = gtzdef.getTimeZone().getOffset(lnow);
+		// add other examples (if differ from default tz)
+		GloneTz	gtz0 = GloneTz.getInstance("Japan");
+		if(gtz0.getTimeZone().getOffset(lnow) != ldefoffs)
+			addTzToList(gtz0);
+		gtz0 = GloneTz.getInstance("Europe/London");
+		if(gtz0.getTimeZone().getOffset(lnow) != ldefoffs)
+			addTzToList(gtz0);
+		gtz0 = GloneTz.getInstance("America/Los_Angeles");
+		if(gtz0.getTimeZone().getOffset(lnow) != ldefoffs)
+			addTzToList(gtz0);
 	}
 
 	public void readConfig() {

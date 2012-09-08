@@ -23,9 +23,11 @@ public class GlStripe
 	private static final float	CFTEXCY = 1024f;	// texture height in px
 
 	// hour stripe
+	public static final float	CFTEX_HURCX = 96f;
+	public static final float	CFTEX_HURCY = 40f;
 	public static final RectF	CRECTF_VTXHUR = new RectF(0.0f, 0.0f, 0.5f, 0.2f);
-	private static final RectF	CRECTF_TEXHUR = new RectF(0.0f / CFTEXCX, 0.0f, 96f / CFTEXCX, 40f / CFTEXCY);
-	private static final RectF	CRECTF_TEXHR0 = new RectF(96f * 1f / CFTEXCX, 0.0f, (96f * 1f + 96f) / CFTEXCX, 40f / CFTEXCY);
+	private static final RectF	CRECTF_TEXHUR = new RectF(0.0f / CFTEXCX, 0.0f, CFTEX_HURCX / CFTEXCX, CFTEX_HURCY / CFTEXCY);
+	private static final RectF	CRECTF_TEXHR0 = new RectF(CFTEX_HURCX * 1f / CFTEXCX, 0.0f, (CFTEX_HURCX * 1f + CFTEX_HURCX) / CFTEXCX, CFTEX_HURCY / CFTEXCY);
 	// numbers
 	public static final RectF	CRECTF_VTXNUM = new RectF(0.0f, 0.0f, 0.2f, 0.15f);
 	private static final RectF	CRECTF_TEXNUM = new RectF(96f * 2f / CFTEXCX, 0.0f, (96f * 2f + 96f) / CFTEXCX, 96f / CFTEXCY);

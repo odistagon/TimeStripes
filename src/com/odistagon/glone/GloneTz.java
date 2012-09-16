@@ -44,16 +44,16 @@ public class GloneTz
 		return	m_cal;
 	}
 
-	/**
-	 * @returns (0.0f-24.0f)
-	 */
-	public float getTimeOffsetInADay(long ltime) {
-		Calendar	c0 = recycleCalendarInstance();
-		c0.setTimeInMillis(ltime);
-		float		fret = (((float)c0.get(Calendar.HOUR_OF_DAY))
-				+ (float)c0.get(Calendar.MINUTE) / 60.0f);	// TODO consider DST
-		return	fret;
-	}
+//	/**
+//	 * @returns (0.0f-24.0f)
+//	 */
+//	public float getTimeOffsetInADay(long ltime) {
+//		Calendar	c0 = recycleCalendarInstance();
+//		c0.setTimeInMillis(ltime);
+//		float		fret = (((float)c0.get(Calendar.HOUR_OF_DAY))
+//				+ (float)c0.get(Calendar.MINUTE) / 60.0f);	// TODO consider DST
+//		return	fret;
+//	}
 
 //	/**
 //	 * @returns offset min (0.0f-1.0f)

@@ -1,29 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/lo_widg01_main"
-	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:layout_width="fill_parent" android:layout_height="wrap_content"
 	android:orientation="vertical" android:layout_margin="1dp"
-	android:background="#00666666" 
+	android:background="#00AAAAAA" 
 	>
 
 	<ImageView android:id="@+id/iv_widg01_test1" android:contentDescription="@string/app_name"
-			android:layout_width="wrap_content" android:layout_height="fill_parent"
-			android:background="#006666AA"
-			android:visibility="visible"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:background="#446666AA" android:layout_margin="0dp" android:padding="0dp"
+		android:src="@android:drawable/ic_popup_sync"
+		android:visibility="visible"
+		/>
+
+	<LinearLayout 
+		android:id="@+id/lo_widg01_tool"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:orientation="horizontal" android:layout_margin="3dp"
+		android:gravity="right"
+		android:background="#00AACCCC"
+		>
+		<ImageView android:id="@+id/iv_widg01_tb01" android:contentDescription="@string/app_name"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:src="@drawable/ic_menu_sett"
 			/>
+	</LinearLayout>
 
 	<!-- 
-			android:gravity="top|center_vertical"
+		android:gravity="top|center_vertical"
 
 	<TextView android:id="@+id/tv_widg01_test2"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:background="#66333311" android:layout_marginTop="0dip"
-			android:visibility="visible"
-			android:text="@string/app_name" />
-	
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:background="#66333311" android:layout_marginTop="0dip"
+		android:visibility="visible"
+		android:text="@string/app_name" />
+
 	<TextView android:id="@+id/tv_widg01_test3"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:background="#AACCCC66" android:layout_marginTop="0dip"
-			android:text="@string/hello" />
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:background="#AACCCC66" android:layout_marginTop="0dip"
+		android:text="@string/hello" />
 	 -->
-</LinearLayout>
+</RelativeLayout>

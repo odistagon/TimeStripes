@@ -89,7 +89,7 @@ public class WidgProv extends AppWidgetProvider
 			paint0.setAlpha(80);	//0xFF *this makes gradient being affected by some bug 
 //			paint0.setShader(new LinearGradient(0, 0, m_bm.getWidth(), 0,
 //					0x77000000, 0x22000000, Shader.TileMode.REPEAT));
-			cv0.drawRect(0, GlStripe.CFTEX_HURCY * (1f + CF_CYPAHRS),
+			cv0.drawRect(0, GlStripe.CFTEX_HURCY * (.5f + CF_CYPAHRS),
 					m_bm.getWidth(), m_bm.getHeight(), paint0);
 			//
 			final float	NC_TEXTSIZE = 11f;
@@ -139,19 +139,19 @@ public class WidgProv extends AppWidgetProvider
 	}
 
 	private void drawHours(Canvas cv0, int nx0, GloneTz gtz0) {
-		final int	NC_HOURS = 3;
+		final int	NC_HOURS = 4;
 		Calendar	cal0 = Calendar.getInstance(gtz0.getTimeZone());
 //		float		foffs = gtz0.getDSTOffsetInTheDay(cal0.getTimeInMillis(), 0);
 		float		foffs = ((float)(gtz0.getTimeZone().getOffset(cal0.getTimeInMillis()) / 60 / 1000) / 60f) % (60f);
 //Log.d("(X)", "[" + gtz0.getTimeZoneId() + "](" + foffs + ", " + gtz0.getTimeZone().getOffset(cal0.getTimeInMillis()));
-		int			nap = (foffs % 1f != 0f ? +0 : -0);
-		cal0.add(Calendar.HOUR_OF_DAY, (+2 + nap));// - (int)(fdstoffs / 1f));
+		int			nap = (foffs % 1f != 0f ? +1 : -0);
+		cal0.add(Calendar.HOUR_OF_DAY, (+1 + nap));// - (int)(fdstoffs / 1f));
 		int			nh0 = cal0.get(Calendar.HOUR_OF_DAY);
 		float		fmin = (float)(cal0.get(Calendar.MINUTE) / 60f);	// TODO an hour is not necessarily be 60min.
 //		float		fdens = GloneApp.getContext().getResources().getDisplayMetrics().density;	// no need of density conversion
-		float		fdsty = GlStripe.CFTEX_HURCY * (-.4f + (float)(nap * -1));
+		float		fdsty = GlStripe.CFTEX_HURCY * (((1f - CF_CYPAHRS) * -1f) + (float)(nap * -1));
 		for(int i = 0; i < NC_HOURS; i++) {
-			float	ftop0 = fdsty + GlStripe.CFTEX_HURCY * (-1f + fmin + (foffs % 1f));
+			float	ftop0 = fdsty + GlStripe.CFTEX_HURCY * (-.5f + fmin);
 			cv0.drawBitmap(m_bmtex, new Rect(0, (int)GlStripe.CFTEX_HURCY * (23 - nh0),
 					(int)GlStripe.CFTEX_HURCX, (int)GlStripe.CFTEX_HURCY * (24 - nh0)),
 					new RectF(nx0, ftop0,

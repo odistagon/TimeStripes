@@ -65,8 +65,9 @@ public class WidgProv extends AppWidgetProvider
 			bFirst = true;
 		}
 
+		GloneTz			gtzsys = GloneApp.getDoc().getSystemTz();
 		ComponentName	comp0 = new ComponentName(context, WidgProv.class);
-		int[]	anAllWidgetIds = awmarg.getAppWidgetIds(comp0);
+		int[]			anAllWidgetIds = awmarg.getAppWidgetIds(comp0);
 		for(int nWidgetId : anAllWidgetIds) {
 //			AppWidgetProviderInfo	awpi0 = awmarg.getAppWidgetInfo(nWidgetId);
 			int		nidx = 0;
@@ -80,7 +81,8 @@ public class WidgProv extends AppWidgetProvider
 			// draw tz stripes
 			for(GloneTz gtz0: altz) {
 				int		nx0 = (int)(fcx0 * (float)(altz.size() - 1 - nidx));
-				drawHours(cv0, nx0, gtz0);
+				drawHours(cv0, nx0, gtz0,
+						(gtz0.getTimeZone().getID().equals(gtzsys.getTimeZone().getID())));
 				//
 				nidx++;
 			}
@@ -138,7 +140,7 @@ public class WidgProv extends AppWidgetProvider
 		}
 	}
 
-	private void drawHours(Canvas cv0, int nx0, GloneTz gtz0) {
+	private void drawHours(Canvas cv0, int nx0, GloneTz gtz0, boolean bHighlight) {
 		final int	NC_HOURS = 4;
 		Calendar	cal0 = Calendar.getInstance(gtz0.getTimeZone());
 //		float		foffs = gtz0.getDSTOffsetInTheDay(cal0.getTimeInMillis(), 0);
@@ -150,12 +152,14 @@ public class WidgProv extends AppWidgetProvider
 		float		fmin = (float)(cal0.get(Calendar.MINUTE) / 60f);	// TODO an hour is not necessarily be 60min.
 //		float		fdens = GloneApp.getContext().getResources().getDisplayMetrics().density;	// no need of density conversion
 		float		fdsty = GlStripe.CFTEX_HURCY * (((1f - CF_CYPAHRS) * -1f) + (float)(nap * -1));
+		Rect		rsrc = new Rect(0, 0, (int)GlStripe.CFTEX_HURCX, (int)GlStripe.CFTEX_HURCY);
 		for(int i = 0; i < NC_HOURS; i++) {
+			Rect	r0 = new Rect(rsrc);
+			r0.offset((bHighlight ? (int)GlStripe.CFTEX_HURCX : 0),
+					(int)GlStripe.CFTEX_HURCY * (23 - nh0));
 			float	ftop0 = fdsty + GlStripe.CFTEX_HURCY * (-.5f + fmin);
-			cv0.drawBitmap(m_bmtex, new Rect(0, (int)GlStripe.CFTEX_HURCY * (23 - nh0),
-					(int)GlStripe.CFTEX_HURCX, (int)GlStripe.CFTEX_HURCY * (24 - nh0)),
-					new RectF(nx0, ftop0,
-							nx0 + GlStripe.CFTEX_HURCX, ftop0 + GlStripe.CFTEX_HURCY), null);
+			cv0.drawBitmap(m_bmtex, r0, new RectF(nx0, ftop0,
+					nx0 + GlStripe.CFTEX_HURCX, ftop0 + GlStripe.CFTEX_HURCY), null);
 			fdsty += GlStripe.CFTEX_HURCY;
 			cal0.add(Calendar.HOUR_OF_DAY, -1);
 			nh0 = cal0.get(Calendar.HOUR_OF_DAY);

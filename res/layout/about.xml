@@ -6,7 +6,7 @@
 	android:id="@+id/lo_about_main"
 	android:layout_width="fill_parent" android:layout_height="wrap_content"
 	android:orientation="vertical"
-	android:background="#0066AACC" 
+	android:background="#006600CC"
 	>
 
 	<LinearLayout
@@ -72,7 +72,7 @@
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/iv_ot_cc_by_nd" android:contentDescription="@string/icdesc_cc"
 			android:padding="2dp" android:layout_gravity="center"
-			android:background="#CCFFFFFF"
+			android:background="#00FFFFFF"
 			android:src="@drawable/ot_cc_by_nd" />
 		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:background="#00CC66CC" android:layout_marginTop="4dip"

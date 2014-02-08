@@ -241,6 +241,8 @@ public class DefRenderer implements Renderer
 			if(m_bUseAmPm) {
 				m_glstripe.drawSign(gl0, (andt[4] < 12 ?
 						GlStripe.CN_SIGNIDX_A_M_ : GlStripe.CN_SIGNIDX_P_M_));	// a.m./ p.m.
+				if(andt[4] > 12)
+					andt[4] -= 12;	// hour
 			}
 			gl0.glTranslatef((GlStripe.CRECTF_VTXNUM.right * 3f) + GlStripe.CRECTF_VTXSIG.right * 2f, 0f, 0f);
 			m_glstripe.drawNumberString(gl0, andt[5], 2);	// min.

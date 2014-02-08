@@ -15,6 +15,7 @@ public class DefRenderer implements Renderer
 	private int					m_nWidth;
 	private int					m_nHeight;
 	private float				m_frmgn;				// right margin in opengl unit
+	private boolean				m_bUseAmPm;				// use a.m. p.m. or 24 hr format
 
 	private int[]				m_anTexIds = new int[2];
 	private long				m_lLastRendered;
@@ -48,9 +49,10 @@ public class DefRenderer implements Renderer
 	public static final long	CL_HORZRELD = 800L;		// time to released horizontal shift go back
 	private static final float	CF_RIGHMRGN = 0.1f;		// right margin where stripes not being drawn
 
-	public DefRenderer(GlOneDoc doc) {
+	public DefRenderer(GlOneDoc doc, boolean bUseAmPm) {
 		m_lLastRendered = System.currentTimeMillis();
 		m_doc = doc;
+		m_bUseAmPm = bUseAmPm;
 	}
 
 	@Override
@@ -63,7 +65,7 @@ public class DefRenderer implements Renderer
 		m_glstr = new Gl2DString();
 		m_glstr.onSurfaceCreated(gl0, arg1);
 
-		m_glstripe = new GlStripe();
+		m_glstripe = new GlStripe(m_bUseAmPm);
 		m_glstripe.onSurfaceCreated(gl0, arg1);
 
 		makeOrgBuffs();
@@ -233,9 +235,14 @@ public class DefRenderer implements Renderer
 			// hour + min
 			gl0.glLoadIdentity();
 			gl0.glTranslatef(0f, 0f, fdepth + CF_Z_GAPDIFF);
-			fscale0 = fscrw / (GlStripe.CRECTF_VTXNUM.right * 4f + GlStripe.CRECTF_VTXSIG.right * (2 + 1));
+			fscale0 = fscrw / (GlStripe.CRECTF_VTXNUM.right * 4f + GlStripe.CRECTF_VTXSIG.right * (2 + 1 + 1));
 			gl0.glScalef(fscale0, fscale0, 1.0f);
-			gl0.glTranslatef(GlStripe.CRECTF_VTXNUM.right, GlStripe.CRECTF_VTXNUM.bottom * -1f + -0.1f, 0f);
+			gl0.glTranslatef((GlStripe.CRECTF_VTXNUM.right * -2f) + (GlStripe.CRECTF_VTXSIG.right * -1f), GlStripe.CRECTF_VTXNUM.bottom * -1f + -0.1f, 0f);
+			if(m_bUseAmPm) {
+				m_glstripe.drawSign(gl0, (andt[4] < 12 ?
+						GlStripe.CN_SIGNIDX_A_M_ : GlStripe.CN_SIGNIDX_P_M_));	// a.m./ p.m.
+			}
+			gl0.glTranslatef((GlStripe.CRECTF_VTXNUM.right * 3f) + GlStripe.CRECTF_VTXSIG.right * 2f, 0f, 0f);
 			m_glstripe.drawNumberString(gl0, andt[5], 2);	// min.
 			gl0.glTranslatef((GlStripe.CRECTF_VTXNUM.right - GlStripe.CRECTF_VTXSIG.right) * 1f, 0f, 0f);
 			m_glstripe.drawSign(gl0, GlStripe.CN_SIGNIDX_COLN);	// :

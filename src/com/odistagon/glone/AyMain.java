@@ -121,6 +121,12 @@ public class AyMain extends FragmentActivity
 			dret = dlg0;
 			break;
 		case GloneUtils.NC_DLGID_SHWTXT: {
+			boolean	bUseAmPm = false;
+			SharedPreferences	pref = PreferenceManager.getDefaultSharedPreferences(GloneApp.getContext());
+			if(pref != null)
+				bUseAmPm = pref.getBoolean(
+						getResources().getString(R.string.prefkey_usampm), false);
+
 			AlertDialog.Builder	dlgbldr = new AlertDialog.Builder(this);
 			dlgbldr.setTitle(R.string.dlg_shwtxt_t);
 			long				lcurr = GloneApp.getDoc().getTime();
@@ -131,7 +137,7 @@ public class AyMain extends FragmentActivity
 				GloneTz	gtz0 = it0.next();
 				sb0.append(gtz0.getTimeZoneId());
 				sb0.append("\n  ");
-				sb0.append(gtz0.getDebugString(lcurr));
+				sb0.append(gtz0.getDebugString(lcurr, bUseAmPm));
 				sb0.append("\n");
 			}
 			final String		smsg = sb0.toString();

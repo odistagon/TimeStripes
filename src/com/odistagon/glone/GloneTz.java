@@ -3,6 +3,7 @@ package com.odistagon.glone;
 import java.nio.FloatBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class GloneTz
@@ -14,8 +15,6 @@ public class GloneTz
 //	private static final String	CS_TZSTRTEST = "America/Los Angeles";
 	private FloatBuffer		m_fbvtx;
 	private FloatBuffer		m_fbtex;
-
-	private static SimpleDateFormat	sdf0 = new SimpleDateFormat("MMM/dd HH:mm:ss Z");
 
 	public static GloneTz getInstance(String sTz) {
 		GloneTz	tz0 = new GloneTz();
@@ -106,7 +105,12 @@ public class GloneTz
 		return	fret;
 	}
 
-	public String getDebugString(long ltime) {
+	public String getDebugString(long ltime, boolean bUseAmPm) {
+		SimpleDateFormat	sdf0 = 
+				new SimpleDateFormat((bUseAmPm ? "E dd MMM a hh:mm:ss Z" : "EEE dd MMM HH:mm:ss Z"),
+						Locale.getDefault());
+//						GloneApp.getContext().getResources().getConfiguration().locale);
+
 		Calendar	c0 = recycleCalendarInstance();
 		c0.setTimeInMillis(ltime);
 		sdf0.setTimeZone(m_tz);

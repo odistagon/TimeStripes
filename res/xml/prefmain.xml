@@ -8,6 +8,10 @@
 		android:title="@string/pref_usehdr_t" android:summary="@string/pref_usehdr_s"
 		android:defaultValue="false" />
 
+	<CheckBoxPreference android:key="@string/prefkey_usampm"
+		android:title="@string/pref_usampm_t" android:summary="@string/pref_usampm_s"
+		android:defaultValue="false" />
+
 	<ListPreference android:key="@string/prefkey_bg_sel"
 		android:title="@string/pref_bg_sel_t" android:summary="@string/pref_bg_sel_s"
 		android:dialogTitle="@string/pref_bg_sel_dlgt"

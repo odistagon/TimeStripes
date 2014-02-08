@@ -11,13 +11,13 @@ public class DefSurfaceView extends GLSurfaceView
 	private DefRenderer		m_renderer;
 	private GestureDetector	m_gdtctr;
 
-	public DefSurfaceView() {
+	public DefSurfaceView(boolean bUseAmPm) {
 		super(GloneApp.getContext());
 //		final AyTop		aytop0 = aytop;
 //		WindowManager	wm0 = (WindowManager)aytop0.getSystemService(android.content.Context.WINDOW_SERVICE);
 //		final Display	disp0 = wm0.getDefaultDisplay();
 
-		m_renderer = new DefRenderer(GloneApp.getDoc());
+		m_renderer = new DefRenderer(GloneApp.getDoc(), bUseAmPm);
 		setRenderer(m_renderer);
 
 // these seems to be necessary to make a drawable to be background of GLSurfaceView, but not works for me.
@@ -99,6 +99,14 @@ public class DefSurfaceView extends GLSurfaceView
 				return	false;
 			}
 		});
+
+//		setOnLongClickListener(new OnLongClickListener() {
+//			@Override
+//			public boolean onLongClick(View v) {
+//				getActivity().showDialog(GloneUtils.NC_DLGID_SHWTXT);
+//				return false;
+//			}
+//		});
 	}
 
 	public void zoomIn(float frelative) {

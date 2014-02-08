@@ -9,6 +9,8 @@ import android.graphics.RectF;
 
 public class GlStripe
 {
+	private boolean		m_bUseAmPm;
+
 	private FloatBuffer	m_fbVtxStrp;
 	private FloatBuffer	m_fbTexStrp; 
 	private FloatBuffer	m_fbTexStr0; 
@@ -24,8 +26,10 @@ public class GlStripe
 
 	// hour stripe
 	public static final RectF	CRECTF_VTXHUR = new RectF(0.0f, 0.0f, 0.5f, 0.2f);
-	private static final RectF	CRECTF_TEXHUR = new RectF(0.0f / CFTEXCX, 0.0f, 96f / CFTEXCX, 40f / CFTEXCY);
-	private static final RectF	CRECTF_TEXHR0 = new RectF(96f * 1f / CFTEXCX, 0.0f, (96f * 1f + 96f) / CFTEXCX, 40f / CFTEXCY);
+	private static final RectF	CRECTF_TEX24R = new RectF(96f * 0f / CFTEXCX, 0.0f, (96f * 0f + 96f) / CFTEXCX, 40f / CFTEXCY);
+	private static final RectF	CRECTF_TEX240 = new RectF(96f * 1f / CFTEXCX, 0.0f, (96f * 1f + 96f) / CFTEXCX, 40f / CFTEXCY);
+	private static final RectF	CRECTF_TEXHUR = new RectF(96f * 7f / CFTEXCX, 0.0f, (96f * 7f + 96f) / CFTEXCX, 40f / CFTEXCY);
+	private static final RectF	CRECTF_TEXHR0 = new RectF(96f * 8f / CFTEXCX, 0.0f, (96f * 8f + 96f) / CFTEXCX, 40f / CFTEXCY);
 	// numbers
 	public static final RectF	CRECTF_VTXNUM = new RectF(0.0f, 0.0f, 0.2f, 0.15f);
 	private static final RectF	CRECTF_TEXNUM = new RectF(96f * 2f / CFTEXCX, 0.0f, (96f * 2f + 96f) / CFTEXCX, 96f / CFTEXCY);
@@ -45,7 +49,8 @@ public class GlStripe
 	public static final RectF	CRECTF_VTXSIG = new RectF(0.0f, 0.0f, 0.06f, 0.15f);
 	private static final RectF	CRECTF_TEXSIG = new RectF((96f * 4f + 32f) / CFTEXCX, 0f / CFTEXCY, (96f * 4f + 32f + 32f) / CFTEXCX, 96f / CFTEXCY);
 
-	public GlStripe() {
+	public GlStripe(boolean bUseAmPm) {
+		m_bUseAmPm = bUseAmPm;
 	}
 
 	public static float getVtxHeightOfOneHour() {
@@ -57,8 +62,13 @@ public class GlStripe
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		// Stripe
 		m_fbVtxStrp = makeVertBuffs(24, CRECTF_VTXHUR, true, 0f, null);
-		m_fbTexStrp = makeTexBuffs(24, CRECTF_TEXHUR, true, null);
-		m_fbTexStr0 = makeTexBuffs(24, CRECTF_TEXHR0, true, null);
+		if(m_bUseAmPm) {
+			m_fbTexStrp = makeTexBuffs(24, CRECTF_TEXHUR, true, null);
+			m_fbTexStr0 = makeTexBuffs(24, CRECTF_TEXHR0, true, null);
+		} else {
+			m_fbTexStrp = makeTexBuffs(24, CRECTF_TEX24R, true, null);
+			m_fbTexStr0 = makeTexBuffs(24, CRECTF_TEX240, true, null);
+		}
 		// Numbers
 		m_fbVtxNums = makeVertBuffs(10, CRECTF_VTXNUM, false, 0f, null);
 		m_fbTexNums = makeTexBuffs(10, CRECTF_TEXNUM, false, null);
@@ -231,6 +241,8 @@ public class GlStripe
 	}
 
 	public static final int		CN_SIGNIDX_COLN = 0;
+	public static final int		CN_SIGNIDX_A_M_ = 1;
+	public static final int		CN_SIGNIDX_P_M_ = 2;
 	public static final int		CN_SIGNIDX_FPS_ = 3;
 
 	public void drawSign(GL10 gl, int narg) {
@@ -298,4 +310,6 @@ public class GlStripe
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 	}
+
+	
 }

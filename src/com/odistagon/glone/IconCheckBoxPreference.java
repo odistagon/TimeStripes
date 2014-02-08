@@ -1,5 +1,6 @@
 package com.odistagon.glone;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.preference.CheckBoxPreference;
@@ -52,6 +53,7 @@ public class IconCheckBoxPreference extends CheckBoxPreference implements OnChec
 	/**
 	 * @param darg The icon for this Preference
 	 */
+	@SuppressLint("Override")	// will be officially overrided from API level 11
 	public void setIcon(final Drawable darg) {
 		if ((darg == null && m_dIcon != null) || (darg != null && !darg.equals(m_dIcon))) {
 			m_dIcon = darg;
@@ -62,6 +64,7 @@ public class IconCheckBoxPreference extends CheckBoxPreference implements OnChec
 	/**
 	 * @return The icon.
 	 */
+	@SuppressLint("Override")	// will be officially overrided from API level 11
 	public Drawable getIcon() {
 		return	m_dIcon;
 	}

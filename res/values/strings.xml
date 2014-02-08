@@ -3,7 +3,7 @@
 
 	<string name="hello">Hello World, Main!</string>
 	<string name="app_name">Time Stripes Beta</string>
-	<string name="app_vers">2.0</string>
+	<string name="app_vers">2.2</string>
 	<string name="app_desc_long_1">&quot;Time Stripes&quot; is an app by that you can see how much is the time gap of between multiple timezones.\n\nPrograms, graphics and UI design:\n  openeddistagon@gmail.com</string>
 	<string name="app_desc_long_font">The font shown in the app is &lt;Neuropol&gt; from Larabie fonts, all rights reserved.</string>
 	<string name="app_desc_long_src">You can get all source files public on https://github.com/odistagon/TimeStripes, under the licence of:</string>
@@ -47,6 +47,8 @@
 	<string name="pref_cfgbtn_s">Select which buttons are in screen right.</string>
 	<string name="pref_usehdr_t">Show app header</string>
 	<string name="pref_usehdr_s">Use app header or Action Bar (Android 3.0 or lator), requires app restart.</string>
+	<string name="pref_usampm_t">Use am. pm.</string>
+	<string name="pref_usampm_s">Use am. pm. instead of 24hr format, requires app restart.</string>
 	<string name="prefcat_tzns">Timezone Settings</string>
 	<string name="pref_edittz_t">Edit timezone</string>
 	<string name="pref_edittz_s">Edit current combination of timezones</string>
@@ -91,6 +93,7 @@
 
 	<!-- pref keys, no need to localize -->
 	<string name="prefkey_usehdr">PK_USEHDR</string>
+	<string name="prefkey_usampm">PK_USAMPM</string>
 	<string name="prefkey_dscllv">PK_DSCLLV</string>
 	<string name="prefkey_clcktz">PK_CLCKTZ</string>
 	<string name="prefkey_wallpa">PK_WALLPA</string>

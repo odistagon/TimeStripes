@@ -47,6 +47,8 @@
 	<string name="pref_cfgbtn_s">画面右側に表示するボタンを選択します。</string>
 	<string name="pref_usehdr_t">ヘッダーを表示</string>
 	<string name="pref_usehdr_s">画面先頭にヘッダーまたは (Android 3.0 以降の場合) アクションバーを表示します。アプリの再起動が必要です。</string>
+	<string name="pref_usampm_t">a.m. p.m. 表示</string>
+	<string name="pref_usampm_s">24 時間表記の代わりに、 a.m. p.m. で表示します。アプリの再起動が必要です。</string>
 	<string name="prefcat_tzns">タイムゾーン設定</string>
 	<string name="pref_edittz_t">タイムゾーンセット変更</string>
 	<string name="pref_edittz_s">表示するタイムゾーンセットの組み合わせを変更します。</string>

@@ -5,7 +5,7 @@
 	><!-- this Layout is needed for placeholder of GlSurfaceView -->
 
 	<!-- right toolbar -->
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	<LinearLayout
 		android:id="@+id/lo_main_vert"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
 		android:orientation="vertical" android:gravity="right|center_vertical"

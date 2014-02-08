@@ -1,7 +1,9 @@
 package com.odistagon.glone;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -26,9 +28,15 @@ public class FgMain extends Fragment
 		View	vret = inflater.inflate(R.layout.main, container, false);
 		setHasOptionsMenu(true);	// important!
 
+		boolean	bUseAmPm = false;
+		SharedPreferences	pref = PreferenceManager.getDefaultSharedPreferences(GloneApp.getContext());
+		if(pref != null)
+			bUseAmPm = pref.getBoolean(
+					getResources().getString(R.string.prefkey_usampm), false);
+
 		RelativeLayout	rl0 = (RelativeLayout)vret.findViewById(R.id.lo_main_rl0);
 		// insert GL view into the main layout
-		m_gv = new DefSurfaceView();
+		m_gv = new DefSurfaceView(bUseAmPm);
 		rl0.addView(m_gv, 0);
 
 		//bottom toolbar buttons
@@ -158,5 +166,21 @@ public class FgMain extends Fragment
 //			break;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// apply just-set preferences
+		reloadPrefs();
+
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+//	private boolean			m_bUseAmPm;
+	private void reloadPrefs() {
+//		SharedPreferences	pref = PreferenceManager.getDefaultSharedPreferences(GloneApp.getContext());
+//		if(pref != null)
+//			m_bUseAmPm = pref.getBoolean(
+//					getResources().getString(R.string.prefkey_usampm), false);
 	}
 }
